@@ -20,8 +20,9 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
-    public List<UserEntity> findAll() throws Exception {
+    public void findAll() throws Exception {
 
-        return userService.findAll();
+        List<UserEntity> list= userService.findAll();
+         System.out.println("sfda");
     }
 }

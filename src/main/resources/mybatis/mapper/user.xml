@@ -5,7 +5,7 @@
 
     <select id="findAll"   resultType="UserEntity">
         select *
-        from t_cfg_user t
+        from FSS_PERSONLIST t
         <where>
 
         </where>
