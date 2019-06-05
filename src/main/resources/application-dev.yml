@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://10.45.157.117:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: zxm10
+    max-active: 20
+    max-idle: 8
+    min-idle: 8
+    initial-size: 10
+
+
+#mybatis
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-aliases-package: com.znv.fssrqs.entity
+
+#elasticSearchClient
+es:
+  username: ""
+  password: ""
+  host: 10.45.157.112
+  port: 9200
