@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.znv.fssrqs.dao.UserDao">
+<mapper namespace="com.znv.fssrqs.dao.hbase.HUserDao">
 
-    <select id="findAll"   resultType="UserEntity">
+    <select id="findAll"   resultType="HUserEntity">
         select *
-        from FSS_PERSONLIST t
-        <where>
-
-        </where>
+        from N_PROJECT_V1_2.FSS_PERSONLIST t
+        limit 1
     </select>
 
 

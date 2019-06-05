@@ -1,9 +1,9 @@
 package com.znv.fssrqs.service;
 
-import com.znv.fssrqs.dao.UserDao;
-import com.znv.fssrqs.entity.UserEntity;
-import com.znv.fssrqs.enums.ErrorCodeEnum;
-import com.znv.fssrqs.exception.BusinessException;
+import com.znv.fssrqs.dao.hbase.HUserDao;
+import com.znv.fssrqs.dao.mysql.MUserDao;
+import com.znv.fssrqs.entity.hbase.HUserEntity;
+import com.znv.fssrqs.entity.mysql.MUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +13,16 @@ import java.util.List;
 public class UserService {
 
     @Autowired
-    private UserDao userDao;
+    private MUserDao mUserDao;
 
-    public List<UserEntity> findAll() throws Exception{
-        return userDao.findAll();
+    @Autowired
+    private HUserDao hUserDao;
+
+    public List<MUserEntity> findAll() throws Exception{
+        return mUserDao.findAll();
+    }
+
+    public List<HUserEntity> find() throws Exception{
+        return hUserDao.findAll();
     }
 }

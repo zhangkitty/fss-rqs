@@ -1,7 +1,8 @@
 package com.znv.fssrqs.service;
 
-import com.znv.fssrqs.entity.UserEntity;
-import com.znv.fssrqs.vo.Response;
+import com.znv.fssrqs.entity.hbase.HUserEntity;
+import com.znv.fssrqs.entity.mysql.MUserEntity;
+import lombok.extern.log4j.Log4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@Log4j
 public class UserServiceTest {
 
     @Autowired
@@ -22,7 +22,17 @@ public class UserServiceTest {
     @Test
     public void findAll() throws Exception {
 
-        List<UserEntity> list= userService.findAll();
-         System.out.println("sfda");
+        List<MUserEntity> list= userService.findAll();
+        while (list.iterator().hasNext()){
+            System.out.println(list.iterator().next().toString());
+        }
+    }
+
+    @Test
+    public void find() throws Exception{
+        List<HUserEntity> list = userService.find();
+        while (list.iterator().hasNext()){
+            System.out.println(list.iterator().next().toString());
+        }
     }
 }

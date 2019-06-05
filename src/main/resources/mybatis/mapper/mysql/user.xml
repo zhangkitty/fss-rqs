@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znv.fssrqs.dao.mysql.MUserDao">
+
+    <select id="findAll"   resultType="MUserEntity">
+        select *
+        from t_cfg_user t
+        limit 1
+    </select>
+
+
+</mapper>
