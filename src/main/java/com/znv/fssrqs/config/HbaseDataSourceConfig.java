@@ -9,7 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.sql.DataSource;
 
@@ -25,9 +27,11 @@ public class HbaseDataSourceConfig {
 
     @Bean(name = "hbaseSqlSessionFactory")
     public SqlSessionFactory hbaseSqlSessionFactory(@Qualifier("hbaseDataSource") DataSource dataSource) throws Exception {
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/mapper/hbase/*.xml"));
+        bean.setConfigLocation(resolver.getResource("classpath:mybatis/mybatis-config.xml"));
+        bean.setMapperLocations(resolver.getResources("classpath:mybatis/mapper/hbase/*.xml"));
         bean.setTypeAliasesPackage("com.znv.fssrqs.entity.hbase");
         return bean.getObject();
     }

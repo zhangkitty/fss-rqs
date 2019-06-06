@@ -23,16 +23,17 @@ public class UserServiceTest {
     public void findAll() throws Exception {
 
         List<MUserEntity> list= userService.findAll();
-        while (list.iterator().hasNext()){
-            System.out.println(list.iterator().next().toString());
+        for(MUserEntity mUserEntity:list){
+            System.out.println(mUserEntity.getUserType());
         }
+
     }
 
     @Test
     public void find() throws Exception{
         List<HUserEntity> list = userService.find();
-        while (list.iterator().hasNext()){
-            System.out.println(list.iterator().next().toString());
+        for (HUserEntity hUserEntity:list){
+            System.out.println(hUserEntity.getPersonName());
         }
     }
 }

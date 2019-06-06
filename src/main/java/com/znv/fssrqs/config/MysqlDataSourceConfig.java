@@ -10,6 +10,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.sql.DataSource;
 
@@ -25,9 +26,11 @@ public class MysqlDataSourceConfig {
 
     @Bean(name = "mysqlSqlSessionFactory")
     public SqlSessionFactory mysqlSqlSessionFactory(@Qualifier("mysqlDataSource") DataSource dataSource) throws Exception {
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/mapper/mysql/*.xml"));
+        bean.setMapperLocations(resolver.getResources("classpath:mybatis/mapper/mysql/*.xml"));
+        bean.setConfigLocation(resolver.getResource("classpath:mybatis/mybatis-config.xml"));
         bean.setTypeAliasesPackage("com.znv.fssrqs.entity.mysql");
         return bean.getObject();
     }
