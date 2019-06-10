@@ -4,8 +4,19 @@ import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.elasticsearch.service.ISearch;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.io.stream.StreamOutput;
+import org.elasticsearch.common.lucene.search.function.ScoreFunction;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryShardContext;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.index.query.functionscore.ScriptScoreFunctionBuilder;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +95,43 @@ public class ISearchImpl implements ISearch {
             result.put("data",list);
         }
         return result;
+    }
+
+    public void searchPic() throws IOException {
+
+        MatchAllQueryBuilder matchAllQueryBuilder =   QueryBuilders.matchAllQuery();
+
+
+        SearchRequest searchRequest = new SearchRequest();
+
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
+        HashMap params = new HashMap();
+        params.put("featureName","rt_feature.feature_high");
+        params.put("featureValue",new String[]{
+                "",
+                "",
+                ""
+        });
+        params.put("filterType","or");
+
+
+        Script script = new Script(ScriptType.INLINE,"native","feature-comp-task",params);
+
+        ScriptScoreFunctionBuilder scriptScoreFunctionBuilder =  ScoreFunctionBuilders.scriptFunction(script);
+
+        FunctionScoreQueryBuilder queryBuilder = QueryBuilders.functionScoreQuery(matchAllQueryBuilder,scriptScoreFunctionBuilder);
+
+        searchSourceBuilder.query(queryBuilder);
+
+        searchRequest.source(searchSourceBuilder);
+
+        SearchResponse searchResponse = elasticSearchClient.getClient().search(searchRequest);
+
+        System.out.println("mdzzz");
 
 
     }
+
+
 }
