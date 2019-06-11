@@ -11,7 +11,7 @@ spring:
       initial-size: 10
     hbase:
       driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
-      jdbc-url: jdbc:phoenix:lv112.dct-znv.com:2181:/hbase
+      jdbc-url: jdbc:phoenix:lv116.dct-znv.com:2181:/hbase
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
@@ -24,6 +24,6 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: 10.45.157.112
+  host: 10.45.157.116
   port: 9200
 

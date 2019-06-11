@@ -10,10 +10,7 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component("elasticSearchClient")
@@ -31,8 +28,10 @@ public class ElasticSearchClient
     private  Integer port;
     
     private RestHighLevelClient client = null;
+
+    private RestClient restClient = null;
     
-    public RestHighLevelClient getClient()
+    public ElasticSearchClient getInstance()
     {
     	try 
     	{
@@ -41,7 +40,7 @@ public class ElasticSearchClient
     	{
 			throw e;
 		}
-    	return this.client;
+    	return this;
     }
     
     private void createInstance()
@@ -63,6 +62,7 @@ public class ElasticSearchClient
 			                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
 			                    }
 			                });
+			        this.restClient = restClientBuilder.build();
 			        this.client = new RestHighLevelClient(restClientBuilder);
 				}
 			}

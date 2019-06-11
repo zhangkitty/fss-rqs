@@ -15,8 +15,6 @@ public class FastSearch {
 
     public Object quickSearch(){
 
-
-
         return null;
     }
 }
