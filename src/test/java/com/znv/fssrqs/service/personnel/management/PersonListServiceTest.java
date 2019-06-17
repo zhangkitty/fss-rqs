@@ -21,11 +21,5 @@ public class PersonListServiceTest {
     @Test
     public void getPersonList() {
 
-        try {
-            JSONObject jsonObject = personListService.getPersonList();
-            System.out.println(jsonObject);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

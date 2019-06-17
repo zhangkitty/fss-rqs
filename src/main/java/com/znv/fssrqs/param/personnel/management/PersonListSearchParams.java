@@ -1,6 +1,8 @@
 package com.znv.fssrqs.param.personnel.management;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.Date;
@@ -12,7 +14,6 @@ import java.util.Date;
  */
 @Data
 public class PersonListSearchParams {
-
 
     @NotBlank(message = "开始时间不能为空")
     private String StartTime;
@@ -29,17 +30,14 @@ public class PersonListSearchParams {
     private String SimThreshold;
 
     @NotBlank(message = "分页参数不能为空")
-    private String From;
+    private String CurrentPage;
 
     @NotBlank(message = "分页参数不能为空")
-    private String Size;
+    private String PageSize;
 
     private String Name;
 
     private String IDNumber;
 
     private String AlgorithmType;
-
-
-
 }

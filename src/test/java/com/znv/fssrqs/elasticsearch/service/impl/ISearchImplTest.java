@@ -42,13 +42,4 @@ public class ISearchImplTest {
             e.printStackTrace();
         }
     }
-
-    @Test
-    public void searchPic(){
-        try {
-            iSearch.searchPic();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

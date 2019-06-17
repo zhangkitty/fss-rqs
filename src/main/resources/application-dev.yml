@@ -27,3 +27,11 @@ es:
   host: 10.45.157.116
   port: 9200
 
+#海康SDK
+hksdk:
+  # false不支持海康脸谱算法 true支持海康脸谱算法
+  switch: false
+  baseUrl: 10.45.157.59
+  appKey: '24606272'
+  appSecret: 'S2K5ChipGIr6elg2RPbC'
+
