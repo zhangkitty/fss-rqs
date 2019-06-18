@@ -1,7 +1,12 @@
+server:
+  port: 9002
+  servlet: ##servlet默认超时时间30分钟
+    session:
+      timeout: 30m
 spring:
   datasource:
     mysql:
-      jdbc-url: jdbc:mysql://10.45.157.117:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+      jdbc-url: jdbc:mysql://10.45.157.72:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: zxm10
@@ -15,23 +20,27 @@ spring:
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
-
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 #mybatis
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
-
 #elasticSearchClient
 es:
   username: ""
   password: ""
   host: 10.45.157.116
   port: 9200
-
 #海康SDK
 hksdk:
   # false不支持海康脸谱算法 true支持海康脸谱算法
-  switch: false
-  baseUrl: 10.45.157.59
-  appKey: '24606272'
-  appSecret: 'S2K5ChipGIr6elg2RPbC'
+  is-switch: false
+  base-url: 10.45.157.59
+  app-key: '24606272'
+  app-secret: 'S2K5ChipGIr6elg2RPbC'
+bigdata:
+  hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
 

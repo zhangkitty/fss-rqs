@@ -36,7 +36,7 @@ public class ISearchImpl implements ISearch {
         }
         searchSourceBuilder.query(queryBuilder);
         searchRequest.source(searchSourceBuilder);
-        SearchResponse searchResponse = elasticSearchClient.getInstance().getClient().search(searchRequest);
+        SearchResponse searchResponse = elasticSearchClient.getInstance().getRestHighLevelClient().search(searchRequest);
         if(searchResponse != null && searchResponse.getHits() != null && searchResponse.getHits().getHits().length > 0)
         {
             for(int num=0;num<searchResponse.getHits().getHits().length;num++)
@@ -68,7 +68,7 @@ public class ISearchImpl implements ISearch {
         }
         searchSourceBuilder.query(queryBuilder);
         searchRequest.source(searchSourceBuilder);
-        SearchResponse searchResponse = elasticSearchClient.getInstance().getClient().search(searchRequest);
+        SearchResponse searchResponse = elasticSearchClient.getInstance().getRestHighLevelClient().search(searchRequest);
         if(searchResponse != null && searchResponse.getHits() != null && searchResponse.getHits().getHits().length > 0)
         {
             Long totalHits = searchResponse.getHits().totalHits;

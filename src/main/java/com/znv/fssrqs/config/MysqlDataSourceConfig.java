@@ -9,18 +9,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = "com.znv.fssrqs.dao.mysql",sqlSessionFactoryRef = "mysqlSqlSessionFactory")
+@MapperScan(basePackages = "com.znv.fssrqs.dao.mysql", sqlSessionFactoryRef = "mysqlSqlSessionFactory")
 public class MysqlDataSourceConfig {
-
     @Bean(name = "mysqlDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.mysql")
-    public DataSource testDataSource() {
+    public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
 
@@ -41,8 +42,11 @@ public class MysqlDataSourceConfig {
         return template;
     }
 
-
-
-
-
+    @Bean(name = "transactionManager")
+    @Primary
+    public DataSourceTransactionManager masterTransactionManager(@Qualifier("mysqlDataSource") DataSource dataSource) {
+        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+        dataSourceTransactionManager.setDataSource(dataSource);
+        return dataSourceTransactionManager;
+    }
 }

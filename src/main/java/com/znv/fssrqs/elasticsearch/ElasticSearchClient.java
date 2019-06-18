@@ -16,57 +16,41 @@ import org.springframework.stereotype.Component;
 @Component("elasticSearchClient")
 @ConfigurationProperties(prefix = "es")
 @Data
-public class ElasticSearchClient 
-{
-
-    private  String username;
-
-    private  String password;
-
-    private  String host;
-
-    private  Integer port;
-    
-    private RestHighLevelClient client = null;
-
+public class ElasticSearchClient {
+    private String username;
+    private String password;
+    private String host;
+    private Integer port;
+    private RestHighLevelClient restHighLevelClient = null;
     private RestClient restClient = null;
-    
-    public ElasticSearchClient getInstance()
-    {
-    	try 
-    	{
-    		createInstance();
-		} catch (Exception e) 
-    	{
-			throw e;
-		}
-    	return this;
-    }
-    
-    private void createInstance()
-    {
 
-    	if(this.client == null)
-    	{
-    		synchronized (this) 
-    		{
-				if(this.client == null)
-				{
-			        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-			        credentialsProvider.setCredentials(AuthScope.ANY,
-			                new UsernamePasswordCredentials(username, password));
-			        RestClientBuilder restClientBuilder = RestClient.builder(new HttpHost(host, port))
-			                .setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
-			                    @Override
-			                    public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
-			                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-			                    }
-			                });
-			        this.restClient = restClientBuilder.build();
-			        this.client = new RestHighLevelClient(restClientBuilder);
-				}
-			}
-    	}
+    public ElasticSearchClient getInstance() {
+        try {
+            createInstance();
+        } catch (Exception e) {
+            throw e;
+        }
+        return this;
+    }
+
+    private void createInstance() {
+        if (this.restHighLevelClient == null) {
+            synchronized (this) {
+                if (this.restHighLevelClient == null) {
+                    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                    credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+                    RestClientBuilder restClientBuilder = RestClient.builder(new HttpHost(host, port))
+                            .setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+                                @Override
+                                public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+                                    return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                                }
+                            });
+                    this.restClient = restClientBuilder.build();
+                    this.restHighLevelClient = new RestHighLevelClient(restClientBuilder);
+                }
+            }
+        }
     }
 
 }
