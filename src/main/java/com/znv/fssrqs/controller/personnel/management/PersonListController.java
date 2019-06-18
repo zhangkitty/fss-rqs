@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -39,7 +40,7 @@ public class PersonListController {
     private ModelMapper modelMapper;
 
     @GetMapping(value="/VIID/Persons")
-    public ResponseVo getPersonList(@Validated PersonListSearchParams personListSearchParams) throws Exception {
+    public ResponseVo getPersonList(@Valid PersonListSearchParams personListSearchParams) throws Exception {
         if(personListSearchParams.getAlgorithmType()!=null&&personListSearchParams.getAlgorithmType().equals("1")){
             JSONObject result =  viidhksdkService.queryHkPerson(personListSearchParams);
             return ResponseVo.success(result);
