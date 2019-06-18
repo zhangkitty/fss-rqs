@@ -24,7 +24,7 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: 10.45.157.116
+  host: 10.45.157.104
   port: 9200
 
 #海康SDK

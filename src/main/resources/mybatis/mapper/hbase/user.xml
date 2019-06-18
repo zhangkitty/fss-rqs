@@ -3,7 +3,7 @@
 
 <mapper namespace="com.znv.fssrqs.dao.hbase.HUserDao">
 
-    <select id="findAll"  resultType="HUserEntity">
+    <select id="findAll"  resultType="com.znv.fssrqs.entity.hbase.HUserEntity">
         select *
         from N_PROJECT_V1_2.FSS_PERSONLIST t
         limit 1
