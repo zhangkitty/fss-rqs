@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by dongzelong on  2019/6/1 13:53.
@@ -99,10 +100,12 @@ public class PersonLibController {
         if (1L == ret) {
             if (hkSdkConfig.isHkSwitch()) {
                 Map<String, Object> map = libRelationService.selectOne(libId);
-                String hkLibID = (String) map.get("hk_lib_id");
-                int errorCode = hksdkService.delHkLib(String.valueOf(libId), hkLibID);
-                if (errorCode == CommonConstant.HkSdkErrorCode.ERROR) {
-                    return FastJsonUtils.JsonBuilder.error().message("删除海康静态库失败").json().toJSONString();
+                if (!Objects.isNull(map)) {
+                    String hkLibID = (String) map.get("hk_lib_id");
+                    int errorCode = hksdkService.delHkLib(String.valueOf(libId), hkLibID);
+                    if (errorCode == CommonConstant.HkSdkErrorCode.ERROR) {
+                        return FastJsonUtils.JsonBuilder.error().message("删除海康静态库失败").json().toJSONString();
+                    }
                 }
             }
             return FastJsonUtils.JsonBuilder.ok().json().toJSONString();
