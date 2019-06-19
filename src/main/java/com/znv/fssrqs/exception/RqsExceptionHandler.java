@@ -35,7 +35,7 @@ public class RqsExceptionHandler {
             //todo
             // 可以更好的完善一下
             if(e instanceof BindingResult){
-                return new ResponseVo(ErrorCodeEnum.PARAM_ILLEGAL.getCode(), ((WebExchangeBindException) e).getFieldError().getDefaultMessage());
+                return ResponseVo.getInstance(ErrorCodeEnum.PARAM_ILLEGAL.getCode(), ((WebExchangeBindException) e).getFieldError().getDefaultMessage(),null);
             }else {
                 e.printStackTrace();
                 log.error("非自定义异常:时间-{} 类名-{} 方法-{}",LocalDateTime.now().toString(),exclass,method);

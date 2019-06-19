@@ -9,8 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ResponseVo {
 
@@ -20,21 +18,35 @@ public class ResponseVo {
 
     private Object data;
 
-    public ResponseVo(String code, String message){
+    private static ResponseVo responseVo;
+
+    private ResponseVo(String code, String message,Object data){
         this.code = code;
         this.message = message;
+        this.data = data;
+    }
+
+    public static ResponseVo getInstance(String code, String message,Object data){
+        if(ResponseVo.responseVo==null){
+            responseVo = new ResponseVo(code,message,data);
+        }else{
+            responseVo.setCode(code);
+            responseVo.setMessage(message);
+            responseVo.setData(data);
+        }
+        return  responseVo;
     }
 
     public static ResponseVo returnBusinessException(BusinessException e){
-        return new ResponseVo(e.getErrcode(),e.getMsg(),null);
+        return ResponseVo.getInstance(e.getErrcode(),e.getMsg(),null);
     }
 
     public static ResponseVo returnUndefindedException(){
-        return new ResponseVo(ErrorCodeEnum.UNDIFINITION.getCode(),ErrorCodeEnum.UNDIFINITION.getMessage(),null);
+        return ResponseVo.getInstance(ErrorCodeEnum.UNDIFINITION.getCode(),ErrorCodeEnum.UNDIFINITION.getMessage(),null);
     }
 
     public static ResponseVo success(Object data){
-        return new ResponseVo(ErrorCodeEnum.SUCCESS.getCode(),ErrorCodeEnum.SUCCESS.getMessage(),data);
+        return ResponseVo.getInstance(ErrorCodeEnum.SUCCESS.getCode(),ErrorCodeEnum.SUCCESS.getMessage(),data);
     }
 
 

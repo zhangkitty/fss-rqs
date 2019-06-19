@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znv.fssrqs.dao.mysql.ControlCameraMapper">
+    <select id="up_fss_deploy_camera" statementType="CALLABLE" resultType="java.util.HashMap">
+    {
+          call up_fss_deploy_camera(
+          #{id,jdbcType=VARCHAR},
+          #{title,jdbcType=VARCHAR},
+          #{cameraIds,jdbcType=VARCHAR},
+          #{libId,jdbcType=VARCHAR},
+          #{startTime,jdbcType=VARCHAR},
+          #{endTime,jdbcType=VARCHAR},
+          #{libCountLimit,jdbcType=INTEGER},
+          #{cameraCountLimit,jdbcType=INTEGER})
+    }
+    </select>
+    <select id="listDeviceById" parameterType="java.lang.String" resultType="com.znv.fssrqs.entity.mysql.TCfgDevice">
+        select * from t_cfg_device where device_id = #{deviceId} limit 1
+    </select>
+
+    <delete id="up_fss_undeploy_camera" parameterType="java.util.List">
+       DELETE FROM t_fss_camera_control WHERE id in
+       <foreach item="id" collection="list" open="(" close=")" separator=",">
+           #{id}
+       </foreach>
+    </delete>
+</mapper>
