@@ -43,4 +43,20 @@ hksdk:
   app-secret: 'S2K5ChipGIr6elg2RPbC'
 bigdata:
   hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
+####商汤服务分析引擎配置
+sensetime:
+  static-ai-units:
+  - 10.45.157.115:9001
+  dynamic-ai-units:
+  - 10.45.157.115:80
+###缓冲服务地址配置
+mbus:
+  ipp:
+  - 10.45.157.117:9008
+fdfs:
+  trackers:
+  - 10.45.157.59:22122
+####管理服务相关配置
+ms:
+  image-store-type: 0
 
