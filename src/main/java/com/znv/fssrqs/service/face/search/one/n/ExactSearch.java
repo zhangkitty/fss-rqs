@@ -1,5 +1,12 @@
 package com.znv.fssrqs.service.face.search.one.n;
 
+import org.springframework.stereotype.Service;
+
+/**
+ * @author zhangcaochao
+ * @Description TODO
+ * @Date 2019.6.18 下午4:25
+ */
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
@@ -28,7 +35,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class FastSearch {
+public class ExactSearch {
 
     @Autowired
     private ElasticSearchClient elasticSearchClient;
@@ -74,14 +81,13 @@ public class FastSearch {
     //todo
     //计算索引的迁移很麻烦
     private String calculateIndex(GeneralSearchParam params){
-
         String indexName="";
         String indexNamePrepix = "history_fss_data_n_project_v1_2";
         int coarseCentersNum = 3;
         String[] featureValue = params.getFeatureValue();
         int[][] coarseCodeOrder;
-
-        return "history_fss_data_n_project_v1_2-3,history_fss_data_n_project_v1_2-27,history_fss_data_n_project_v1_2-17/history_data/_search/template";
+        return null;
 
     }
 }
+
