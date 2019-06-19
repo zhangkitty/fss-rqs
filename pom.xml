@@ -167,6 +167,12 @@
             </exclusions>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.phoenix/phoenix-client -->
+        <!--<dependency>-->
+        <!--<groupId>org.apache.phoenix</groupId>-->
+        <!--<artifactId>phoenix-client</artifactId>-->
+        <!--<version>4.14.1-HBase-1.2</version>-->
+        <!--</dependency>-->
         <!-- phoenix-core 版本号要和本地安装的phoenix版本号保持一致 -->
         <dependency>
             <groupId>org.apache.phoenix</groupId>
@@ -244,6 +250,12 @@
             <artifactId>httpcomponents-core</artifactId>
             <version>4.4.9</version>
             <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-core</artifactId>
+            <version>1.3.6</version>
         </dependency>
     </dependencies>
     <build>
