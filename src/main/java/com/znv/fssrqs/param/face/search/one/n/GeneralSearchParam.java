@@ -1,7 +1,13 @@
 package com.znv.fssrqs.param.face.search.one.n;
 
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author zhangcaochao
@@ -9,10 +15,11 @@ import org.hibernate.validator.constraints.NotBlank;
  * @Date 2019.6.6 上午11:13
  */
 @Data
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class GeneralSearchParam {
 
-    @NotBlank(message = "设备ID不能为空")
-    private String DeviceIDs;
+    @NotNull (message = "设备ID不能为空")
+    private String[] DeviceIDs;
 
     @NotBlank(message = "开始时间不能为空")
     private String BeginTime;
@@ -20,24 +27,31 @@ public class GeneralSearchParam {
     @NotBlank(message = "结束时间不能为空")
     private String EndTime;
 
-    @NotBlank(message = "页码不能为空")
-    private String PageNum;
+    @NotNull(message = "页码不能为空")
+    private Integer PageNum;
 
-    @NotBlank(message = "每页记录数不能为空")
-    private String PageSize;
+    @NotNull(message = "每页记录数不能为空")
+    private Integer PageSize;
+
+    private float Similaritydegree;
+
+    //查询类型， 0： 无图检索，1：极速检索，2：精确检索
+    private Integer QueryType;
 
     //图片特征值列表
-    private String FeatureValue;
-
-    //相似度:[0-1]
-    @NotBlank(message = "相似度不能为空")
-    private float Similaritydegree;
+    private String[] FeatureValue;
 
     //排序字段
     private String SortFeild;
 
     //排序方式asc-升序,desc-降序
     private String SortOrder;
+
+    //支持传多张图片，“or”:按图片并集搜索，“and”：按图片交集进行搜索，不传此字段默认是并集
+    private String FilterType;
+
+    //是否进行图片查询，true：进行图片查询，false：不进行图片查询
+    private Boolean  IsCalcSim;
 
     //年龄
     private String AgeLowerLimit;
@@ -66,7 +80,7 @@ public class GeneralSearchParam {
     // 张嘴，0：无，1：有
     private Integer MouthOpen;
 
-    //是否进行图片查询，true：进行图片查询，false：不进行图片查询
-    private Boolean  IsCalcSim;
+    //性别，0：未知的性别  1：男，2： 女， 9：未说明的性别
+    private Integer GenderType;
 
 }

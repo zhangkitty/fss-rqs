@@ -3,7 +3,7 @@
 
 <mapper namespace="com.znv.fssrqs.dao.mysql.MUserDao">
 
-    <select id="findAll"   resultType="MUserEntity">
+    <select id="findAll"   resultType="com.znv.fssrqs.entity.mysql.MUserEntity">
         select *
         from t_cfg_user t
         limit 1
