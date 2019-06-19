@@ -35,3 +35,11 @@ hksdk:
   appKey: '24606272'
   appSecret: 'S2K5ChipGIr6elg2RPbC'
 
+
+#人脸特征值
+#24201#2060
+sensetime:
+  feature:
+    srcPoints: {-1.0f,0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}
+    dstPoints: {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
+

@@ -4,6 +4,11 @@ public class Consts {
 
     public final static String PACKAGE_PATH_NAME = "com.znv.fssrqs" ;
 
+    // 商汤比对算法归一下数组
+    // 人脸特征值
+    public static final float[] SENSETIME_FEATURE_SRC = {-1.0f,0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f};
+    public static final float[] SENSETIME_FEATURE_DST =  {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f};
+
     public static class HKURI {
         public static final String ARTEMIS_PROTOCAL = "https://";
         public static final String ARTEMIS_PATH = "/artemis";
