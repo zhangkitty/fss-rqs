@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
 <configuration>
-
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>
@@ -28,7 +26,6 @@
         </rollingPolicy>
     </appender>
 
-
     <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
@@ -50,5 +47,4 @@
         <appender-ref ref="fileInfoLog" />
         <appender-ref ref="fileErrorLog" />
     </root>
-
 </configuration>

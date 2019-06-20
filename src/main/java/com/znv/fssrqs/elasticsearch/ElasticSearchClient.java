@@ -48,7 +48,7 @@ public class ElasticSearchClient
 
     	if(this.restClient == null)
     	{
-    		synchronized (this) 
+    		synchronized (this)
     		{
 				if(this.restClient == null)
 				{

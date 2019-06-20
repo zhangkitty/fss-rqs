@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znv.fnms.mapper.PersonLibMapper">
+    <resultMap id="BaseResultMap" type="com.znv.fssrqs.entity.mysql.PersonLib">
+        <id column="lib_id" jdbcType="INTEGER" property="LibID"/>
+        <result column="personlib_type" jdbcType="VARCHAR" property="PersonLibType"/>
+        <result column="lib_name" jdbcType="VARCHAR" property="LibName"/>
+        <result column="plib_alarm_level" jdbcType="VARCHAR" property="LibAlarmLevel"/>
+        <result column="description" jdbcType="VARCHAR" property="Description"/>
+        <result column="creator_id" jdbcType="VARCHAR" property="CreatorID"/>
+        <result column="fevent_id" jdbcType="VARCHAR" property="EventID"/>
+        <result column="region_id" jdbcType="VARCHAR" property="RegionID"/>
+        <result column="capacity_type" jdbcType="INTEGER" property="CapacityType"/>
+        <result column="hk_lib_id" jdbcType="VARCHAR" property="HkLibID"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    lib_id, personlib_type, lib_name, plib_alarm_level, description, creator_id, fevent_id, 
+    region_id,capacity_type
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_scim_personlib
+        where lib_id = #{LibID,jdbcType=INTEGER}
+    </select>
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        lib_id, personlib_type, lib_name, plib_alarm_level, description, creator_id, fevent_id,
+    region_id,capacity_type,hk_lib_id
+        from t_scim_personlib a left join fss_hk_lib_relation b on a.lib_id = b.fss_lib_id
+        order by personlib_type,lib_name asc;
+    </select>
+    <select id="queryLibByLibType" parameterType="com.znv.fssrqs.entity.mysql.PersonLib" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_scim_personlib WHERE 1=1
+        <if test="PersonLibType!=null and PersonLibType!=''">
+            and personlib_type=#{PersonLibType,jdbcType=VARCHAR}
+        </if>
+        order by lib_name asc;
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_scim_personlib
+    where lib_id = #{LibID,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.znv.fssrqs.entity.mysql.PersonLib">
+    insert into t_scim_personlib (lib_id, personlib_type, lib_name, 
+      plib_alarm_level, description, creator_id, 
+      fevent_id, region_id)
+    values (#{LibID,jdbcType=INTEGER}, #{PersonLibType,jdbcType=VARCHAR}, #{LibName,jdbcType=VARCHAR}, 
+      #{LibAlarmLevel,jdbcType=VARCHAR}, #{Description,jdbcType=VARCHAR}, #{CreatorID,jdbcType=VARCHAR}, 
+      #{EventID,jdbcType=VARCHAR}, #{RegionID,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.PersonLib">
+        insert into t_scim_personlib
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="LibID != null">
+                lib_id,
+            </if>
+            <if test="PersonLibType != null">
+                personlib_type,
+            </if>
+            <if test="LibName != null">
+                lib_name,
+            </if>
+            <if test="LibAlarmLevel != null">
+                plib_alarm_level,
+            </if>
+            <if test="Description != null">
+                description,
+            </if>
+            <if test="CreatorID != null">
+                creator_id,
+            </if>
+            <if test="EventID != null">
+                fevent_id,
+            </if>
+            <if test="RegionID != null">
+                region_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="LibID != null">
+                #{LibID,jdbcType=INTEGER},
+            </if>
+            <if test="PersonLibType != null">
+                #{PersonLibType,jdbcType=VARCHAR},
+            </if>
+            <if test="LibName != null">
+                #{LibName,jdbcType=VARCHAR},
+            </if>
+            <if test="LibAlarmLevel != null">
+                #{LibAlarmLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="Description != null">
+                #{Description,jdbcType=VARCHAR},
+            </if>
+            <if test="CreatorID != null">
+                #{CreatorID,jdbcType=VARCHAR},
+            </if>
+            <if test="EventID != null">
+                #{EventID,jdbcType=VARCHAR},
+            </if>
+            <if test="RegionID != null">
+                #{RegionID,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.znv.fssrqs.entity.mysql.PersonLib">
+        update t_scim_personlib
+        <set>
+            <if test="PersonLibType != null">
+                personlib_type = #{PersonLibType,jdbcType=VARCHAR},
+            </if>
+            <if test="LibName != null">
+                lib_name = #{LibName,jdbcType=VARCHAR},
+            </if>
+            <if test="LibAlarmLevel != null">
+                plib_alarm_level = #{LibAlarmLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="Description != null">
+                description = #{Description,jdbcType=VARCHAR},
+            </if>
+            <if test="CreatorID != null">
+                creator_id = #{CreatorID,jdbcType=VARCHAR},
+            </if>
+            <if test="EventID != null">
+                fevent_id = #{EventID,jdbcType=VARCHAR},
+            </if>
+            <if test="RegionID != null">
+                region_id = #{RegionID,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where lib_id = #{LibID,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.znv.fssrqs.entity.mysql.PersonLib">
+    update t_scim_personlib
+    set personlib_type = #{PersonLibType,jdbcType=VARCHAR},
+      lib_name = #{LibName,jdbcType=VARCHAR},
+      plib_alarm_level = #{LibAlarmLevel,jdbcType=VARCHAR},
+      description = #{Description,jdbcType=VARCHAR},
+      creator_id = #{CreatorID,jdbcType=VARCHAR},
+      fevent_id = #{EventID,jdbcType=VARCHAR},
+      region_id = #{RegionID,jdbcType=VARCHAR}
+    where lib_id = #{LibID,jdbcType=INTEGER}
+  </update>
+    <select id="deleteByLibId" parameterType="java.lang.Integer" statementType="CALLABLE" resultType="java.util.HashMap">
+    {
+          call up_scim_PersonLib_Del(#{libId,mode=IN,jdbcType=INTEGER})
+    }
+    </select>
+    <select id="save" statementType="CALLABLE" resultType="java.util.HashMap">
+    {
+          call up_scim_PersonLib_Save(#{LibID,mode=IN,jdbcType=INTEGER},
+          #{PersonLibType,mode=IN,jdbcType=VARCHAR},
+          #{LibName,mode=IN,jdbcType=VARCHAR},
+          #{LibAlarmLevel,mode=IN,jdbcType=VARCHAR},
+          #{Description,mode=IN,jdbcType=VARCHAR},
+          #{CreatorID,mode=IN,jdbcType=VARCHAR},
+          #{EventID,mode=IN,jdbcType=VARCHAR},
+          #{RegionID,mode=IN,jdbcType=VARCHAR},
+          #{CapacityType,mode=IN,jdbcType=INTEGER})
+    }
+    </select>
+</mapper>

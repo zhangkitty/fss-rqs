@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znv.scim.fssapp.dao.FSSUserLibRelationMapper">
+    <resultMap id="BaseResultMap" type="com.znv.fssrqs.entity.mysql.UserLibRelation">
+        <result column="user_group_id" jdbcType="INTEGER" property="UserGroupID"/>
+        <result column="person_lib_id" jdbcType="INTEGER" property="PersonLibID"/>
+        <result column="power_ids" jdbcType="VARCHAR" property="PowerIDs"/>
+        <result column="personlib_type" jdbcType="VARCHAR" property="PersonlibType"/>
+        <result column="lib_name" jdbcType="VARCHAR" property="LibName"/>
+        <result column="plib_alarm_level" jdbcType="VARCHAR" property="LibAlarmLevel"/>
+        <result column="fevent_id" jdbcType="VARCHAR" property="EventID"/>
+        <result column="capacity_type" jdbcType="INTEGER" property="CapacityType"/>
+        <result column="creator_id" jdbcType="VARCHAR" property="CreatorID"/>
+        <result column="hk_lib_id" jdbcType="VARCHAR" property="HkLibID"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    user_group_id,person_lib_id,power_ids,personlib_type,lib_name,plib_alarm_level,fevent_id
+  </sql>
+    <insert id="insert" parameterType="com.znv.fssrqs.entity.mysql.UserLibRelation">
+    insert into t_fss_userlib_relation (user_group_id, person_lib_id)
+    values (#{UserGroupID,jdbcType=INTEGER}, #{PersonLibID,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.UserLibRelation">
+        insert into t_fss_userlib_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="UserGroupID != null">
+                user_group_id,
+            </if>
+            <if test="PersonLibID != null">
+                person_lib_id,
+            </if>
+            <if test="PowerIDs != null">
+                power_ids,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="UserGroupID != null">
+                #{UserGroupID,jdbcType=INTEGER},
+            </if>
+            <if test="PersonLibID != null">
+                #{PersonLibID,jdbcType=INTEGER},
+            </if>
+            <if test="PowerIDs != null">
+                #{PowerIDs,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="queryUserLibByGroupId" parameterType="com.znv.fssrqs.entity.mysql.UserLibRelation"
+            resultMap="BaseResultMap">
+        SELECT
+        b.user_group_id,person_lib_id,power_ids,personlib_type,lib_name,plib_alarm_level,fevent_id,capacity_type,plib.creator_id,rel.hk_lib_id
+        from t_fss_usergroup a LEFT JOIN t_fss_userlib_relation b on a.user_group_id=b.user_group_id
+        LEFT JOIN t_scim_personlib plib on b.person_lib_id=plib.lib_id LEFT JOIN fss_hk_lib_relation rel on
+        plib.lib_id=rel.fss_lib_id
+        where 1=1
+        <if test="UserGroupID != null and UserGroupID !=''">
+            and a.user_group_id = #{UserGroupID,jdbcType=INTEGER}
+        </if>
+        <if test="personlibType != null and personlibType!=''">
+            and plib.personlib_type = #{PersonlibType,jdbcType=VARCHAR}
+        </if>
+        ORDER BY plib.personlib_type,plib.lib_name asc
+    </select>
+</mapper>

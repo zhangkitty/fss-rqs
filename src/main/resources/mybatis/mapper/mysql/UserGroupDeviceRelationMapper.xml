@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znv.fnms.mapper.UserGroupDeviceRelationMapper">
+    <resultMap id="BaseResultMap" type="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation">
+        <result column="device_id" jdbcType="VARCHAR" property="ApeID"/>
+        <result column="power_ids" jdbcType="VARCHAR" property="PowerIDs"/>
+        <result column="user_group_id" jdbcType="INTEGER" property="UserGroupId"/>
+        <result column="device_kind" jdbcType="INTEGER" property="ApeKind"/>
+        <result column="user_id" jdbcType="VARCHAR" property="UserID"/>
+        <result column="precinct_id" jdbcType="VARCHAR" property="PrecinctID"/>
+        <result column="device_name" jdbcType="VARCHAR" property="Name"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    user_group_id,device_id,power_ids,device_kind
+  </sql>
+    <insert id="insert" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation">
+    insert into t_fss_usergroup_device (device_id, power_ids, user_group_id,device_kind
+      )
+    values (#{ApeID,jdbcType=VARCHAR}, #{PowerIDs,jdbcType=VARCHAR}, #{UserGroupID,jdbcType=INTEGER},#{ApeKind,jdbcType=INTEGER}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation">
+        insert into t_fss_usergroup_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ApeID != null">
+                device_id,
+            </if>
+            <if test="PowerIDs != null">
+                power_ids,
+            </if>
+            <if test="UserGroupID != null">
+                user_group_id,
+            </if>
+            <if test="ApeKind != null">
+                device_kind,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ApeID != null">
+                #{deviceId,jdbcType=VARCHAR},
+            </if>
+            <if test="PowerIDs != null">
+                #{powerIds,jdbcType=VARCHAR},
+            </if>
+            <if test="UserGroupID != null">
+                #{userGroupId,jdbcType=INTEGER},
+            </if>
+            <if test="ApeKind != null">
+                #{deviceKind,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <select id="queryGroupDeviceByCon" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_fss_usergroup_device where 1=1
+        <if test="UserGroupID != null">
+            AND user_group_id = #{UserGroupID,jdbcType=INTEGER}
+        </if>
+        <if test="ApeKind != null">
+            AND device_kind = #{ApeKind,jdbcType=INTEGER},
+        </if>
+    </select>
+    <select id="queryUserDeviceByGroupId" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation"
+            resultMap="BaseResultMap">
+        select
+        ugd.user_group_id,ugd.device_id,power_ids,device.device_kind,device.device_name device_name,device.precinct_id
+        precinct_id
+        from t_fss_usergroup ug
+        left join t_fss_usergroup_device ugd on ug.user_group_id=ugd.user_group_id
+        left join t_cfg_device device on ugd.device_id=device.device_id
+        RIGHT JOIN t_scim_facetask f on ugd.device_id=f.camera_id
+        where 1=1
+        <if test="UserGroupID != null">
+            and ug.user_group_id = #{UserGroupID,jdbcType=INTEGER}
+        </if>
+        and device.device_kind=4 or device.device_kind = 10 order by f.create_time asc
+    </select>
+    <select id="queryAdminUserDevice" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation"
+            resultMap="BaseResultMap">
+    SELECT
+    DISTINCT(d.device_id),
+    d.precinct_id,
+    d.device_id,
+    d.device_name,
+    d.device_kind
+    FROM
+    t_scim_facetask f
+    JOIN t_cfg_device d ON f.camera_id = d.device_id or d.device_kind = 10
+    JOIN t_cfg_precinct p ON f.precinct_id = p.precinct_id
+    WHERE
+    d.device_kind = 4 or d.device_kind = 10
+    ORDER BY
+    f.create_time ASC;
+  </select>
+    <select id="queryAdminMapDevice" resultType="com.znv.fssrqs.entity.mysql.MapDeviceLocation">
+    select 
+	a.camera_id as cameraId,c.device_name as cameraName,a.latitude,a.longitude
+	from t_sps_camera_ex a  
+    left join t_cfg_device c on c.device_id=a.camera_id where c.device_kind=4 or c.device_kind = 10
+  </select>
+
+    <select id="queryNormalMapDevice" parameterType="java.lang.Integer"
+            resultType="com.znv.fssrqs.entity.mysql.MapDeviceLocation">
+  select 
+	a.camera_id as cameraId,c.device_name as cameraName,a.latitude,a.longitude
+	from t_sps_camera_ex a left join t_fss_usergroup_device b on a.camera_id=b.device_id
+    left join t_cfg_device c on c.device_id=a.camera_id where c.device_kind=4 or c.device_kind=10 and b.user_group_id=#{UserGroupID,jdbcType=INTEGER}
+  </select>
+</mapper>
