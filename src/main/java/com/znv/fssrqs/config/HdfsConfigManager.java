@@ -40,9 +40,9 @@ public class HdfsConfigManager {
 
     @PostConstruct
     public void init() {
-        initFssProperties();
-        initKafkaProducer();
-        initPhoenix();
+        //initFssProperties();
+        //initKafkaProducer();
+        //initPhoenix();
     }
 
     private void initFssProperties() {
