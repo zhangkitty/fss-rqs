@@ -2,6 +2,9 @@ package com.znv.fssrqs.entity.mysql;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Property;
 
 /**
  * Created by dongzelong on  2019/6/4 14:12.
@@ -13,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PersonLib {
+
     private Integer LibID;
     private String PersonLibType;
     private String LibName;

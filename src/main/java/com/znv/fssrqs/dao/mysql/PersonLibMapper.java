@@ -2,6 +2,7 @@ package com.znv.fssrqs.dao.mysql;
 
 
 import com.znv.fssrqs.entity.mysql.PersonLib;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @version 1.0
  * @Description TODO
  */
+@Repository
 public interface PersonLibMapper {
     int deleteByPrimaryKey(Integer libId);
 

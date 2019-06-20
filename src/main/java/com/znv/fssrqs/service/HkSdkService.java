@@ -16,6 +16,7 @@ import java.util.Map;
 @Service
 @Slf4j
 public class HkSdkService {
+
     @Autowired
     private LibRelationMapper libRelationService;
 

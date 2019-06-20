@@ -2,6 +2,7 @@ package com.znv.fssrqs.dao.mysql;
 
 import com.znv.fssrqs.entity.mysql.MapDeviceLocation;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @version 1.0
  * @Description TODO
  */
+@Repository
 public interface UserGroupDeviceRelationMapper {
     int insert(UserGroupDeviceRelation record);
 

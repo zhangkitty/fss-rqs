@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  * @Description TODO
  */
 @Mapper
+@Repository
 public interface LibRelationMapper {
     @Insert("INSERT INTO fss_hk_lib_relation(fss_lib_id,hk_lib_id) VALUES(#{fssLibId},#{hkLibId})")
     int insert(Map<String, Object> map);
