@@ -2,6 +2,7 @@ package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
+import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchResultDTO;
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.znv.fssrqs.elasticsearch.lopq.LOPQModel.predictCoarseOrder;
 
 
 /**
@@ -74,14 +77,34 @@ public class FastSearch {
     //todo
     //计算索引的迁移很麻烦
     private String calculateIndex(GeneralSearchParam params){
-
+        FeatureCompUtil fc = new FeatureCompUtil();
         String indexName="";
         String indexNamePrepix = "history_fss_data_n_project_v1_2";
         int coarseCentersNum = 3;
+
+
+        int[][] coarseCodeOrder = null;
+
         String[] featureValue = params.getFeatureValue();
-        int[][] coarseCodeOrder;
+        for (int i = 0; i < featureValue.length; i++) {
+            try {
+                coarseCodeOrder = predictCoarseOrder(fc.getFloatArray(new org.apache.commons.codec.binary.Base64().decode(featureValue[i])), coarseCentersNum);
+            } catch (Exception e) {
+                log.info("Get Coarse Code Error: " + e);
 
-        return "history_fss_data_n_project_v1_2-3,history_fss_data_n_project_v1_2-27,history_fss_data_n_project_v1_2-17/history_data/_search/template";
+            }
+            if (i < featureValue.length - 1) {
+                for (int j = 0; j < coarseCodeOrder.length; j++) {
+                    indexName += indexNamePrepix + "-" + coarseCodeOrder[j][0] + ",";
+                }
+            } else {
+                for (int j = 0; j < coarseCodeOrder.length - 1; j++) {
+                    indexName += indexNamePrepix + "-" + coarseCodeOrder[j][0] + ",";
+                }
+                indexName += indexNamePrepix + "-" + coarseCodeOrder[coarseCodeOrder.length - 1][0];
+            }
+        }
 
+        return indexName+"/history_data/_search/template";
     }
 }
