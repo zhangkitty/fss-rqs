@@ -17,20 +17,27 @@ public class CameraControlDTO {
 
     @NotNull(message = "库ID不能为空")
     private String LibId;
-    @NotNull(message = "库名称不能为空")
-    private String LibName;
     @NotNull(message = "布控开始时间不能为空")
     private String ControlStartTime;
     @NotNull(message = "布控结束时间不能为空")
     private String ControlEndTime;
-    @NotEmpty
+
     private List<String> CameraIds;
-    @NotNull(message = "布控名称不能为空")
     private String Title;
     @NotNull(message = "布控数限制不能为空")
     private Integer LibCountLimit;
 
+    private String CameraId;
+
     private String Id;
+
+    public String getCameraId() {
+        return CameraId;
+    }
+
+    public void setCameraId(String cameraId) {
+        CameraId = cameraId;
+    }
 
     public String getId() {
         return Id;
@@ -47,14 +54,6 @@ public class CameraControlDTO {
 
     public void setLibId(String libId) {
         LibId = libId;
-    }
-
-    public String getLibName() {
-        return LibName;
-    }
-
-    public void setLibName(String libName) {
-        LibName = libName;
     }
 
     public String getControlStartTime() {

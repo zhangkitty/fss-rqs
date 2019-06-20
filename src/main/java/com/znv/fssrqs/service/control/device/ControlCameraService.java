@@ -27,7 +27,7 @@ public class ControlCameraService {
         String startTime = cameraControlDto.getControlStartTime();
         String endTime = cameraControlDto.getControlEndTime();
         String title = cameraControlDto.getTitle();
-        String id = "";
+        String id = cameraControlDto.getId();
         int libCountLimit = cameraControlDto.getLibCountLimit();
         int cameraCountLimit = 5;
 
@@ -98,6 +98,65 @@ public class ControlCameraService {
         reData.put("SuccessNum",successList.size());
         reData.put("List",failList);
 
+        return reData;
+    }
+
+    @Transactional
+    public Object editDeployControl(CameraControlDTO cameraControlDto){
+        String cameraId = cameraControlDto.getCameraId();
+        String libId = cameraControlDto.getLibId();
+        String startTime = cameraControlDto.getControlStartTime();
+        String endTime = cameraControlDto.getControlEndTime();
+        String title = cameraControlDto.getTitle();
+        String id = cameraControlDto.getId();
+        int libCountLimit = cameraControlDto.getLibCountLimit();
+        int cameraCountLimit = 5;
+
+        List<Map<String, Object>> retData =controlCameraMapper.up_fss_deploy_camera(id, title, cameraId, libId, startTime, endTime, libCountLimit, cameraCountLimit);
+
+        if(retData!=null && retData.size()>0){
+            Map<String,Object> r = retData.get(0);
+
+            String ret = r.get("ret").toString();
+            String cId = r.get("camera_id").toString();
+
+            TCfgDevice device = controlCameraMapper.listDeviceById(cId);
+            String cameraName = device.getDeviceName();
+
+            if ("0".equals(ret)) {
+                StringBuffer sb = new StringBuffer("");
+                sb.append(String.format("布控点位:%s,ID:%s,错误码:%s,错误信息:%s", cameraName, cId, "500", "布控任务已存在")).append(System.getProperty("line.separator"));
+                throw new BusinessException(ErrorCodeEnum.UNDIFINITION.getCode(),sb.toString());
+            }
+            if ("3".equals(ret)) {
+                StringBuffer sb = new StringBuffer("");
+                sb.append(String.format("布控点位:%s,ID:%s,错误码:%s,错误信息:%s", cameraName, cId, "500", "单个摄像头下布控任务数超过上限")).append(System.getProperty("line.separator"));
+                throw new BusinessException(ErrorCodeEnum.UNDIFINITION.getCode(),sb.toString());
+            }
+            if ("4".equals(ret)) {
+                StringBuffer sb = new StringBuffer("");
+                sb.append(String.format("布控点位:%s,ID:%s,错误码:%s,错误信息:%s", cameraName, cId, "500", "布控大库的摄像头数目大于" + cameraCountLimit
+                        + "个")).append(System.getProperty("line.separator"));
+                throw new BusinessException(ErrorCodeEnum.UNDIFINITION.getCode(),sb.toString());
+            }
+
+        }
+       /* ProducerBase producer = PhoenixClient.getProducer();
+        JSONObject notifyMsg = new JSONObject();
+        String tablename = ConfigManager.getString("fss.mysql.table.cameralib.name");
+        notifyMsg.put("table_name", tablename);
+        notifyMsg.put("msg_type", ConfigManager.getString(VConstants.NOTIFY_TOPIC_MSGTYPE));
+        notifyMsg.put("reference_id", libId);
+        notifyMsg.put("primary_id", cameraId);
+        boolean ret = producer.sendData(notifyMsg);
+        if(ret) {
+        }else {
+        }*/
+
+
+
+        Map<String,Object> reData = new HashMap<>();
+        reData.put("Id",cameraId);
         return reData;
     }
 

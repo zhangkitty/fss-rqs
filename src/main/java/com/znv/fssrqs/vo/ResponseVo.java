@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ResponseVo {
 
@@ -20,7 +19,34 @@ public class ResponseVo {
 
     private static ResponseVo responseVo;
 
-    private ResponseVo(String code, String message,Object data){
+    public String getCode() {
+        return code;
+    }
+
+    public ResponseVo setCode(String code) {
+        this.code = code;
+        return this;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public ResponseVo setMessage(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public ResponseVo setData(Object data) {
+        this.data = data;
+        return this;
+    }
+
+    private ResponseVo(String code, String message, Object data){
         this.code = code;
         this.message = message;
         this.data = data;
@@ -47,6 +73,10 @@ public class ResponseVo {
 
     public static ResponseVo success(Object data){
         return ResponseVo.getInstance(ErrorCodeEnum.SUCCESS.getCode(),ErrorCodeEnum.SUCCESS.getMessage(),data);
+    }
+
+    public static ResponseVo success(String message,Object data){
+        return ResponseVo.getInstance(ErrorCodeEnum.SUCCESS.getCode(),message,data);
     }
 
 

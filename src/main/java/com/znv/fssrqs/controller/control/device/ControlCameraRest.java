@@ -25,7 +25,7 @@ public class ControlCameraRest {
      */
     @PostMapping("/CameraControl")
     public ResponseVo addControl(@Valid @RequestBody CameraControlDTO cameraControlDto){
-        return ResponseVo.success(controlCameraService.deployControl(cameraControlDto));
+        return ResponseVo.success("布控成功",controlCameraService.deployControl(cameraControlDto));
     }
 
     /**
@@ -36,9 +36,12 @@ public class ControlCameraRest {
     @PutMapping("/CameraControl")
     public ResponseVo editControl(@Valid @RequestBody CameraControlDTO cameraControlDto){
         if(cameraControlDto.getId()==null || cameraControlDto.getId().trim()==""){
-            throw new BusinessException(ErrorCodeEnum.PARAM_ILLEGAL.getCode(),"参数ID不能为空");
+            throw new BusinessException(ErrorCodeEnum.PARAM_ILLEGAL);
         }
-        return ResponseVo.success(controlCameraService.deployControl(cameraControlDto));
+        if(cameraControlDto.getCameraId()==null||cameraControlDto.getCameraId()==""){
+            throw new BusinessException(ErrorCodeEnum.PARAM_ILLEGAL);
+        }
+        return ResponseVo.success("更新成功",controlCameraService.editDeployControl(cameraControlDto));
     }
 
     /**
