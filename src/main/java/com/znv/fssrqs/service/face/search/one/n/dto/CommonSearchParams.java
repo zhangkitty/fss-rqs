@@ -62,5 +62,16 @@ public class CommonSearchParams {
     @JSONField(name = "gender")
     private Integer GenderType;
 
+    @JSONField(name = "sim_threshold")
+    private Float Similaritydegree;
+
+    @JSONField(name = "is_calcSim")
+    private Boolean IsCalcSim;
+
+    @JSONField(name = "feature_value")
+    private String[] FeatureValue;
+
+    @JSONField(name = "filter_type")
+    private String FilterType;
 }
 

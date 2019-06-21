@@ -9,19 +9,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = "com.znv.fssrqs.dao.hbase",sqlSessionFactoryRef = "hbaseSqlSessionFactory")
+@MapperScan(basePackages = "com.znv.fssrqs.dao.hbase", sqlSessionFactoryRef = "hbaseSqlSessionFactory")
 public class HbaseDataSourceConfig {
-
     @Bean(name = "hbaseDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.hbase")
-    public DataSource testDataSource() {
+    public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
 
@@ -42,8 +41,10 @@ public class HbaseDataSourceConfig {
         return template;
     }
 
-
-
-
-
+    @Bean(name = "hbaseTransactionManager")
+    public DataSourceTransactionManager masterTransactionManager(@Qualifier("hbaseDataSource") DataSource dataSource) {
+        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+        dataSourceTransactionManager.setDataSource(dataSource);
+        return dataSourceTransactionManager;
+    }
 }

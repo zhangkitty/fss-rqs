@@ -9,7 +9,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.client.RestHighLevelClient;
+//import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ public class ElasticSearchClient
 
     private  Integer port;
     
-    private RestHighLevelClient client = null;
+    //private RestHighLevelClient client = null;
 
     private RestClient restClient = null;
     
@@ -46,11 +46,11 @@ public class ElasticSearchClient
     private void createInstance()
     {
 
-    	if(this.client == null)
+    	if(this.restClient == null)
     	{
-    		synchronized (this) 
+    		synchronized (this)
     		{
-				if(this.client == null)
+				if(this.restClient == null)
 				{
 			        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 			        credentialsProvider.setCredentials(AuthScope.ANY,
@@ -63,7 +63,7 @@ public class ElasticSearchClient
 			                    }
 			                });
 			        this.restClient = restClientBuilder.build();
-			        this.client = new RestHighLevelClient(restClientBuilder);
+//			        this.client = new RestHighLevelClient(restClientBuilder);
 				}
 			}
     	}

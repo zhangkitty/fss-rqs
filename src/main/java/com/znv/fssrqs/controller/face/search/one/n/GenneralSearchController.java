@@ -3,6 +3,8 @@ package com.znv.fssrqs.controller.face.search.one.n;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.CommonSearch;
+import com.znv.fssrqs.service.face.search.one.n.ExactSearch;
+import com.znv.fssrqs.service.face.search.one.n.FastSearch;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -26,9 +28,29 @@ public class GenneralSearchController {
     @Autowired
     private CommonSearch commonSearch;
 
+    @Autowired
+    private FastSearch fastSearch;
+
+    @Autowired
+    private ExactSearch exactSearch;
+
     @RequestMapping(value = "/VIID/Faces/FaceSearch" ,method = RequestMethod.POST)
     public ResponseVo faceSearch(@Validated @RequestBody GeneralSearchParam generalSearchParam) throws IOException {
-        JSONObject jsonObject = commonSearch.commonSearch(generalSearchParam);
+
+        JSONObject jsonObject = new JSONObject();
+        switch (generalSearchParam.getQueryType()) {
+            case 1:
+                jsonObject = fastSearch.fastSearch(generalSearchParam);
+                break;
+            case 2:
+                jsonObject = commonSearch.commonSearch(generalSearchParam);
+                break;
+            default:
+                jsonObject = commonSearch.commonSearch(generalSearchParam);
+                break;
+        }
+
+
         return ResponseVo.success(jsonObject);
     }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <classPathEntry
+            location="D:/maven/repository/mysql/mysql-connector-java/5.1.44/mysql-connector-java-5.1.44.jar"/>
+    <context id="DB2Tables" targetRuntime="MyBatis3" defaultModelType="flat">
+        <commentGenerator>
+            <property name="suppressAllComments" value="false"/>
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://10.45.157.117:3306/usmsc?generateSimpleParameterMetadata=true"
+                        userId="root" password="zxm10">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!-- generate Model -->
+        <javaModelGenerator targetPackage="com.znv.fssrqs.entity.mysql"
+                            targetProject="src\main\java">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!-- generate xml -->
+        <sqlMapGenerator targetPackage="mybatis/mapper/mysql" targetProject="src\main\resources">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <!-- generate Mapper -->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.znv.fssrqs.dao.mysql"
+                             targetProject="src\main\java" implementationPackage="">
+            <property name="enableSubPackages" value="false"/>
+            <property name="exampleMethodVisibility" value="public"/>
+        </javaClientGenerator>
+
+        <table tableName="fss_hk_lib_relation"
+               domainObjectName="HkLibRelation">
+            <!--<columnOverride column="id" jdbcType="CHAR" javaType="java.lang.String"></columnOverride>-->
+        </table>
+    </context>
+</generatorConfiguration>
