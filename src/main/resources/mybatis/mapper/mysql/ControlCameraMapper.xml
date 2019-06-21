@@ -25,4 +25,11 @@
            #{id}
        </foreach>
     </delete>
+
+    <select id="listDeviceIdInArray" parameterType="java.util.List" resultType="java.lang.String">
+        select camera_id  FROM t_fss_camera_control WHERE id in
+        <foreach item="id" collection="list" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

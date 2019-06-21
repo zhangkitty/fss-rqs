@@ -14,4 +14,6 @@ public interface ControlCameraMapper {
     TCfgDevice listDeviceById(@Param("deviceId") String deviceId);
 
     Integer up_fss_undeploy_camera(List<String> list);
+
+    List<String> listDeviceIdInArray(List<String> list);
 }

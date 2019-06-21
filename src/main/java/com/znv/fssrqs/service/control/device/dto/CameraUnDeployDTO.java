@@ -8,10 +8,20 @@ import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class CameraUnDeployDTO {
-    @NotEmpty
+
+    private List<String> ids;
+
     private List<String> CameraIds;
     @NotNull(message = "库ID不能为空")
     private String LibId;
+
+    public List<String> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
+    }
 
     public List<String> getCameraIds() {
         return CameraIds;

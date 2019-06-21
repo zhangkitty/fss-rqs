@@ -7,6 +7,8 @@ import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.service.control.device.dto.CameraControlDTO;
 import com.znv.fssrqs.service.control.device.dto.CameraUnDeployDTO;
+import com.znv.fssrqs.util.ConfigManager;
+import com.znv.fssrqs.util.KafKaClient;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,21 +78,19 @@ public class ControlCameraService {
             failList.add(errorObj);
         });
 
-        /*if(!cameraIdList.isEmpty()){
-            ProducerBase producer = PhoenixClient.getProducer();
+        if(!cameraIdList.isEmpty()){
+            KafKaClient kafKaClient = KafKaClient.getInstance();
             cameraIdList.forEach(tid -> {
                 JSONObject notifyMsg = new JSONObject();
                 String tablename = ConfigManager.getString("fss.mysql.table.cameralib.name");
                 notifyMsg.put("table_name", tablename);
-                notifyMsg.put("msg_type", ConfigManager.getString(VConstants.NOTIFY_TOPIC_MSGTYPE));
+                notifyMsg.put("thisthisthis","jianghaibin");
+                notifyMsg.put("msg_type", ConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
                 notifyMsg.put("reference_id", libId);
                 notifyMsg.put("primary_id", tid);
-                boolean ret = producer.sendData(notifyMsg);
-                if(ret) {
-                }else {
-                }
+                kafKaClient.sendData(notifyMsg);
             });
-        }*/
+        }
 
         Map<String,Object> reData = new HashMap<>();
         reData.put("FailNum",failList.size());
@@ -112,7 +112,14 @@ public class ControlCameraService {
         int libCountLimit = cameraControlDto.getLibCountLimit();
         int cameraCountLimit = 5;
 
-        List<Map<String, Object>> retData =controlCameraMapper.up_fss_deploy_camera(id, title, cameraId, libId, startTime, endTime, libCountLimit, cameraCountLimit);
+        List<Map<String, Object>> retData;
+
+        try {
+            retData =controlCameraMapper.up_fss_deploy_camera(id, title, cameraId, libId, startTime, endTime, libCountLimit, cameraCountLimit);
+        }catch (Exception e){
+            throw new BusinessException(ErrorCodeEnum.UNDIFINITION.getCode(),"布控失败");
+        }
+
 
         if(retData!=null && retData.size()>0){
             Map<String,Object> r = retData.get(0);
@@ -141,19 +148,14 @@ public class ControlCameraService {
             }
 
         }
-       /* ProducerBase producer = PhoenixClient.getProducer();
+        KafKaClient kafKaClient = KafKaClient.getInstance();
         JSONObject notifyMsg = new JSONObject();
         String tablename = ConfigManager.getString("fss.mysql.table.cameralib.name");
         notifyMsg.put("table_name", tablename);
-        notifyMsg.put("msg_type", ConfigManager.getString(VConstants.NOTIFY_TOPIC_MSGTYPE));
+        notifyMsg.put("msg_type", ConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
         notifyMsg.put("reference_id", libId);
         notifyMsg.put("primary_id", cameraId);
-        boolean ret = producer.sendData(notifyMsg);
-        if(ret) {
-        }else {
-        }*/
-
-
+        kafKaClient.sendData(notifyMsg);
 
         Map<String,Object> reData = new HashMap<>();
         reData.put("Id",cameraId);
@@ -162,27 +164,24 @@ public class ControlCameraService {
 
     @Transactional
     public void unDeployControl( CameraUnDeployDTO cameraUnDeployDTO){
-        int i = controlCameraMapper.up_fss_undeploy_camera(cameraUnDeployDTO.getCameraIds());
+        int i = controlCameraMapper.up_fss_undeploy_camera(cameraUnDeployDTO.getIds());
         if(i==0){
-            throw new BusinessException(ErrorCodeEnum.UNDIFINITION);
+            throw new BusinessException(ErrorCodeEnum.UNDIFINITION.getCode(),"布控信息不存在");
         }
 
-        List<String> cameraIds = cameraUnDeployDTO.getCameraIds();
+        List<String> cameraIds = controlCameraMapper.listDeviceIdInArray(cameraUnDeployDTO.getIds());
         String libId = cameraUnDeployDTO.getLibId();
 
-        /*JSONObject notifyMsg = new JSONObject();
+        JSONObject notifyMsg = new JSONObject();
         String tablename = ConfigManager.getString("fss.mysql.table.cameralib.name");
         notifyMsg.put("table_name", tablename);
-        notifyMsg.put("msg_type", ConfigManager.getString(VConstants.NOTIFY_TOPIC_MSGTYPE));
+        notifyMsg.put("msg_type", ConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
         notifyMsg.put("reference_id", libId);
 
-        ProducerBase producer = PhoenixClient.getProducer();
+        KafKaClient kafKaClient = KafKaClient.getInstance();
         cameraIds.forEach(cameraid->{
             notifyMsg.put("primary_id", cameraid);
-            boolean ret = producer.sendData(notifyMsg);
-            if(ret) {
-            }else {
-            }
-        });*/
+            kafKaClient.sendData(notifyMsg);
+        });
     }
 }
