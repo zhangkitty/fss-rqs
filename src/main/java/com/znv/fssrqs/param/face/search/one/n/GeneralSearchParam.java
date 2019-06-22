@@ -22,18 +22,18 @@ public class GeneralSearchParam {
     private String[] DeviceIDs;
 
     @NotBlank(message = "开始时间不能为空")
-    private String BeginTime;
+    private String StartTime;
 
     @NotBlank(message = "结束时间不能为空")
     private String EndTime;
 
     @NotNull(message = "页码不能为空")
-    private Integer PageNum;
+    private Integer CurrentPage;
 
     @NotNull(message = "每页记录数不能为空")
     private Integer PageSize;
 
-    private float Similaritydegree;
+    private Integer SimilarityDegree;
 
     //查询类型， 0： 无图检索，1：极速检索，2：精确检索
     private Integer QueryType;

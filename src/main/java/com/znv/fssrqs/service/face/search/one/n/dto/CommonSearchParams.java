@@ -5,7 +5,7 @@ import lombok.Data;
 
 /**
  * @author zhangcaochao
- * @Description TODO
+ * @Description 精确搜素的入参
  * @Date 2019.6.18 上午11:31
  */
 
@@ -21,7 +21,7 @@ public class CommonSearchParams {
     private String[] DeviceIDs;
 
     @JSONField(name = "enter_time_start")
-    private String BeginTime;
+    private String StartTime;
 
     @JSONField(name = "enter_time_end")
     private String EndTime;
@@ -63,7 +63,7 @@ public class CommonSearchParams {
     private Integer GenderType;
 
     @JSONField(name = "sim_threshold")
-    private Float Similaritydegree;
+    private Integer SimilarityDegree;
 
     @JSONField(name = "is_calcSim")
     private Boolean IsCalcSim;
@@ -73,5 +73,7 @@ public class CommonSearchParams {
 
     @JSONField(name = "filter_type")
     private String FilterType;
+
+    private String feature_name = "rt_feature.feature_high";
 }
 
