@@ -20,7 +20,7 @@ public class StartService implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         log.info("********************************************************");
-        log.info("*********************fnms start*************************");
+        log.info("*********************fss-rsq start**********************");
         log.info("********************************************************");
         log.info("********************************************************");
         log.info("********************************************************");

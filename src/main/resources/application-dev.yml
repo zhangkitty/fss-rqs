@@ -32,7 +32,7 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: 10.45.152.202
+  host: 10.45.157.116
   port: 9200
   clusterName: face.dct-znv.com-es
 #海康SDK

@@ -92,7 +92,11 @@ public class ExactSearch {
 
         CommonSearchParams commonSearchParams = modelMapper.map(params,CommonSearchParams.class);
         commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
-        String[] arr = (String[]) Arrays.stream(commonSearchParams.getFeatureValue()).map(v->FaceAIUnitUtils.getImageFeature(v)).toArray();
+
+        String[] arr = new String[commonSearchParams.getFeatureValue().length];
+        for(int i = 0 ;i<commonSearchParams.getFeatureValue().length;i++){
+            arr[i] = (String) JSONObject.parseObject(FaceAIUnitUtils.getImageFeature(commonSearchParams.getFeatureValue()[i])).get("feature");
+        }
         commonSearchParams.setFeatureValue(arr);
         JSONObject paramsWithTempId = new JSONObject();
         paramsWithTempId.put("id","template_fss_arbitrarysearch");
