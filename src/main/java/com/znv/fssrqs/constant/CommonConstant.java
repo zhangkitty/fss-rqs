@@ -24,4 +24,57 @@ public class CommonConstant {
         public static final int SUCCESS = 0;
         public static final int ERROR = -1;
     }
+
+    public static class PhoenixProperties {
+        public static final String PERSON_LIST_TABLE_NAME = "fss.phoenix.table.blacklist.name";
+        public static final String HISTORY_DATA_TABLE_NAME = "fss.phoenix.table.history.name";
+        //大图表名
+        public static final String BIGPICTURE_TABLE_NAME = "fss.phoenix.table.bigpic.name";
+        public static final String LIB_CONFIG_TABLE_NAME = "fss.phoenix.table.libconfig.name";
+        public static final String CAMERA_LIB_TABLE_NAME = "fss.phoenix.table.cameralib.name";
+        public static final String RELATIONSHIP_TABLE_NAME = "fss.phoenix.table.relationship.name";
+        public static final String ALARM_TABLE_NAME = "fss.phoenix.table.alarm.name";
+        public static final String PHOENIX_DRIVER = "pheonix.driver";
+        //单个摄像头最大字库匹配量
+        public static final String CAMERA_MAX_NUM = "fss.sdk.phoenix.camera.max.size";
+        // 初始化连接池数量
+        public static final String CONNECTION_INITIAL_SIZE = "pheonix.initialSize";
+        // 连接池最大数量
+        public static final String CONNECTION_MAX_SIZE = "pheonix.maxActive";
+        public static final String PERSON_LIST_MAX_NUM = "fss.sdk.phoenix.personlist.max.num";
+    }
+
+    public static class PhoenixProtocolId {
+        public static final String QUERY_PERSON_LIST = "31001";
+        public static final String QUERY_STATIC_PERSON_LIST = "31002";
+        public static final String QUERY_CAMERA_LIB = "31003";
+        public static final String QUERY_REALTIONSHIP = "31004";
+        public static final String QUERY_HISTORY = "31005";
+        public static final String QUERY_ALARM = "31006";
+        public static final String QUERY_LIB_CONFIG = "31007";
+        public static final String QUERY_HISTORY_BY_INDEX = "12001";
+        public static final String QUERY_PERSON_CARD_PICTURE = "31008";
+        public static final String QUERY_ALARM_EXPORT_DATA = "31009";
+        public static final String QUERY_HISTORY_SUPER_SEARCH_PICTURE = "31010";
+        public static final String BATCH_MODIFY_PERSON_LIST_FLAG = "31011";
+
+        public static final String SDK_CONNECTION_INITIAL_SIZE = "fss.sdk.pheonix.initialSize";
+        public static final String SDK_CONNECTION_MAX_SIZE = "fss.sdk.pheonix.maxActive";
+    }
+
+    public static class NotifyKafka {
+        public static final String NOTIFY_TOPIC_MSGTYPE = "fss.kafka.topic.blacklistchange.msgtype";
+        public static final String ZOOKEEPER_ADDR = "zookeeper.connect";
+        public static final String NOTIFY_PARTITION_NUM = "fss.kafka.topic.blacklistchange.partition.num";
+        public static final String NOTIFY_REPLICATION_NUM = "fss.kafka.topic.blacklistchange.replication.num";
+    }
+
+    /**
+     * 商汤服务器配置
+     */
+    public static class SenseTime {
+        //商汤比对算法归一下数组
+        public static final String SENSETIME_FEATURE_SRC = "sensetime.feature.srcPoints";
+        public static final String SENSETIME_FEATURE_DST = "sensetime.feature.dstPoints";
+    }
 }

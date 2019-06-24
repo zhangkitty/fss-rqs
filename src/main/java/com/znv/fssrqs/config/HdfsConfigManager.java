@@ -7,6 +7,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.annotation.PostConstruct;
@@ -37,12 +38,18 @@ public class HdfsConfigManager {
     //kafka生产者相关配置
     private static Properties kafkaProducerProps = new Properties();
     private String hdfsUrl;
+    @Value("spring.datasource.hbase.jdbc-url")
+    private String hbaseUrl;
+
+    public String getHbaseUrl() {
+        return hbaseUrl;
+    }
 
     @PostConstruct
     public void init() {
-        //initFssProperties();
-        //initKafkaProducer();
-        //initPhoenix();
+        initFssProperties();
+        initKafkaProducer();
+        initPhoenix();
     }
 
     private void initFssProperties() {
@@ -80,6 +87,7 @@ public class HdfsConfigManager {
             FileSystem fs = FileSystem.get(URI.create(producerPath), conf);
             in = fs.open(new Path(producerPath));
             kafkaProducerProps.load(in);
+            kafkaProducerProps.put("value.serializer", "com.znv.fssrqs.kafka.common.KafkaAvroSerializer");
         } catch (IOException e) {
             log.error("read producerBasic.properties config failed {}", e);
         } finally {
@@ -173,8 +181,9 @@ public class HdfsConfigManager {
     }
 
     public static String getTableName(String key) {
+        String schema = getString("fss.phoenix.schema.name");
         String tableName = getString(key);
-        return tableName;
+        return schema + "." + tableName;
     }
 
     public static Properties getKafkaProducerProps() {
