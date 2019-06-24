@@ -23,9 +23,9 @@ public class CommonSearchTest {
     public void commonSearch() throws IOException {
         GeneralSearchParam generalSearchParam = new GeneralSearchParam();
 
-        generalSearchParam.setBeginTime("2010-01-01 23:59:59");
+        generalSearchParam.setStartTime("2010-01-01 23:59:59");
         generalSearchParam.setEndTime("2020-01-01 23:59:59");
-        generalSearchParam.setPageNum(1);
+        generalSearchParam.setCurrentPage(1);
         generalSearchParam.setPageSize(10);
 
 

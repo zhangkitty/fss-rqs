@@ -72,17 +72,35 @@
 			<version>6.3.2</version>
 		</dependency>
 
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>transport</artifactId>
+            <version>5.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>transport-netty4-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>transport-netty4-client</artifactId>
+            <version>5.4.0</version>
+        </dependency>
+
         <!--<dependency>-->
             <!--<groupId>org.elasticsearch</groupId>-->
             <!--<artifactId>elasticsearch</artifactId>-->
             <!--<version>6.3.2</version>-->
         <!--</dependency>-->
 
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>5.4.0</version>
-		</dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>5.4.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>

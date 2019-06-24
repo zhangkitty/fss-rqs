@@ -34,6 +34,7 @@ es:
   password: ""
   host: 10.45.152.202
   port: 9200
+  clusterName: face.dct-znv.com-es
 #海康SDK
 hksdk:
   # false不支持海康脸谱算法 true支持海康脸谱算法

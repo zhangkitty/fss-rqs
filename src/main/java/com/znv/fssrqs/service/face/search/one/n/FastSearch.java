@@ -43,7 +43,7 @@ public class FastSearch {
 
         CommonSearchParams commonSearchParams = modelMapper.map(params,CommonSearchParams.class);
 
-        commonSearchParams.setFrom((params.getPageNum()-1)*params.getPageSize());
+        commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
 
         JSONObject paramsWithTempId = new JSONObject();
         paramsWithTempId.put("id","template_fss_arbitrarysearch");
@@ -74,7 +74,7 @@ public class FastSearch {
 
     }
 
-    //todo
+
     //计算索引的迁移很麻烦
     private String calculateIndex(GeneralSearchParam params){
         FeatureCompUtil fc = new FeatureCompUtil();

@@ -1,6 +1,7 @@
 package com.znv.fssrqs.controller.face.search.one.n;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.param.face.search.one.n.ExactSearchResultParams;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.CommonSearch;
 import com.znv.fssrqs.service.face.search.one.n.ExactSearch;
@@ -8,10 +9,7 @@ import com.znv.fssrqs.service.face.search.one.n.FastSearch;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -43,7 +41,7 @@ public class GenneralSearchController {
                 jsonObject = fastSearch.fastSearch(generalSearchParam);
                 break;
             case 2:
-                jsonObject = commonSearch.commonSearch(generalSearchParam);
+                jsonObject = exactSearch.startSearch(generalSearchParam);
                 break;
             default:
                 jsonObject = commonSearch.commonSearch(generalSearchParam);
@@ -52,5 +50,19 @@ public class GenneralSearchController {
 
 
         return ResponseVo.success(jsonObject);
+    }
+
+    @RequestMapping(value = "/VIID/Faces/ExactSearch",method = RequestMethod.POST)
+    public ResponseVo getExactSearchResult(@RequestHeader("Host") String host, @Validated @RequestBody  ExactSearchResultParams exactSearchResultParams) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("EventID",exactSearchResultParams.getEventID());
+        jsonObject.put("CurrentPage",exactSearchResultParams.getCurrentPage());
+        jsonObject.put("PageSize",exactSearchResultParams.getPageSize());
+        jsonObject.put("SortField",exactSearchResultParams.getSortField());
+        jsonObject.put("SortOrder",exactSearchResultParams.getSortOrder());
+        JSONObject ret = exactSearch.queryExactSearchRet(host,jsonObject);
+
+        return  ResponseVo.success(ret);
+
     }
 }
