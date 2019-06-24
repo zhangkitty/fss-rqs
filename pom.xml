@@ -208,6 +208,13 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.38</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>0.9.0.1</version>
+            <!--<version>1.0.1</version>-->
+        </dependency>
 
         <!--海康威视API对接客户端-->
         <dependency>
