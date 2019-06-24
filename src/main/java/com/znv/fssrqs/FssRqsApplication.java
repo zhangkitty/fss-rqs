@@ -35,6 +35,8 @@ public class FssRqsApplication {
 		}
 
         SpringApplication application = new SpringApplication(FssRqsApplication.class);
+
+
         application.addListeners(new ApplicationEventListener());
         application.run(args);
 	}
