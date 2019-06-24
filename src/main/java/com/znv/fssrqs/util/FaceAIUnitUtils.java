@@ -25,7 +25,7 @@ public class FaceAIUnitUtils {
     public static String getImageFeature(String imageData) {
         String result = null;
         CloseableHttpClient client = HttpClientPool.getInstance().getHttpClient();
-        HttpPost httpPost = new HttpPost("http://" + SpringContextUtil.getCtx().getBean(SenseTimeConfig.class) + "/verify/feature/gets");
+        HttpPost httpPost = new HttpPost("http://" + SpringContextUtil.getCtx().getBean(SenseTimeConfig.class).getStaticAiUnits().get(0) + "/verify/feature/gets");
         httpPost.setHeader(HttpHeaders.CONNECTION, "close");
         httpPost.setConfig(HttpClientPool.requestConfig());
         String flag = HdfsConfigManager.getString("sensetime.http.auth");

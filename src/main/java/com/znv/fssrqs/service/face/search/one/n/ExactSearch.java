@@ -3,6 +3,7 @@ package com.znv.fssrqs.service.face.search.one.n;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
+import com.znv.fssrqs.util.FaceAIUnitUtils;
 import com.znv.fssrqs.util.HttpUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -29,11 +30,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static com.znv.fssrqs.util.FormatObject.formatTime;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
@@ -88,6 +92,8 @@ public class ExactSearch {
 
         CommonSearchParams commonSearchParams = modelMapper.map(params,CommonSearchParams.class);
         commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
+        String[] arr = (String[]) Arrays.stream(commonSearchParams.getFeatureValue()).map(v->FaceAIUnitUtils.getImageFeature(v)).toArray();
+        commonSearchParams.setFeatureValue(arr);
         JSONObject paramsWithTempId = new JSONObject();
         paramsWithTempId.put("id","template_fss_arbitrarysearch");
         paramsWithTempId.put("params",commonSearchParams);

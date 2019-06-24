@@ -6,6 +6,7 @@ import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchResultDTO;
+import com.znv.fssrqs.util.FaceAIUnitUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +47,11 @@ public class FastSearch {
 
         commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
 
+        String[] arr = new String[commonSearchParams.getFeatureValue().length];
+        for(int i = 0 ;i<commonSearchParams.getFeatureValue().length;i++){
+            arr[i] = (String) JSONObject.parseObject(FaceAIUnitUtils.getImageFeature(commonSearchParams.getFeatureValue()[i])).get("feature");
+        }
+        commonSearchParams.setFeatureValue(arr);
         JSONObject paramsWithTempId = new JSONObject();
         paramsWithTempId.put("id","template_fss_arbitrarysearch");
         paramsWithTempId.put("params",commonSearchParams);
