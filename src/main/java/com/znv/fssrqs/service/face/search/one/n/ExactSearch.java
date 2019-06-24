@@ -122,8 +122,6 @@ public class ExactSearch {
                 this.bulkWriteToEs("history_exact_search_result_n_project", "history_data", esHits, params.hashCode(), i, indexName);
             }
 
-
-
         }
     }
 
