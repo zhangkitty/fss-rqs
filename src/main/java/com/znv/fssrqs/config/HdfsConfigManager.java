@@ -1,5 +1,6 @@
 package com.znv.fssrqs.config;
 
+import com.znv.fssrqs.util.PropertiesUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +15,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +39,7 @@ public class HdfsConfigManager {
     private static Properties phoenixProps = new Properties();
     //kafka生产者相关配置
     private static Properties kafkaProducerProps = new Properties();
+    private static Map<String, float[]> points;
     private String hdfsUrl;
     @Value("spring.datasource.hbase.jdbc-url")
     private String hbaseUrl;
@@ -50,6 +53,7 @@ public class HdfsConfigManager {
         initFssProperties();
         initKafkaProducer();
         initPhoenix();
+        EsBaseConfig.getInstance().init();
     }
 
     private void initFssProperties() {
@@ -63,7 +67,8 @@ public class HdfsConfigManager {
             properties.load(in);
             properties.setProperty("hdfs_url", hdfsUrl);
             properties.setProperty("hdfsFilePath", hdfsFilPath);
-        } catch (IOException e) {
+            points = PropertiesUtil.getFeaturePoints(properties);
+        } catch (Exception e) {
             log.error("read hdfs config failed {}", e);
         } finally {
             if (null != in) {
@@ -192,5 +197,9 @@ public class HdfsConfigManager {
 
     public static Properties getProperties() {
         return properties;
+    }
+
+    public static Map<String, float[]> getPoints() {
+        return points;
     }
 }

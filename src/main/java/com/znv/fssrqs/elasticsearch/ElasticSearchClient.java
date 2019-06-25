@@ -1,6 +1,7 @@
 package com.znv.fssrqs.elasticsearch;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.util.Result;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -9,12 +10,14 @@ import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.util.EntityUtils;
 import org.elasticsearch.client.*;
+import org.elasticsearch.client.sniff.ElasticsearchHostsSniffer;
 import org.elasticsearch.client.sniff.Sniffer;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -24,6 +27,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -39,6 +43,8 @@ import java.util.concurrent.CountDownLatch;
 public class ElasticSearchClient {
     //自定义缓存大小
     private static final int DEFAULT_BUFFER_LIMIT_BYTES = 30 * 1024 * 1024;
+    private static final int DEFAULT_MAX_RETRY_TIMEOUT_MILLIS = 10000;
+    private static final int DEFAULT_SOCKET_TIMEOUT = 10000;
     private String username;
     private String password;
     private String host;
@@ -48,6 +54,11 @@ public class ElasticSearchClient {
     private RestClient restClient;
     private TransportClient client;
     private Sniffer sniffer;
+
+    @PostConstruct
+    public void init() {
+        getInstance();
+    }
 
     public ElasticSearchClient getInstance() {
         try {
@@ -64,7 +75,7 @@ public class ElasticSearchClient {
                 if (restClient == null) {
                     final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
                     credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-                    RestClientBuilder restClientBuilder = RestClient.builder(new HttpHost(host, port))
+                    RestClientBuilder restClientBuilder = RestClient.builder(new HttpHost(host, port, ElasticsearchHostsSniffer.Scheme.HTTP.name()))
                             .setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
                                 @Override
                                 public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
@@ -111,24 +122,23 @@ public class ElasticSearchClient {
         }
     }
 
-    public JSONObject postRequest(String url, Map<String, String> params, JSONObject body) {
+    public Result<JSONObject, String> postRequest(String url, Map<String, String> params, JSONObject body) {
         HttpEntity entity = new NStringEntity(body.toJSONString(), ContentType.APPLICATION_JSON);
         try {
             Response response = restClient.performRequest(HttpMethod.POST.name(), url, params, entity);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != HttpStatus.SC_OK) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("Code", statusCode);
-                return jsonObject;
+                log.error("get es data occur exception:code=", response.getStatusLine() + ",message=" + EntityUtils.toString(response.getEntity()));
+                return Result.err("获取es数据失败:状态码=" + statusCode);
             }
             log.info("ip=" + response.getHost().getHostName() + ",port=" + response.getHost().getPort());
-            return JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
+            return Result.ok(JSONObject.parseObject(EntityUtils.toString(response.getEntity())));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public JSONObject postRequest(String url, JSONObject body) {
+    public Result<JSONObject, String> postRequest(String url, JSONObject body) {
         Map<String, String> params = Collections.emptyMap();
         return postRequest(url, params, body);
     }

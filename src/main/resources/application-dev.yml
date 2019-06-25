@@ -46,7 +46,7 @@ bigdata:
   hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
 ###缓冲服务地址配置
 mbus:
-  ipp:
+  ipps:
   - 10.45.157.117:9008
 fdfs:
   trackers:

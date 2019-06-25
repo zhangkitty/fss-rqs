@@ -77,4 +77,39 @@ public class CommonConstant {
         public static final String SENSETIME_FEATURE_SRC = "sensetime.feature.srcPoints";
         public static final String SENSETIME_FEATURE_DST = "sensetime.feature.dstPoints";
     }
+
+    /**
+     * Es相关配置
+     */
+    public static class ElasticSearch {
+        //多索引分类搜索添加
+        public static final String ES_CLUSTER_NAME = "es.cluster.name";
+        public static final String INDEX_EXACT_SEARCH_RESULT = "fss.es.index.exact.search.result";
+        public static final String ES_SERVER_IP = "es.server.ip";
+        public static final String ES_HTTP_PORT = "es.http.port";
+        public static final String ES_INDEX_HISTORY_NAME = "fss.es.search.history.alias";
+        public static final String ES_INDEX_HISTORY_TYPE = "fss.es.index.history.type";
+        public static final String ES_INDEX_HISTORY_PREFIX = "fss.es.index.history.prefix";
+        public static final String ES_SEARCH_TEMPLATE_FACESEARCH_ID = "fss.es.search.template.facesearch.id";
+        public static final String ES_SEARCH_TEMPLATE_FLOWCOUNT_ID = "fss.es.search.template.flowCount.id";
+        public static final String ES_SEARCH_TEMPLATE_FASTFEATURE_ID = "fss.es.search.template.fastsearch.id";
+        public static final String ES_SEARCH_TEMPLATE_PERSONLIST_COUNT_ID = "fss.es.search.template.personlist.count.id";
+        public static final String ES_SEARCH_TEMPLATE_HISTORY_PERSON_COUNT_ID = "fss.es.search.template.historyperson.count.id";
+        public static final String ES_SEARCH_TEMPLATE_ALARM_PERSON_COUNT_ID = "fss.es.search.template.alarmperson.count.id";
+        public static final String INDEX_PERSON_LIST_NAME = "fss.es.index.person.list.name";
+        public static final String INDEX_PERSON_LIST_TYPE = "fss.es.index.person.list.type";
+        public static final String ES_SEARCH_TEMPLATE_PERSONLIST_ID = "fss.es.search.template.personlist.id";
+        public static final String ES_SEARCH_POOL_NUM = "fss.es.search.pool.num";
+        public static final String INDEX_ALARM_NAME = "fss.es.index.alarm.name";
+        public static final String INDEX_ALARM_TYPE = "fss.es.index.alarm.type";
+        public static final String ES_SEARCH_TEMPLATE_ALARM_SEARCH_ID = "fss.es.search.template.alarmsearch.id";
+        public static final String ES_SEARCH_TEMPLATE_PERSONLIST_GROUP_ID = "fss.es.search.template.personlist.group.id";
+        public static final String INDEX_LOG_NAME = "fss.es.index.log.name";
+        public static final String INDEX_LOG_TYPE = "fss.es.index.log.type";
+    }
+
+    public static class FdfsConfig {
+        public static final String SMALL_PIC_URL = "GetSmallPic";
+        public static final String BIG_PIC_URL = "GetBigBgPic";
+    }
 }

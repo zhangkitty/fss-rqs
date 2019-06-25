@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 /**
  * Created by dongzelong on  2019/6/19 9:08.
  *
@@ -12,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
  * @Description 缓冲地址配置
  */
 @Configuration
-@ConfigurationProperties
+@ConfigurationProperties("mbus")
 @Data
 public class MbusConfig {
-    private String ipp;
+    private List<String> ipps;
 }
