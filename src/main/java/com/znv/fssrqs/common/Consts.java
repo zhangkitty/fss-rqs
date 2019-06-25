@@ -178,4 +178,13 @@ public class Consts {
     public static class FssSdkKeyCode {
         public static final String ERROR_CODE = "errorCode";
     }
+
+
+    public static class FdfsConfig {
+
+        public static final String SMALL_PIC_URL = "GetSmallPic";
+
+        public static final String BIG_PIC_URL = "GetBigBgPic";
+    }
+
 }
