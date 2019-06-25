@@ -27,11 +27,13 @@ public class PhoenixSqlClient {
      * @throws Exception 异常
      */
     public void executeSql(String sql, Connection phoenixConn) throws Exception {
+        phoenixConn.setAutoCommit(false);
         Statement stat = phoenixConn.createStatement();
         try {
             stat.execute(sql);
             phoenixConn.commit();
         } catch (Exception e) {
+            phoenixConn.rollback();
             throw e;
         } finally {
             try {
@@ -79,6 +81,7 @@ public class PhoenixSqlClient {
         insertSql.append(")");
         PreparedStatement statement = null;
         try {
+            phoenixConn.setAutoCommit(false);
             statement = phoenixConn.prepareStatement(insertSql.toString());
             int i = 1;
             for (Map.Entry<String, Object> entry : data.entrySet()) {
@@ -88,6 +91,11 @@ public class PhoenixSqlClient {
             statement.executeUpdate();
             phoenixConn.commit();
         } catch (SQLException e) {
+            try {
+                phoenixConn.rollback();
+            } catch (SQLException e1) {
+                log.error("", e1);
+            }
             throw new RuntimeException("访问hbase数据库失败:", e);
         } finally {
             try {
@@ -195,6 +203,11 @@ public class PhoenixSqlClient {
             result.put("data", insertResult);
             phoenixConn.setAutoCommit(true);
         } catch (SQLException e) {
+            try {
+                phoenixConn.rollback();
+            } catch (SQLException e1) {
+                log.error("", e1);
+            }
             throw new RuntimeException("访问hbase数据库失败:", e);
         } finally {
             // 释放资源
