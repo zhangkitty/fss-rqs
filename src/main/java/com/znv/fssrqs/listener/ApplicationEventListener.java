@@ -1,6 +1,5 @@
 package com.znv.fssrqs.listener;
 
-import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.util.SpringContextUtil;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
