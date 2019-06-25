@@ -33,12 +33,12 @@ public class GenneralSearchController {
     private ExactSearch exactSearch;
 
     @RequestMapping(value = "/VIID/Faces/FaceSearch" ,method = RequestMethod.POST)
-    public ResponseVo faceSearch(@Validated @RequestBody GeneralSearchParam generalSearchParam) throws IOException {
+    public ResponseVo faceSearch(@RequestHeader("Host") String host,@Validated @RequestBody GeneralSearchParam generalSearchParam) throws IOException {
 
         JSONObject jsonObject = new JSONObject();
         switch (generalSearchParam.getQueryType()) {
             case 1:
-                jsonObject = fastSearch.fastSearch(generalSearchParam);
+                jsonObject = fastSearch.fastSearch(host,generalSearchParam);
                 break;
             case 2:
                 jsonObject = exactSearch.startSearch(generalSearchParam);
