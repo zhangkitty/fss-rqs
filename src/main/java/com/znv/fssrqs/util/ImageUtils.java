@@ -1,9 +1,22 @@
 package com.znv.fssrqs.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.MbusConfig;
+import com.znv.fssrqs.config.SenseTimeConfig;
 import com.znv.fssrqs.config.ServerConfig;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.enums.ImageStoreType;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+
+import java.util.UUID;
 
 /**
  * Created by dongzelong on  2019/6/25 14:44.
@@ -55,5 +68,33 @@ public class ImageUtils {
     public static String getImgUrl(String remoteIp, String mappingUrl, String params) {
         String ipp = SpringContextUtil.getCtx().getBean(MbusConfig.class).getIpps().get(0);
         return getUrl(mappingUrl, ipp, params);
+    }
+
+
+    public static String getImageFeature(String imageData) {
+        String result = null;
+        CloseableHttpClient client = HttpClientPool.getInstance().getHttpClient();
+        HttpPost httpPost = new HttpPost(String.format("http://%s/verify/feature/gets", SpringContextUtil.getCtx().getBean(SenseTimeConfig.class).getStaticAiUnits().get(0)));
+        httpPost.setHeader(HttpHeaders.CONNECTION, "close");
+        httpPost.setConfig(HttpClientPool.requestConfig());
+        String flag = ConfigManager.getString("sensetime.http.auth");
+        if (!StringUtils.isEmpty(flag) && flag.equals("true")) {
+            httpPost.setHeader("Authorization", ConfigManager.getString("sensetime.http.auth.header"));
+        }
+        ByteArrayBody bab = new ByteArrayBody(Base64Util.decode(imageData), UUID.randomUUID().toString());
+        HttpEntity entity = MultipartEntityBuilder.create().addPart("imageData", bab).build();
+        httpPost.setEntity(entity);
+        CloseableHttpResponse response = null;
+        HttpEntity resEntity = null;
+        try {
+            response = client.execute(httpPost);
+            resEntity = response.getEntity();
+            result = EntityUtils.toString(resEntity);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            httpPost.releaseConnection();
+        }
+        return result;
     }
 }
