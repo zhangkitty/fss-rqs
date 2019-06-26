@@ -46,4 +46,8 @@ public class CommonSearchResultDTO {
     @JSONField(name = "field_6")
     private String uuid;
 
+    private String SmallPictureUrl;
+
+    private String BigPictureUrl;
+
 }

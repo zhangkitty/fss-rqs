@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
 import com.znv.fssrqs.util.FaceAIUnitUtils;
 import com.znv.fssrqs.util.HttpUtils;
+import com.znv.fssrqs.util.ImageOptUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -261,14 +262,14 @@ public class ExactSearch {
                 resObj.put("OpTime", formatTime(o.getString("op_time")));
                 resObj.put("EnterTime", formatTime(o.getString("enter_time")));
                 resObj.put("FaceDisAppearTime", formatTime(o.getString("leave_time")));
-//                String imgUrl = ImageOptUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
-//                resObj.put("SmallPictureUrl", imgUrl);
+                String imgUrl = ImageOptUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
+                resObj.put("SmallPictureUrl", imgUrl);
                 String bigPictureUuid = o.getString("big_picture_uuid");
                 if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)) {
                     resObj.put("BigPictureUrl", "");
                 } else {
                     resObj.put("BigPictureUrl", "");
-//                    resObj.put("BigPictureUrl", ImageOptUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
+                    resObj.put("BigPictureUrl", ImageOptUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
                 }
 
                 hitsArray.add(resObj);
