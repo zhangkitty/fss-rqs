@@ -223,11 +223,11 @@ public class FastJsonUtils {
         }
 
         public static JsonBuilder ok() {
-            return ok("ok");
+            return ok("Ok");
         }
 
         public static JsonBuilder ok(int code) {
-            JsonBuilder builder = new JsonBuilder(code, "ok");
+            JsonBuilder builder = new JsonBuilder(code, "Ok");
             return builder;
         }
 
@@ -248,22 +248,22 @@ public class FastJsonUtils {
         }
 
         public JsonBuilder id(UUID id) {
-            data.put("id", id.toString());
+            data.put("ID", id.toString());
             return this;
         }
 
         public JsonBuilder id(String id) {
-            data.put("id", id);
+            data.put("ID", id);
             return this;
         }
 
         public JsonBuilder list(List<?> list) {
-            data.put("list", list);
+            data.put("List", list);
             return this;
         }
 
         public JsonBuilder object(Object object) {
-            data.put("object", object);
+            data.put("Object", object);
             return this;
         }
 
@@ -278,11 +278,11 @@ public class FastJsonUtils {
         }
 
         public static JsonBuilder badRequest() {
-            return new JsonBuilder(400);
+            return new JsonBuilder(20000);
         }
 
         public static JsonBuilder badRequest(int code) {
-            Assert.isTrue(code >= 400 && code < 500, "expression is not true:400<=code<500");
+            Assert.isTrue(code >= 20000 && code < 50000, "expression is not true:20000<=code<50000");
             return new JsonBuilder(code);
         }
 
@@ -303,11 +303,11 @@ public class FastJsonUtils {
 ////        }
 
         public static JsonBuilder error() {
-            return new JsonBuilder(500);
+            return new JsonBuilder(50000);
         }
 
         public static JsonBuilder error(int code) {
-            Assert.isTrue(code >= 500 || code < 0, "expression is not true:code>=500");
+            Assert.isTrue(code >= 50000 || code < 0, "expression is not true:code>=500");
             return new JsonBuilder(code);
         }
 

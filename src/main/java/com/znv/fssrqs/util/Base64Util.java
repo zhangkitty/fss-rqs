@@ -7,8 +7,7 @@ package com.znv.fssrqs.util;
  * @version 1.0
  * @Description TODO
  */
-
-import org.apache.commons.net.util.Base64;
+import org.apache.commons.codec.binary.Base64;
 
 import java.nio.charset.Charset;
 
