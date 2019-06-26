@@ -329,9 +329,9 @@ public class FastJsonUtils {
 
         public JSONObject json() {
             JSONObject object = new JSONObject();
-            object.put("code", code);
-            object.put("message", message);
-            object.put("data", data);
+            object.put("Code", code);
+            object.put("Message", message);
+            object.put("Data", data);
             return object;
         }
     }
