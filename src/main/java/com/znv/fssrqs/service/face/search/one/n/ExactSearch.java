@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
 import com.znv.fssrqs.util.FaceAIUnitUtils;
 import com.znv.fssrqs.util.HttpUtils;
-import com.znv.fssrqs.util.ImageOptUtils;
+import com.znv.fssrqs.util.ImageUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -31,14 +31,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import static com.znv.fssrqs.util.FormatObject.formatTime;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
@@ -262,14 +259,14 @@ public class ExactSearch {
                 resObj.put("OpTime", formatTime(o.getString("op_time")));
                 resObj.put("EnterTime", formatTime(o.getString("enter_time")));
                 resObj.put("FaceDisAppearTime", formatTime(o.getString("leave_time")));
-                String imgUrl = ImageOptUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
+                String imgUrl = ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
                 resObj.put("SmallPictureUrl", imgUrl);
                 String bigPictureUuid = o.getString("big_picture_uuid");
                 if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)) {
                     resObj.put("BigPictureUrl", "");
                 } else {
                     resObj.put("BigPictureUrl", "");
-                    resObj.put("BigPictureUrl", ImageOptUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
+                    resObj.put("BigPictureUrl", ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
                 }
 
                 hitsArray.add(resObj);

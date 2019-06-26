@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import javax.jws.HandlerChain;
+import java.util.Date;
 
 /**
  * @author zhangcaochao
@@ -49,5 +50,8 @@ public class CommonSearchResultDTO {
     private String SmallPictureUrl;
 
     private String BigPictureUrl;
+
+    @JSONField(name = "OpTime")
+    private String op_time;
 
 }

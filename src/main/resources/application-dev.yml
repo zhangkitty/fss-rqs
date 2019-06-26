@@ -3,6 +3,8 @@ server:
   servlet: ##servlet默认超时时间30分钟
     session:
       timeout: 30m
+    context-path: /fss-rqs
+
 spring:
   datasource:
     mysql:
@@ -32,7 +34,7 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: 10.45.157.116
+  host: 10.45.157.104
   port: 9200
   clusterName: face.dct-znv.com-es
 #海康SDK

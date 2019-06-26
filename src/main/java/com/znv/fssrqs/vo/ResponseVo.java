@@ -1,6 +1,7 @@
 package com.znv.fssrqs.vo;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
@@ -9,47 +10,48 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ResponseVo {
 
-    private String code;
+    private String Code;
 
-    private String message;
+    private String Message;
 
-    private Object data;
+    private Object Data;
 
     private static ResponseVo responseVo;
 
     public String getCode() {
-        return code;
+        return Code;
     }
 
     public ResponseVo setCode(String code) {
-        this.code = code;
+        this.Code = code;
         return this;
     }
 
     public String getMessage() {
-        return message;
+        return Message;
     }
 
     public ResponseVo setMessage(String message) {
-        this.message = message;
+        this.Message = message;
         return this;
     }
 
     public Object getData() {
-        return data;
+        return Data;
     }
 
     public ResponseVo setData(Object data) {
-        this.data = data;
+        this.Data = data;
         return this;
     }
 
     private ResponseVo(String code, String message, Object data){
-        this.code = code;
-        this.message = message;
-        this.data = data;
+        this.Code = code;
+        this.Message = message;
+        this.Data = data;
     }
 
     public static ResponseVo getInstance(String code, String message,Object data){

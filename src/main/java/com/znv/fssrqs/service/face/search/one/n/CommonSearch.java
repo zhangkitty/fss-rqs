@@ -2,12 +2,12 @@ package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
-import com.znv.fssrqs.elasticsearch.service.ISearch;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchResultDTO;
-import com.znv.fssrqs.service.personnel.management.dto.OnePersonListDTO;
+import com.znv.fssrqs.util.ImageUtils;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
@@ -44,11 +44,22 @@ public class CommonSearch {
     private Map<String, Integer> concurrentHashMap = new ConcurrentHashMap<String, Integer>();
 
 
-    public JSONObject commonSearch(GeneralSearchParam params) throws IOException {
+    public JSONObject commonSearch(String host,GeneralSearchParam params) throws IOException {
 
+        String remoteIp = host.split(":")[0];
         CommonSearchParams commonSearchParams = modelMapper.map(params,CommonSearchParams.class);
 
         commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
+        commonSearchParams.setAgeLowerLimit(null);
+        commonSearchParams.setAgeUpLimit(null);
+        commonSearchParams.setGenderType(null);
+        commonSearchParams.setGlass(null);
+        commonSearchParams.setRespirator(null);
+        commonSearchParams.setMustache(null);
+        commonSearchParams.setEmotion(null);
+        commonSearchParams.setEyeOpen(null);
+        commonSearchParams.setMouthOpen(null);
+        commonSearchParams.setSkinColor(null);
 
         JSONObject paramsWithTempId = new JSONObject();
         paramsWithTempId.put("id","template_fss_arbitrarysearch");
@@ -67,6 +78,20 @@ public class CommonSearch {
 
         result.getJSONObject("hits").getJSONArray("hits").forEach(v->{
             CommonSearchResultDTO commonSearchResultDTO = modelMapper.map(((JSONObject)v).get("_source"),CommonSearchResultDTO.class);
+
+            String op_time = (String) ((JSONObject)((JSONObject) v).get("_source")).get("img_url");
+
+
+            String smallUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("img_url");
+            String imgUrl = ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
+            commonSearchResultDTO.setSmallPictureUrl(imgUrl);
+
+            String bigPictureUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("big_picture_uuid");
+            if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)){
+                commonSearchResultDTO.setBigPictureUrl("");
+            }else {
+                commonSearchResultDTO.setBigPictureUrl(ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
+            }
             list.add(JSONObject.parse(JSONObject.toJSONString(commonSearchResultDTO)));
         });
 

@@ -44,7 +44,7 @@ public class GenneralSearchController {
                 jsonObject = exactSearch.startSearch(generalSearchParam);
                 break;
             default:
-                jsonObject = commonSearch.commonSearch(generalSearchParam);
+                jsonObject = commonSearch.commonSearch(host,generalSearchParam);
                 break;
         }
 

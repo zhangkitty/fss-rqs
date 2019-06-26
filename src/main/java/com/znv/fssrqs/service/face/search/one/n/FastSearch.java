@@ -7,7 +7,7 @@ import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchResultDTO;
 import com.znv.fssrqs.util.FaceAIUnitUtils;
-import com.znv.fssrqs.util.ImageOptUtils;
+import com.znv.fssrqs.util.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,14 +75,14 @@ public class FastSearch {
         result.getJSONObject("hits").getJSONArray("hits").forEach(v->{
             CommonSearchResultDTO commonSearchResultDTO = modelMapper.map(((JSONObject)v).get("_source"),CommonSearchResultDTO.class);
             String smallUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("img_url");
-            String imgUrl = ImageOptUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
+            String imgUrl = ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
             commonSearchResultDTO.setSmallPictureUrl(imgUrl);
 
             String bigPictureUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("big_picture_uuid");
             if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)){
                 commonSearchResultDTO.setBigPictureUrl("");
             }else {
-                commonSearchResultDTO.setBigPictureUrl(ImageOptUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
+                commonSearchResultDTO.setBigPictureUrl(ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
             }
             list.add(JSONObject.parse(JSONObject.toJSONString(commonSearchResultDTO)));
         });
