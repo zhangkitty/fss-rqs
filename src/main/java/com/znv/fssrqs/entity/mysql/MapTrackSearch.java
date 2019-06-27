@@ -23,14 +23,14 @@ public class MapTrackSearch {
     @JsonProperty("EndTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date EndTime;
-    @JSONField(name = "CameraIDs")
-    @JsonProperty("CameraIDs")
+    @JSONField(name = "DeviceIDs")
+    @JsonProperty("DeviceIDs")
     private List<String> CameraIDs;
-    @JSONField(name = "Features")
-    @JsonProperty("Features")
+    @JSONField(name = "FeatureValue")
+    @JsonProperty("FeatureValue")
     private List<String> Features;
-    @JSONField(name = "Sim")
-    @JsonProperty("Sim")
+    @JSONField(name = "SimilarityDegree")
+    @JsonProperty("SimilarityDegree")
     private Integer Sim;
     @JSONField(name = "FilterType")
     @JsonProperty("FilterType")
