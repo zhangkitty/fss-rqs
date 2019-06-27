@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,6 +79,10 @@ public class FastSearch {
             String smallUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("img_url");
             String imgUrl = ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
             commonSearchResultDTO.setSmallPictureUrl(imgUrl);
+
+            String op_time = (String) ((JSONObject)((JSONObject) v).get("_source")).get("op_time");
+            commonSearchResultDTO.setOp_time(LocalDateTime.parse(op_time,DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            //ZonedDateTime.parse(op_time).dateTime.format(DateTimeFormatter.ofPattern("yyyy-mm-dd hh:mm:ss"))
 
             String bigPictureUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("big_picture_uuid");
             if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)){
