@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 /**
  * Created by dongzelong on  2019/6/26 10:46.
  *
@@ -20,8 +24,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class HistoryAlarmController {
+    private HttpServletResponse response;
+    private HttpSession session;
+    private HttpServletRequest request;
+
     @Autowired
     private HistoryAlarmService historyAlarmService;
+
+    @ModelAttribute
+    public void bindModel(HttpServletRequest request, HttpServletResponse response) {
+        this.request = request;
+        this.response = response;
+        this.session = request.getSession();
+    }
 
     /**
      * 战果统计
