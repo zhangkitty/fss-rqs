@@ -15,7 +15,6 @@
     <description>Fss Query system project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
-        <start-class>com.znv.fssrqs.FssRqsApplication</start-class>
     </properties>
     <dependencies>
         <dependency>
@@ -26,6 +25,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>1.3.1</version>
         </dependency>
 
         <dependency>
@@ -313,26 +318,26 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
             <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-dependency-plugin</artifactId>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>copy</id>-->
-            <!--<phase>package</phase>-->
-            <!--<goals>-->
-            <!--<goal>copy-dependencies</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<outputDirectory>${project.build.directory}/thirdparty</outputDirectory>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
+                <!--<groupId>org.springframework.boot</groupId>-->
+                <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
             <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/thirdparty</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!--mybatis自动生成代码插件,只需要在generatorConfig.xml配置ORM映射即可-->
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
