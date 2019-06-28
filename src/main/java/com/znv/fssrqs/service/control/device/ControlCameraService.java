@@ -84,7 +84,6 @@ public class ControlCameraService {
                 JSONObject notifyMsg = new JSONObject();
                 String tablename = ConfigManager.getString("fss.mysql.table.cameralib.name");
                 notifyMsg.put("table_name", tablename);
-                notifyMsg.put("thisthisthis","jianghaibin");
                 notifyMsg.put("msg_type", ConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
                 notifyMsg.put("reference_id", libId);
                 notifyMsg.put("primary_id", tid);

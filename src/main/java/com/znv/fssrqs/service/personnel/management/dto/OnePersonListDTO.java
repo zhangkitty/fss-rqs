@@ -50,10 +50,10 @@ public class OnePersonListDTO {
     private String room_number;
 
     @JSONField(name="DoorOpen")
-    private String door_open;
+    private Integer door_open;
 
     @JSONField(name="GenderCode")
-    private String sex;
+    private Integer sex;
 
     @JSONField(name="ImageName")
     private String image_name;
@@ -65,7 +65,7 @@ public class OnePersonListDTO {
     private String card_id;
 
     @JSONField(name="Flag")
-    private String flag;
+    private Integer flag;
 
     @JSONField(name="Comment")
     private String comment;
@@ -77,7 +77,7 @@ public class OnePersonListDTO {
     private String control_end_time;
 
     @JSONField(name="IsDel")
-    private String is_del;
+    private Integer is_del;
 
     @JSONField(name="CreateTime")
     private String create_time;
@@ -104,7 +104,7 @@ public class OnePersonListDTO {
     private String image_id;
 
     @JSONField(name="PersonlibType")
-    private String personlib_type;
+    private Integer personlib_type;
 
     @JSONField(name="ControlPoliceCategory")
     private String control_police_category;
@@ -130,5 +130,15 @@ public class OnePersonListDTO {
     @JSONField(name="SourceID")
     private String source_id;
 
+    @JSONField(name="PersonAlarmLevel")
+    private String alarm_level;
 
+    @JSONField(name="Score")
+    private String score;
+
+    @JSONField(name="Sim")
+    private String sim;
+
+    @JSONField(name="ImageUrl")
+    private String image_url;
 }

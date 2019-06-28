@@ -112,4 +112,9 @@ public class CommonConstant {
         public static final String SMALL_PIC_URL = "GetSmallPic";
         public static final String BIG_PIC_URL = "GetBigBgPic";
     }
+
+    public static class ChongQingLib {
+        public static final String RESIDENT = "38";
+        public static final String SECOND_GENERATION_ID_CARD = "18";
+    }
 }

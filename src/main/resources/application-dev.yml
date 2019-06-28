@@ -67,6 +67,10 @@ sensetime:
   feature:
     srcPoints: {-1.0f,0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}
     dstPoints: {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
+person:
+    person-id-length: 16
+    total-max-count: 60000000
+    control-max-count: 500000
 conf:
    myServer:
     hdfsUrl: 'hdfs://lv116.dct-znv.com:8020/user/fss/V120'

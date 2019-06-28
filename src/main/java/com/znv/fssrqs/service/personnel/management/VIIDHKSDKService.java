@@ -3,6 +3,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.hikvision.artemis.sdk.ArtemisHttpUtil;
 import com.znv.fssrqs.common.Consts;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
@@ -103,5 +104,45 @@ public class VIIDHKSDKService {
         ret.put("totalRows", total);
         return ret;
 
+    }
+
+
+    public JSONObject addHkPerson(JSONObject params, String hkLlibId) {
+        Map<String, String> path = ImmutableMap.<String, String>builder().put(Consts.HKURI.ARTEMIS_PROTOCAL, Consts.HKURI.ARTEMIS_PATH + Consts.HKURI.ADD_PERSON).build();
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("humanName", params.getString("Name"));
+        JSONArray jsonImageArray = params.getJSONArray("SubImageList");
+        requestParams.put("picBase64", jsonImageArray.getJSONObject(0).getString("Data"));
+        requestParams.put("birthday", params.getString("Birth"));
+        requestParams.put("humanAddress", params.getString("Addr"));
+        requestParams.put("sex", params.getIntValue("Sex"));
+        String credentialsNum = params.getString("IDNumber");
+        if (StringUtils.isNotEmpty(credentialsNum)) {
+            requestParams.put("credentialsNum", credentialsNum);
+            requestParams.put("credentialsType", 1); // 0-未知，1-身份证，2-警官证
+        }
+        requestParams.put("listLibId", hkLlibId);
+        String res = ArtemisHttpUtil.doPostStringArtemis(path, JSONObject.toJSONString(requestParams), null, null, "application/json", null);
+        log.info("addHkPerson res:{}", res);
+        if (StringUtils.isEmpty(res)) {
+            return null;
+        }
+        JSONObject restPerson = JSONObject.parseObject(res);
+        return restPerson;
+    }
+
+    public JSONObject delHkPerson(String id) {
+        log.info("delHkPerson ids:{}", id);
+        Map<String, String> path = ImmutableMap.<String, String>builder().put(Consts.HKURI.ARTEMIS_PROTOCAL, Consts.HKURI.ARTEMIS_PATH + Consts.HKURI.DEL_PERSON).build();
+        JSONObject requestParams = new JSONObject();
+        List<String> error = Lists.newArrayList();
+        requestParams.put("humanId", id);
+        String res = ArtemisHttpUtil.doPostStringArtemis(path, JSONObject.toJSONString(requestParams), null, null, "application/json", null);
+        log.info("delHkPerson res:{}", res);
+        if (StringUtils.isEmpty(res)) {
+            return null;
+        }
+        JSONObject restPerson = JSONObject.parseObject(res);
+        return restPerson;
     }
 }
