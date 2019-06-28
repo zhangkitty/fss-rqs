@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class GeneralSearchParam {
 
-    @NotNull (message = "设备ID不能为空")
+//    @NotNull (message = "设备ID不能为空")
     private String[] DeviceIDs;
 
     @NotBlank(message = "开始时间不能为空")
@@ -33,7 +33,7 @@ public class GeneralSearchParam {
     @NotNull(message = "每页记录数不能为空")
     private Integer PageSize;
 
-    private Integer SimilarityDegree;
+    private Double SimilarityDegree;
 
     //查询类型， 0： 无图检索，1：极速检索，2：精确检索
     private Integer QueryType;

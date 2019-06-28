@@ -30,7 +30,7 @@ public class CommonSearchParams {
     private String SortField;
 
     @JSONField(name = "sortOrder")
-    private String SortOrder;
+    private String SortOrder = "enter_time";
 
     @JSONField(name = "age_start")
     private Integer AgeLowerLimit;
@@ -63,7 +63,7 @@ public class CommonSearchParams {
     private Integer GenderType;
 
     @JSONField(name = "sim_threshold")
-    private Integer SimilarityDegree;
+    private Double SimilarityDegree;
 
     @JSONField(name = "is_calcSim")
     private Boolean IsCalcSim;
@@ -75,5 +75,9 @@ public class CommonSearchParams {
     private String FilterType;
 
     private String feature_name = "rt_feature.feature_high";
+
+    private String[] excludes = new String[]{"rt_feature"};
+
+    private Boolean is_excludes = true;
 }
 

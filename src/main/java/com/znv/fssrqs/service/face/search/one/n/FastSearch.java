@@ -61,7 +61,9 @@ public class FastSearch {
         paramsWithTempId.put("id","template_fss_arbitrarysearch");
         paramsWithTempId.put("params",commonSearchParams);
 
-        String url = calculateIndex(params);
+        String url = calculateIndex(params,commonSearchParams);
+
+        System.out.println(url);
 
         HttpEntity httpEntity = new NStringEntity(paramsWithTempId.toJSONString()
                 ,ContentType.APPLICATION_JSON);
@@ -102,7 +104,7 @@ public class FastSearch {
 
 
     //计算索引的迁移很麻烦
-    private String calculateIndex(GeneralSearchParam params){
+    private String calculateIndex(GeneralSearchParam params,CommonSearchParams commonSearchParams){
         FeatureCompUtil fc = new FeatureCompUtil();
         String indexName="";
         String indexNamePrepix = "history_fss_data_n_project_v1_2";
@@ -111,7 +113,7 @@ public class FastSearch {
 
         int[][] coarseCodeOrder = null;
 
-        String[] featureValue = params.getFeatureValue();
+        String[] featureValue = commonSearchParams.getFeatureValue();
         for (int i = 0; i < featureValue.length; i++) {
             try {
                 coarseCodeOrder = predictCoarseOrder(fc.getFloatArray(new org.apache.commons.codec.binary.Base64().decode(featureValue[i])), coarseCentersNum);

@@ -1,5 +1,6 @@
 package com.znv.fssrqs.controller.face.search.one.n;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.param.face.search.one.n.ExactSearchResultParams;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * @author zhangcaochao
@@ -34,13 +36,45 @@ public class GenneralSearchController {
 
     @RequestMapping(value = "/VIID/Faces/FaceSearch" ,method = RequestMethod.POST)
     public ResponseVo faceSearch(@RequestHeader("Host") String host,@Validated @RequestBody GeneralSearchParam generalSearchParam) throws IOException {
-
+        if(generalSearchParam.getSimilarityDegree()!=null){
+            generalSearchParam.setSimilarityDegree(generalSearchParam.getSimilarityDegree()*0.001);
+        }
         JSONObject jsonObject = new JSONObject();
         switch (generalSearchParam.getQueryType()) {
             case 1:
                 jsonObject = fastSearch.fastSearch(host,generalSearchParam);
                 break;
             case 2:
+                if(("-1").equals(generalSearchParam.getAgeLowerLimit().toString())){
+                    generalSearchParam.setAgeLowerLimit("0");
+                }
+                if(generalSearchParam.getAgeUpLimit().toString().equals("-1")){
+                    generalSearchParam.setAgeUpLimit(null);
+                }
+                if(generalSearchParam.getGlass().toString().equals("-1")){
+                    generalSearchParam.setGlass(null);
+                }
+                if(generalSearchParam.getRespirator().toString().equals("-1")){
+                    generalSearchParam.setRespirator(null);
+                }
+                if(generalSearchParam.getSkinColor().toString().equals("-1")){
+                    generalSearchParam.setSkinColor(null);
+                }
+                if(generalSearchParam.getMustache().toString().equals("-1")){
+                    generalSearchParam.setMustache(null);
+                }
+                if(generalSearchParam.getEmotion().toString().equals("-1")){
+                    generalSearchParam.setEmotion(null);
+                }
+                if(generalSearchParam.getEyeOpen().toString().equals("-1")){
+                    generalSearchParam.setEyeOpen(null);
+                }
+                if(generalSearchParam.getMouthOpen().toString().equals("-1")){
+                    generalSearchParam.setMouthOpen(null);
+                }
+                if(generalSearchParam.getGenderType().toString().equals("-1")){
+                    generalSearchParam.setGenderType(null);
+                }
                 jsonObject = exactSearch.startSearch(generalSearchParam);
                 break;
             default:
@@ -65,4 +99,26 @@ public class GenneralSearchController {
         return  ResponseVo.success(ret);
 
     }
+
+    //参数转换
+    private JSONObject parseObject(String content) {
+        JSONObject params = JSON.parseObject(content);
+        JSONObject jsonObject = new JSONObject();
+        Set<String> keys = params.keySet();
+        keys.parallelStream().forEach(key -> {
+            Object value = params.get(key);
+            if (value instanceof String || value instanceof Integer) {
+                if (value == null || String.valueOf(value).equals("-1")) {
+
+                } else {
+                    jsonObject.put(key, params.get(key));
+                }
+            } else {
+                jsonObject.put(key, params.get(key));
+            }
+        });
+
+        return jsonObject;
+    }
+
 }

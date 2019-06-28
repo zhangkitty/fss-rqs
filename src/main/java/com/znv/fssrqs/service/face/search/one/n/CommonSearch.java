@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -89,11 +90,17 @@ public class CommonSearch {
             String imgUrl = ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
             commonSearchResultDTO.setSmallPictureUrl(imgUrl);
 
+            String enter_time = (String) ((JSONObject)((JSONObject) v).get("_source")).get("enter_time");
+            commonSearchResultDTO.setEnter_time(LocalDateTime.parse(enter_time,DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            String faceDisAppearTime = (String) ((JSONObject)((JSONObject) v).get("_source")).get("leave_time");
+            commonSearchResultDTO.setLeave_time(LocalDateTime.parse(faceDisAppearTime,DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+
             String bigPictureUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("big_picture_uuid");
             if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)){
                 commonSearchResultDTO.setBigPictureUrl("");
             }else {
-                commonSearchResultDTO.setBigPictureUrl(ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
+                commonSearchResultDTO.setBigPictureUrl(ImageUtils.getImgUrl("10.45.157.117:9008", "GetBigBgPic", bigPictureUuid));
             }
             list.add(JSONObject.parse(JSONObject.toJSONString(commonSearchResultDTO)));
         });

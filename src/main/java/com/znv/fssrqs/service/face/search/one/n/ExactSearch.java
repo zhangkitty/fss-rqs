@@ -6,6 +6,7 @@ import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
 import com.znv.fssrqs.util.FaceAIUnitUtils;
 import com.znv.fssrqs.util.HttpUtils;
 import com.znv.fssrqs.util.ImageUtils;
+import com.znv.fssrqs.util.MD5Util;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -57,19 +58,21 @@ public class ExactSearch {
     private ModelMapper modelMapper;
 
     // 定义全局变量 标志查询线程状态 0：未执行 1：已执行
-    private Map<String, Integer> concurrentHashMap = new ConcurrentHashMap<String, Integer>();
+    private static Map<String, Integer> concurrentHashMap = new ConcurrentHashMap<String, Integer>();
 
     public JSONObject startSearch(GeneralSearchParam params) throws IOException {
-        Integer paramsHashCode = params.hashCode();
 
+        String paramsHashCode =MD5Util.encode(params.toString());
         concurrentHashMap.put("eventId", 0);
-
+        log.error(concurrentHashMap.get("eventId").toString(),"添加");
         ExecutorService pool = Executors.newFixedThreadPool(1);
         pool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     doSearch(params);
+                    concurrentHashMap.put("eventId", 1);
+                    log.error(concurrentHashMap.get("eventId").toString(),"跑完以后运行");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -117,14 +120,14 @@ public class ExactSearch {
 
             JSONArray esHits = result.getJSONObject("hits").getJSONArray("hits");
             if (esHits.size() > 0) {
-                this.bulkWriteToEs("history_exact_search_result_n_project", "history_data", esHits, params.hashCode(), i, indexName);
+                this.bulkWriteToEs("history_exact_search_result_n_project", "history_data", esHits, MD5Util.encode(params.toString()), i, indexName);
             }
 
         }
     }
 
     //index:要写数据的索引名； type:要写数据的type； esHits：要写的数据； eventId：事务id，由web发送，标志一次查询； searchNum：查询索引的顺序号；indexName：查询索引的名称
-    public void bulkWriteToEs(String index, String type, JSONArray esHits, int eventId, Object searchNum, String indexName) {
+    public void bulkWriteToEs(String index, String type, JSONArray esHits, String eventId, Object searchNum, String indexName) {
         try {
             FeatureCompUtil fc = new FeatureCompUtil();
             int len = esHits.size();
@@ -274,9 +277,8 @@ public class ExactSearch {
             JSONObject data = new JSONObject();
             data.put("List", hitsArray);
             data.put("TotalSize", resultJson.getIntValue("total"));
-            data.put("QueryStatus", concurrentHashMap.get(eventId));
-            ret.put("Data", data);
-            return ret;
+            data.put("QueryStatus", concurrentHashMap.get("eventId"));
+            return data;
         } catch (Exception e) {
             throw e;
         }

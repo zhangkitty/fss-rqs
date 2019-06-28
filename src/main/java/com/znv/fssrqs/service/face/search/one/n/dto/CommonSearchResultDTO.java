@@ -1,6 +1,7 @@
 package com.znv.fssrqs.service.face.search.one.n.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;
 
 import javax.jws.HandlerChain;
@@ -12,6 +13,7 @@ import java.util.Date;
  * @Date 2019.6.18 下午2:25
  */
 @Data
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class CommonSearchResultDTO {
 
     @JSONField(name = "OfficeID")
@@ -47,8 +49,10 @@ public class CommonSearchResultDTO {
     @JSONField(name = "field_6")
     private String uuid;
 
+    @JSONField(name = "SmallPictureUrl")
     private String SmallPictureUrl;
 
+    @JSONField(name = "BigPictureUrl")
     private String BigPictureUrl;
 
     @JSONField(name = "OpTime")
