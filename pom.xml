@@ -317,6 +317,7 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>fss-rqs</finalName>
         <plugins>
             <!--<plugin>-->
                 <!--<groupId>org.springframework.boot</groupId>-->
