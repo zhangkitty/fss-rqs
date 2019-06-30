@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BusinessException extends RuntimeException{
 
-    private String errcode;
+    private Integer errcode;
     private String msg;
 
     public BusinessException(ErrorCodeEnum errorCodeEnum){

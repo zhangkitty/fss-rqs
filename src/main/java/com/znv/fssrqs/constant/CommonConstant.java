@@ -8,6 +8,8 @@ package com.znv.fssrqs.constant;
  * @Description TODO
  */
 public class CommonConstant {
+    public final static String PACKAGE_PATH_NAME = "com.znv.fssrqs" ;
+
     public static class HkUri {
         public static final String ARTEMIS_PROTOCAL = "https://";
         public static final String ARTEMIS_PATH = "/artemis";
@@ -116,5 +118,9 @@ public class CommonConstant {
     public static class ChongQingLib {
         public static final String RESIDENT = "38";
         public static final String SECOND_GENERATION_ID_CARD = "18";
+        public static final String RUN_CRIMINAL = "20";
+        public static final String RUN_CRIMINAL_CHONGQING = "22";
+        public static final String BASE_TERRORIST = "25";
+        public static final String MAJOR_TERRORIST = "29";
     }
 }

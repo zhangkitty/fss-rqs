@@ -1,26 +1,19 @@
 package com.znv.fssrqs.controller.personnel.management;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.personnel.management.PersonListService;
 import com.znv.fssrqs.service.personnel.management.VIIDHKSDKService;
 import com.znv.fssrqs.service.personnel.management.VIIDPersonService;
-import com.znv.fssrqs.service.personnel.management.dto.HKPersonListSearchDTO;
-import com.znv.fssrqs.service.personnel.management.dto.STPersonListSearchDTO;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.vo.ResponseVo;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author zhangcaochao
@@ -29,7 +22,6 @@ import java.io.IOException;
  */
 
 @RestController
-@RequestMapping(produces = { "application/json;charset=UTF-8" })
 public class PersonListController {
 
     @Autowired
@@ -67,25 +59,130 @@ public class PersonListController {
         return ResponseVo.success(jsonObject);
     }
 
-    @RequestMapping(value = "/VIID/Person", method = RequestMethod.POST)
-    public JSONObject addPerson(@RequestBody String body) {
+    /**
+     * ！！从老模块移植过来，待优化！！
+     * 人员查询（含静态库1：N检索）
+     * @param host
+     * @param mapParam
+     * @return
+     */
+    @RequestMapping(value = "/VIID/QueryPersons", method = RequestMethod.POST)
+    public JSONObject getPersonListByPost(@RequestHeader("Host") String host,
+                                          @RequestBody Map mapParam
+    ){
         JSONObject retObject = new JSONObject();
-        retObject.put("Data", "");
-        JSONObject jsonObject = FastJsonUtils.toJSONObject(body);
-        if (jsonObject == null
-                || !jsonObject.containsKey("Person")
-        ) {
-            retObject.put("Code", 20001);
-            retObject.put("Message", "error, Person is null!");
+        JSONArray personList = new JSONArray();
+        retObject.put("Data", personList);
+        if (mapParam == null
+                || !mapParam.containsKey("CurrentPage")
+                || !mapParam.containsKey("PageSize")) {
+            retObject.put("Code", 20000);
+            retObject.put("Message", "参数错误，CurrentPage或PageSize为空!");
             return retObject;
         }
-        JSONObject jsonPerson = jsonObject.getJSONObject("Person");
+
+        int size = -1;
+        if ( mapParam.get("PageSize") instanceof Integer) {
+            size = (Integer)mapParam.get("PageSize");
+        } else if (mapParam.get("PageSize") instanceof String) {
+            size = Integer.valueOf((String)mapParam.get("PageSize"));
+        }
+
+        if (size < 0 || size > 100){
+            retObject.put("Code", 20000);
+            retObject.put("Message", "参数错误，PageSize非法!");
+            return retObject;
+        }
+
+        int from = -1;
+        if ( mapParam.get("CurrentPage") instanceof Integer) {
+            from = ((Integer)(mapParam.get("CurrentPage")) - 1) * size;
+        } else if (mapParam.get("CurrentPage") instanceof String) {
+            from = (Integer.valueOf((String)mapParam.get("CurrentPage")) - 1) * size;
+        }
+        if (from < 0) {
+            retObject.put("Code", 20000);
+            retObject.put("Message", "参数错误，CurrentPage非法!");
+            return retObject;
+        }
+        JSONObject transformedParams = new JSONObject();
+        transformedParams.put("from", from);
+        transformedParams.put("size", size);
+        if (mapParam.containsKey("StartTime")) {
+            transformedParams.put("start_time", mapParam.get("StartTime"));
+        }
+        if (mapParam.containsKey("EndTime")) {
+            transformedParams.put("end_time", mapParam.get("EndTime"));
+        }
+        if (mapParam.containsKey("IsDel")) {
+            transformedParams.put("is_del", mapParam.get("IsDel"));
+        }
+        if (mapParam.containsKey("Name")) {
+            transformedParams.put("person_name", mapParam.get("Name"));
+        }
+        if (mapParam.containsKey("IDNumber")) {
+            transformedParams.put("person_name", mapParam.get("IDNumber")); // 老接口ID搜索也是传的这个字段
+        }
+        if (mapParam.containsKey("LibID")) {
+            transformedParams.put("lib_id", mapParam.get("LibID"));
+            transformedParams.put("is_lib", true);
+        }
+
+        transformedParams.put("minimum_should_match",1);
+        transformedParams.put("lib_aggregation",true);
+        transformedParams.put("order_type","desc");
+        if (mapParam.containsKey("ImgData")
+                && mapParam.containsKey("SimThreshold") ) {
+            transformedParams.put("imgData", mapParam.get("ImgData"));
+            transformedParams.put("sim_threshold", mapParam.get("SimThreshold"));
+            transformedParams.put("feature_name","feature.feature_high");
+            transformedParams.put("is_calcSim", true);
+        } else {
+            transformedParams.put("sort_order2","desc");
+            transformedParams.put("sort_order1","desc");
+            transformedParams.put("sort_field2","person_id");
+            transformedParams.put("sort_field1","modify_time");
+        }
+
+        retObject.put("Code", 10000);
+        retObject.put("Message", "ok");
+
+        JSONObject data = null;
+        if (mapParam.containsKey("AlgorithmType")) {
+            Integer algorithmType = (Integer) mapParam.get("AlgorithmType");
+            if (1 == algorithmType) {
+                try {
+                    data = viidhksdkService.queryHkPerson(transformedParams);
+                    retObject.put("Data", data);
+                    return retObject;
+                } catch (Exception e) {
+                    retObject.put("Code", 50000);
+                    retObject.put("Message", e.getMessage());
+                    return retObject;
+                }
+            }
+        }
+
         try {
-            JSONObject data = personService.addPerson(jsonPerson);
-            retObject.put("ResponseStatus", data);
-            JSONObject responseStatus = new JSONObject();
-            responseStatus.put("ResponseStatus", data);
-            retObject.put("Data", responseStatus);
+            data = personListService.getPersonList(host, transformedParams);
+            retObject.put("Data", data);
+            return retObject;
+        } catch (Exception e) {
+            retObject.put("Code", 50000);
+            retObject.put("Message", e.getMessage());
+            return retObject;
+        }
+    }
+
+    @RequestMapping(value = "/VIID/Person/{LibID}/{PersonID}", method = RequestMethod.GET)
+    public JSONObject getPerson(@RequestHeader("Host") String host,
+                                @PathVariable("LibID") String LibID,
+                                @PathVariable("PersonID") String PersonID){
+        JSONObject retObject = new JSONObject();
+        retObject.put("Data", "");
+        try {
+            JSONObject data = personListService.getPerson(host, LibID, PersonID);
+            retObject.put("Data", data);
             retObject.put("Code", 10000);
             retObject.put("Message", "ok");
             return retObject;
@@ -95,4 +192,104 @@ public class PersonListController {
             return retObject;
         }
     }
+
+    @RequestMapping(value = "/VIID/Person", method = RequestMethod.POST)
+    public JSONObject addPerson(@RequestBody String body) {
+        JSONObject retObject = new JSONObject();
+        retObject.put("Data", "");
+        JSONObject jsonObject = FastJsonUtils.toJSONObject(body);
+        if (jsonObject == null
+                || !jsonObject.containsKey("Person")
+        ) {
+            retObject.put("Code", 20000);
+            retObject.put("Message", "新增失败，Person为空!");
+            return retObject;
+        }
+
+        JSONObject data = personService.addPerson(jsonObject.getJSONObject("Person"));
+        retObject.put("ResponseStatus", data);
+        JSONObject responseStatus = new JSONObject();
+        responseStatus.put("ResponseStatus", data);
+        retObject.put("Data", responseStatus);
+        retObject.put("Code", 10000);
+        retObject.put("Message", "ok");
+        return retObject;
+    }
+
+    @RequestMapping(value = "/VIID/Person", method = RequestMethod.PUT)
+    public JSONObject updatePerson(@RequestBody String body) {
+        JSONObject retObject = new JSONObject();
+        retObject.put("Data", "");
+        JSONObject jsonObject = FastJsonUtils.toJSONObject(body);
+        if (jsonObject == null
+                || !jsonObject.containsKey("Person")
+        ) {
+            retObject.put("Code", 20000);
+            retObject.put("Message", "更新失败，Person为空!");
+            return retObject;
+        }
+
+        JSONObject data = personService.updatePerson(jsonObject.getJSONObject("Person"));
+        retObject.put("ResponseStatus", data);
+        JSONObject responseStatus = new JSONObject();
+        responseStatus.put("ResponseStatus", data);
+        retObject.put("Data", responseStatus);
+        retObject.put("Code", 10000);
+        retObject.put("Message", "ok");
+        return retObject;
+    }
+
+    @DeleteMapping(value = "/VIID/Person")
+    public JSONObject deletePerson(@RequestParam Map mapParam) {
+        JSONObject retObject = new JSONObject();
+        retObject.put("Code", 20000);
+        if (mapParam == null
+                || !mapParam.containsKey("LibID")
+                || !mapParam.containsKey("PersonID")) {
+            retObject.put("Message", "错误, LibID和PersonID不能为空!");
+            return retObject;
+        }
+
+        String LibID = (String)mapParam.get("LibID");
+        String PersonID = (String)mapParam.get("PersonID");
+        JSONObject data = personService.deletePerson(LibID, PersonID);
+        retObject.put("ResponseStatus", data);
+        retObject.put("Code", 10000);
+        retObject.put("Message", "ok");
+        return retObject;
+    }
+
+    @DeleteMapping(value = "/VIID/Persons")
+    public JSONObject deletePersons(@RequestParam Map mapParam) {
+        JSONObject retObject = new JSONObject();
+        retObject.put("Code", 20000);
+        if (mapParam == null
+                || !mapParam.containsKey("LibID")
+                || !mapParam.containsKey("IDList")) {
+            retObject.put("Message", "错误, LibID和IDList不能为空!");
+            return retObject;
+        }
+        String libID = (String)mapParam.get("LibID");
+        String[] personIDs = ((String)mapParam.get("IDList")).split(",");
+        if (personIDs.length < 1) {
+            retObject.put("Message", "错误, IDList不能为空!");
+            return retObject;
+        }
+
+        JSONObject data = new JSONObject();
+        JSONObject responseStatusList = new JSONObject();
+        JSONArray statusObjectArray = new JSONArray();
+        responseStatusList.put("ResponseStatusObject", statusObjectArray);
+        data.put("ResponseStatusList", responseStatusList);
+        retObject.put("Data", data);
+        for (String personID : personIDs) {
+            JSONObject deleteStatusObject = personService.deletePerson(libID, personID);
+            statusObjectArray.add(deleteStatusObject);
+        }
+        retObject.put("Code", 10000);
+        retObject.put("Message", "ok");
+        retObject.put("ResponseStatusList", responseStatusList);
+        return retObject;
+    }
+
 }

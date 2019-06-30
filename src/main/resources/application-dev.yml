@@ -34,7 +34,7 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: 10.45.157.104
+  host: 10.45.157.116
   port: 9200
   clusterName: face.dct-znv.com-es
 #海康SDK
@@ -44,6 +44,9 @@ hksdk:
   base-url: 10.45.157.59
   app-key: '24606272'
   app-secret: 'S2K5ChipGIr6elg2RPbC'
+chongqing:
+  eds-url: http://50.1.64.130:10002/pingaoEds
+  image-url: http://50.1.64.130:10002/getImage
 bigdata:
   hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
 ###缓冲服务地址配置
@@ -69,8 +72,6 @@ sensetime:
     dstPoints: {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
 person:
     person-id-length: 16
-    total-max-count: 60000000
-    control-max-count: 500000
 conf:
    myServer:
     hdfsUrl: 'hdfs://lv116.dct-znv.com:8020/user/fss/V120'

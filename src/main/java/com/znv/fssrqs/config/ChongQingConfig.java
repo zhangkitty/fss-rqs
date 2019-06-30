@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Data
-@ConfigurationProperties(prefix = "person")
-public class PersonConfig {
-    private Integer personIdLength;
+@ConfigurationProperties(prefix = "chongqing")
+public class ChongQingConfig {
+    private String edsUrl;
+    private String imageUrl;
 }

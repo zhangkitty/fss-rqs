@@ -22,7 +22,7 @@
         <!--滚动策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--路径-->
-            <fileNamePattern>/var/log/fss-rqs/info.%d.log</fileNamePattern>
+            <fileNamePattern>./log/info.%d.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
@@ -38,7 +38,7 @@
         <!--滚动策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--路径-->
-            <fileNamePattern>/var/log/fss-rqs/error.%d.log</fileNamePattern>
+            <fileNamePattern>./log/error.%d.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 

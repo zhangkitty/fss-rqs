@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UndefinedException extends Exception {
 
-    private String errcode;
+    private Integer errcode;
     private String msg;
 
     public UndefinedException(ErrorCodeEnum errorCodeEnum){

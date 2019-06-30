@@ -5,15 +5,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ResponseVo {
 
-    private String Code;
+    private Integer Code;
 
     private String Message;
 
@@ -21,11 +18,11 @@ public class ResponseVo {
 
     private static ResponseVo responseVo;
 
-    public String getCode() {
+    public Integer getCode() {
         return Code;
     }
 
-    public ResponseVo setCode(String code) {
+    public ResponseVo setCode(Integer code) {
         this.Code = code;
         return this;
     }
@@ -48,13 +45,13 @@ public class ResponseVo {
         return this;
     }
 
-    private ResponseVo(String code, String message, Object data){
+    private ResponseVo(Integer code, String message, Object data){
         this.Code = code;
         this.Message = message;
         this.Data = data;
     }
 
-    public static ResponseVo getInstance(String code, String message,Object data){
+    public static ResponseVo getInstance(Integer code, String message,Object data){
         if(ResponseVo.responseVo==null){
             responseVo = new ResponseVo(code,message,data);
         }else{

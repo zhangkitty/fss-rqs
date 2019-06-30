@@ -1,23 +1,19 @@
 package com.znv.fssrqs.service.personnel.management;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.hikvision.artemis.sdk.ArtemisHttpUtil;
-import com.znv.fssrqs.common.Consts;
+import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.personnel.management.dto.HKPersonListSearchDTO;
-import com.znv.fssrqs.util.WriteNullListAsEmptyFilter;
-import com.znv.fssrqs.vo.ResponseVo;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,7 +21,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class VIIDHKSDKService {
-
     @Autowired
     private ModelMapper modelMapper;
 
@@ -42,73 +37,161 @@ public class VIIDHKSDKService {
             jsonObject.put("listLibIds", ((List) libId).stream().map(String::valueOf).collect(Collectors.joining(",")));
         }
 
-        //返回值
-        JSONObject ret = new JSONObject();
+        Map<String, String> path = new HashMap<>(2);
+        path.put(CommonConstant.HkUri.ARTEMIS_PROTOCAL,
+                CommonConstant.HkUri.ARTEMIS_PATH + CommonConstant.HkUri.QUERY_PERSON);
 
-        Map<String, String> path = ImmutableMap.<String, String>builder().put(Consts.HKURI.ARTEMIS_PROTOCAL, Consts.HKURI.ARTEMIS_PATH + Consts.HKURI.QUERY_PERSON).build();
-
-        String res = ArtemisHttpUtil.doPostStringArtemis(path, JSONObject.toJSONString(jsonObject), null, null, "application/json", null);
+        String res = ArtemisHttpUtil.doPostStringArtemis(path,
+                JSONObject.toJSONString(jsonObject),
+                null, null, "application/json", null);
         log.info("queryHkPerson res:{}", res);
-
         if (StringUtils.isEmpty(res)) {
-            throw new Exception("hk response is null");
+            throw new RuntimeException("海康库的响应消息无内容！");
+        }
+        JSONObject hkResult = JSONObject.parseObject(res);
+        if (hkResult == null
+                || !hkResult.containsKey("data")
+                || !hkResult.containsKey("msg")
+                || !hkResult.containsKey("code")) {
+            throw new RuntimeException("海康库的响应消息格式不正确！");
+        }
+        if (0 != hkResult.getIntValue("code")) {
+            throw new RuntimeException("海康库的响应失败！错误码："
+                    + hkResult.getIntValue("code")
+                    + "，错误描述：" + hkResult.getString("msg"));
         }
 
-        //todo
-        //这里的适配可能要做一些改变
-        ResponseVo restPerson = JSONObject.parseObject(res, ResponseVo.class);
-
-        if (restPerson == null || Consts.HkSdkErrCode.ERROR == Integer.valueOf(restPerson.getCode()) ) {
-            throw new Exception("hk person is null or error");
-        }
-
-        JSONArray list =  ((JSONObject)restPerson.getData()).getJSONArray("list");
+        JSONArray list = (JSONArray) hkResult.getJSONObject("data").get("list");
         JSONArray data = new JSONArray();
         if (list != null && !list.isEmpty()) {
             list.stream().forEach(obj -> {
                 JSONObject jsonObj = (JSONObject) obj;
                 JSONObject o = new JSONObject();
-                o.put(Consts.FinalKeyCode.FCPID, jsonObj.getString("humanId"));
-                o.put(Consts.FinalKeyCode.PERSONNAME, jsonObj.getString("humanName"));
-                o.put("age", jsonObj.getInteger("age"));
-                o.put("sex", jsonObj.getInteger("sex"));
-                o.put(Consts.FinalKeyCode.PERSONID, jsonObj.getString("credentialsNum"));
-                o.put(Consts.FinalKeyCode.CONTROLLEVEL, jsonObj.getString("listLibId"));
-                o.put(Consts.FinalKeyCode.IMG_URL, jsonObj.getString("facePicUrl"));
+                o.put("PersonID", jsonObj.getString("humanId"));
+                o.put("Name", jsonObj.getString("humanName"));
+                o.put("GenderCode", jsonObj.getInteger("sex"));
+                o.put("ImageUrl", jsonObj.getString("facePicUrl"));
+                o.put("LibID", jsonObj.getString("listLibId"));
                 Double sim = jsonObj.getDouble("similarity");
                 if (sim != null && sim.doubleValue() != 0.0) {
-                    o.put("sim", ("" + sim * 100).substring(0, 5) + "%");
+                    o.put("Sim", ("" + sim * 100).substring(0, 5) + "%");
                 }
-                JSONObject extData = new JSONObject();
-                extData.put("age", jsonObj.getInteger("age"));
-                extData.put("sublib", jsonObj.getString("listLibId"));
-                o.put(Consts.FinalKeyCode.IMAGE_NAME, JSON.toJSONString(extData, new WriteNullListAsEmptyFilter()));
                 data.add(o);
             });
         }
 
-        ret.put("curPage", ((JSONObject)restPerson.getData()).getIntValue("pageNo"));
-        ret.put("data", data);
-        ret.put(Consts.FssSdkKeyCode.ERROR_CODE, Consts.HkSdkErrCode.SUCCESS);
-        ret.put("pageSize", ((JSONObject)restPerson.getData()).getIntValue("pageSize"));
-        ret.put(Consts.FinalKeyCode.SUCCESS, true);
-        int total = ((JSONObject)restPerson.getData()).getIntValue("total");
-//        int i = total % size;
-//        int j = total / size;
-//        if (i == 0) {
-//            ret.put("totalPages", j);
-//        } else {
-//            ret.put("totalPages", j + 1);
-//        }
-
-        ret.put("totalRows", total);
-        return ret;
-
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("PersonList", data);
+        int total = hkResult.getJSONObject("data").getIntValue("total");
+        jsonData.put("TotalRows", total);
+        return jsonData;
     }
 
+    public JSONObject queryHkPerson (JSONObject params){
+        Map<String, String> path = new HashMap<>(2);
+        path.put(CommonConstant.HkUri.ARTEMIS_PROTOCAL,
+                CommonConstant.HkUri.ARTEMIS_PATH + CommonConstant.HkUri.QUERY_PERSON);
+
+        JSONObject requestParams = new JSONObject();
+
+        String humanName = params.getString("person_name");
+        if (StringUtils.isNotEmpty(humanName)) {
+            requestParams.put("humanName", humanName);
+        }
+
+        String imgData = params.getString("imgData");
+        if (StringUtils.isNotEmpty(imgData)) {
+            requestParams.put("picBase64", imgData);
+        }
+
+        String cardId = params.getString("card_id");
+        if (StringUtils.isNotEmpty(cardId)) {
+            requestParams.put("credentialsNum", cardId);
+        }
+
+        String sex = params.getString("sex");
+        if (StringUtils.isEmpty(sex)) {
+            requestParams.put("sex", -1);
+        } else {
+            requestParams.put("sex", Integer.valueOf(sex));
+        }
+        Object libId = params.get("lib_id");
+        if (libId == null) {
+            requestParams.put("listLibIds", -1);
+        } else {
+            requestParams.put("listLibIds", ((List) libId).stream().map(String::valueOf).collect(Collectors.joining(",")));
+        }
+        int from = params.getIntValue("from");
+        int size = params.getIntValue("size");
+        requestParams.put("pageNo", (from + size) / size);
+        requestParams.put("pageSize", size);
+
+        String beginBirthDate = params.getString("beginBirthDate");
+        String endBirthDate = params.getString("endBirthDate");
+        if (StringUtils.isNotEmpty(beginBirthDate) && StringUtils.isNotEmpty(endBirthDate)) {
+            requestParams.put("beginBirthDate", beginBirthDate);
+            requestParams.put("endBirthDate", endBirthDate);
+        }
+        Integer credentialsType = params.getInteger("credentialsType");
+        if (credentialsType != null) {
+            requestParams.put("credentialsType", credentialsType);
+        }
+
+        Double sim_threshold = params.getDouble("sim_threshold");
+        if (sim_threshold != null) {
+            requestParams.put("similarityMin", sim_threshold);
+            requestParams.put("similarityMax", 1.0);
+        }
+
+        String res = ArtemisHttpUtil.doPostStringArtemis(path, JSONObject.toJSONString(requestParams), null, null, "application/json", null);
+
+        log.info("queryHkPerson res:{}", res);
+        if (StringUtils.isEmpty(res)) {
+            throw new RuntimeException("海康库的响应消息无内容！");
+        }
+        JSONObject hkResult = JSONObject.parseObject(res);
+        if (hkResult == null
+                || !hkResult.containsKey("data")
+                || !hkResult.containsKey("msg")
+                || !hkResult.containsKey("code")) {
+            throw new RuntimeException("海康库的响应消息格式不正确！");
+        }
+        if (0 != hkResult.getIntValue("code")) {
+            throw new RuntimeException("海康库的响应失败！错误码："
+                    + hkResult.getIntValue("code")
+                    + "，错误描述：" + hkResult.getString("msg"));
+        }
+
+        JSONArray list = (JSONArray) hkResult.getJSONObject("data").get("list");
+        JSONArray data = new JSONArray();
+        if (list != null && !list.isEmpty()) {
+            list.stream().forEach(obj -> {
+                JSONObject jsonObj = (JSONObject) obj;
+                JSONObject o = new JSONObject();
+                o.put("PersonID", jsonObj.getString("humanId"));
+                o.put("Name", jsonObj.getString("humanName"));
+                o.put("GenderCode", jsonObj.getInteger("sex"));
+                o.put("ImageUrl", jsonObj.getString("facePicUrl"));
+                o.put("LibID", jsonObj.getString("listLibId"));
+                Double sim = jsonObj.getDouble("similarity");
+                if (sim != null && sim.doubleValue() != 0.0) {
+                    o.put("Sim", ("" + sim * 100).substring(0, 5) + "%");
+                }
+                data.add(o);
+            });
+        }
+
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("PersonList", data);
+        int total = hkResult.getJSONObject("data").getIntValue("total");
+        jsonData.put("TotalRows", total);
+        return jsonData;
+    }
 
     public JSONObject addHkPerson(JSONObject params, String hkLlibId) {
-        Map<String, String> path = ImmutableMap.<String, String>builder().put(Consts.HKURI.ARTEMIS_PROTOCAL, Consts.HKURI.ARTEMIS_PATH + Consts.HKURI.ADD_PERSON).build();
+        Map<String, String> path = new HashMap<>(2);
+        path.put(CommonConstant.HkUri.ARTEMIS_PROTOCAL,
+                CommonConstant.HkUri.ARTEMIS_PATH + CommonConstant.HkUri.ADD_PERSON);
         JSONObject requestParams = new JSONObject();
         requestParams.put("humanName", params.getString("Name"));
         JSONArray jsonImageArray = params.getJSONArray("SubImageList");
@@ -133,7 +216,9 @@ public class VIIDHKSDKService {
 
     public JSONObject delHkPerson(String id) {
         log.info("delHkPerson ids:{}", id);
-        Map<String, String> path = ImmutableMap.<String, String>builder().put(Consts.HKURI.ARTEMIS_PROTOCAL, Consts.HKURI.ARTEMIS_PATH + Consts.HKURI.DEL_PERSON).build();
+        Map<String, String> path = new HashMap<>(2);
+        path.put(CommonConstant.HkUri.ARTEMIS_PROTOCAL,
+                CommonConstant.HkUri.ARTEMIS_PATH + CommonConstant.HkUri.DEL_PERSON);
         JSONObject requestParams = new JSONObject();
         List<String> error = Lists.newArrayList();
         requestParams.put("humanId", id);

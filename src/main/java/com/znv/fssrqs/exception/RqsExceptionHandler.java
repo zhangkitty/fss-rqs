@@ -1,6 +1,6 @@
 package com.znv.fssrqs.exception;
 
-import com.znv.fssrqs.common.Consts;
+import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.vo.ResponseVo;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class RqsExceptionHandler {
         String method  = new String() ;
         for (StackTraceElement stackTraceElement : st) {
             exclass = stackTraceElement.getClassName();
-            if(exclass.contains(Consts.PACKAGE_PATH_NAME)){
+            if(exclass.contains(CommonConstant.PACKAGE_PATH_NAME)){
                 method = stackTraceElement.getMethodName();
                 break ;
             }

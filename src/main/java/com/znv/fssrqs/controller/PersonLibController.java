@@ -57,7 +57,7 @@ public class PersonLibController {
         Long ret = (Long) result.get("ret");
         if (1L == ret) {
             Long libId = (Long) result.get("lib_id");
-            if (hkSdkConfig.isHkSwitch()) {
+            if (hkSdkConfig.getIsSwitch()) {
                 Integer errorCode = hksdkService.addHkLib(personLib, String.valueOf(libId));
                 if (errorCode == -1) {
                     return FastJsonUtils.JsonBuilder.error().message("保存海康静态库失败").json().toJSONString();
@@ -98,7 +98,7 @@ public class PersonLibController {
         Long ret = (Long) result.get("ret");
         //0-失败，1-成功
         if (1L == ret) {
-            if (hkSdkConfig.isHkSwitch()) {
+            if (hkSdkConfig.getIsSwitch()) {
                 Map<String, Object> map = libRelationService.selectOne(libId);
                 if (!Objects.isNull(map)) {
                     String hkLibID = (String) map.get("hk_lib_id");

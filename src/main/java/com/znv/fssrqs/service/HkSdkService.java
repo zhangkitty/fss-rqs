@@ -21,11 +21,9 @@ public class HkSdkService {
     private LibRelationMapper libRelationService;
 
     public Integer addHkLib(PersonLib personLib, String libId) {
-        Map<String, String> path = new HashMap<String, String>(2) {
-            {
-                put(CommonConstant.HkUri.ARTEMIS_PROTOCAL, CommonConstant.HkUri.ARTEMIS_PATH + CommonConstant.HkUri.ADD_LIB);
-            }
-        };
+        Map<String, String> path = new HashMap<>(2);
+        path.put(CommonConstant.HkUri.ARTEMIS_PROTOCAL, CommonConstant.HkUri.ARTEMIS_PATH + CommonConstant.HkUri.ADD_LIB);
+
         /**
          * 添加海康静态库
          */

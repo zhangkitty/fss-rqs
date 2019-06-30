@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @ConfigurationProperties(prefix = "hksdk")
 public class HkSdkConfig {
-    private boolean isHkSwitch;
+    private Boolean isSwitch;
     private String baseUrl;
     private String appKey;
     private String appSecret;
