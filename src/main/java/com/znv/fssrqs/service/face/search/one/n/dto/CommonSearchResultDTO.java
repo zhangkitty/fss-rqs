@@ -20,16 +20,31 @@ public class CommonSearchResultDTO {
     private String office_id;
 
     @JSONField(name = "LibID")
-    private String lib_id;
+    private Integer lib_id;
+
+    @JSONField(name = "PersonID")
+    private String person_id;
 
     @JSONField(name = "Top")
-    private String top;
+    private Integer top;
+
+    @JSONField(name = "ImgHeight")
+    private Integer img_height;
+
+    @JSONField(name = "LeftPos")
+    private Integer left_pos;
+
+    @JSONField(name = "ImgWidth")
+    private Integer img_width;
 
     @JSONField(name = "Similarity")
-    private String similarity;
+    private Float similarity;
 
     @JSONField(name = "DeviceName")
     private String camera_name;
+
+    @JSONField(name = "IsAlarm")
+    private String is_alarm;
 
     @JSONField(name = "FaceDisAppearTime")
     private String leave_time;
@@ -44,9 +59,9 @@ public class CommonSearchResultDTO {
     private String office_name;
 
     @JSONField(name = "DeviceKind")
-    private String camera_type;
+    private Integer camera_type;
 
-    @JSONField(name = "field_6")
+    @JSONField(name = "UUID")
     private String uuid;
 
     @JSONField(name = "SmallPictureUrl")

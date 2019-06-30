@@ -5,6 +5,7 @@ import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchResultDTO;
+import com.znv.fssrqs.util.FormatObject;
 import com.znv.fssrqs.util.ImageUtils;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
@@ -83,24 +84,23 @@ public class CommonSearch {
             CommonSearchResultDTO commonSearchResultDTO = modelMapper.map(((JSONObject)v).get("_source"),CommonSearchResultDTO.class);
 
             String op_time = (String) ((JSONObject)((JSONObject) v).get("_source")).get("op_time");
-            commonSearchResultDTO.setOp_time(LocalDateTime.parse(op_time,DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            //ZonedDateTime.parse(op_time).dateTime.format(DateTimeFormatter.ofPattern("yyyy-mm-dd hh:mm:ss"))
+            commonSearchResultDTO.setOp_time(FormatObject.formatTimeTrim(op_time));
 
             String smallUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("img_url");
             String imgUrl = ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
             commonSearchResultDTO.setSmallPictureUrl(imgUrl);
 
             String enter_time = (String) ((JSONObject)((JSONObject) v).get("_source")).get("enter_time");
-            commonSearchResultDTO.setEnter_time(LocalDateTime.parse(enter_time,DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            commonSearchResultDTO.setEnter_time(FormatObject.formatTimeTrim(enter_time));
             String faceDisAppearTime = (String) ((JSONObject)((JSONObject) v).get("_source")).get("leave_time");
-            commonSearchResultDTO.setLeave_time(LocalDateTime.parse(faceDisAppearTime,DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            commonSearchResultDTO.setLeave_time(FormatObject.formatTimeTrim(faceDisAppearTime));
 
 
             String bigPictureUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("big_picture_uuid");
             if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)){
                 commonSearchResultDTO.setBigPictureUrl("");
             }else {
-                commonSearchResultDTO.setBigPictureUrl(ImageUtils.getImgUrl("10.45.157.117:9008", "GetBigBgPic", bigPictureUuid));
+                commonSearchResultDTO.setBigPictureUrl(ImageUtils.getImgUrl(null, "GetBigBgPic", bigPictureUuid));
             }
             list.add(JSONObject.parse(JSONObject.toJSONString(commonSearchResultDTO)));
         });

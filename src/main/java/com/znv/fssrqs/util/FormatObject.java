@@ -70,6 +70,22 @@ public class FormatObject {
         }
         return formatTime;
     }
+
+    public static String formatTimeTrim(String time) {
+        String formatTime = "";
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        // 转换成东八区时区
+        sdf1.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+
+        try {
+            Date enterTime1 = sdf1.parse(time);
+            formatTime = sdf2.format(enterTime1);
+        } catch (ParseException e) {
+            LOG.error("time format error.",e);
+        }
+        return formatTime;
+    }
     //向前推n个小时
     public static String timeOffset(String time,int n) {
         String timeAfter = "";
