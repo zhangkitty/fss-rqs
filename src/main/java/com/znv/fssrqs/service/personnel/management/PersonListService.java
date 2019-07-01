@@ -193,7 +193,9 @@ public class PersonListService {
                     personInfo.put("LibId", libId);
                     personInfo.put("PersonID", personId);
                 }
-                personInfo.put("ImageUrl", getChongqingPersonImgUrl(libId, personId));
+                if (personInfo != null) {
+                    personInfo.put("ImageUrl", getChongqingPersonImgUrl(libId, personId));
+                }
             }
 
             if (params.containsKey("feature_value")) {
