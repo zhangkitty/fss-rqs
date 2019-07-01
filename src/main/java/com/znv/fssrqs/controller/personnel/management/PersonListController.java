@@ -7,6 +7,7 @@ import com.znv.fssrqs.service.personnel.management.PersonListService;
 import com.znv.fssrqs.service.personnel.management.VIIDHKSDKService;
 import com.znv.fssrqs.service.personnel.management.VIIDPersonService;
 import com.znv.fssrqs.util.FastJsonUtils;
+import com.znv.fssrqs.util.MinuteCounter;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,13 @@ public class PersonListController {
         JSONObject retObject = new JSONObject();
         JSONArray personList = new JSONArray();
         retObject.put("Data", personList);
+
+        if (MinuteCounter.getInstance().isFlowControlled("QueryPersons", 10L)) {
+            retObject.put("Code", 50000);
+            retObject.put("Message", "流量控制!");
+            return retObject;
+        }
+
         if (mapParam == null
                 || !mapParam.containsKey("CurrentPage")
                 || !mapParam.containsKey("PageSize")) {

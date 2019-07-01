@@ -7,6 +7,7 @@ import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.CommonSearch;
 import com.znv.fssrqs.service.face.search.one.n.ExactSearch;
 import com.znv.fssrqs.service.face.search.one.n.FastSearch;
+import com.znv.fssrqs.util.MinuteCounter;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -36,6 +37,11 @@ public class GenneralSearchController {
 
     @RequestMapping(value = "/VIID/Faces/FaceSearch" ,method = RequestMethod.POST)
     public ResponseVo faceSearch(@RequestHeader("Host") String host,@Validated @RequestBody GeneralSearchParam generalSearchParam) throws IOException {
+        if (MinuteCounter.getInstance().isFlowControlled("FaceSearch", 10L)) {
+            ResponseVo retObject = ResponseVo.getInstance(50000, "流量控制!", null);
+            return retObject;
+        }
+
         if(generalSearchParam.getSimilarityDegree()!=null){
             generalSearchParam.setSimilarityDegree(generalSearchParam.getSimilarityDegree()*0.001);
         }

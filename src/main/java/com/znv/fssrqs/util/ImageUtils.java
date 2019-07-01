@@ -16,6 +16,8 @@ import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -47,9 +49,9 @@ public class ImageUtils {
                     } else if (params.contains("fastdfs")) {
                         return String.format("http://%s/GetPictureUrl/%s", ipp, params);
                     } else if (params.contains("dhcloud")) {
-                        return String.format("http://%s:%s/GetDHPicUrl/%s", ipp, params);
+                        return String.format("http://%s/GetDHPicUrl/%s", ipp, params);
                     }
-                    return String.format("http://%s:%s/%s?%s", ipp, mappingUrl, params);
+                    return String.format("http://%s/%s?%s", ipp, mappingUrl, params);
                 }
             case CommonConstant.FdfsConfig.SMALL_PIC_URL:
                 if (ImageStoreType.FDFS.getCode() == getImgStoreType()) {
@@ -66,7 +68,12 @@ public class ImageUtils {
     }
 
     public static String getImgUrl(String remoteIp, String mappingUrl, String params) {
-        String ipp = SpringContextUtil.getCtx().getBean(MbusConfig.class).getIpps().get(0);
+        List<String> listMBusIpp = SpringContextUtil.getCtx().getBean(MbusConfig.class).getIpp();
+        if (listMBusIpp == null || listMBusIpp.isEmpty()) {
+            return null;
+        }
+        Random r = new Random(System.currentTimeMillis());
+        String ipp = listMBusIpp.get(r.nextInt(listMBusIpp.size()));
         return getUrl(mappingUrl, ipp, params);
     }
 

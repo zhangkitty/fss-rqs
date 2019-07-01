@@ -1,9 +1,13 @@
 package com.znv.fssrqs.listener;
 
+import com.znv.fssrqs.util.ConfigManager;
 import com.znv.fssrqs.util.SpringContextUtil;
+import com.znv.fssrqs.util.StartService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
@@ -29,6 +33,9 @@ public class ApplicationEventListener implements ApplicationListener {
             System.out.println("management service initialize finish");
         } else if (event instanceof ContextRefreshedEvent) {
             SpringContextUtil.setCtx(((ContextRefreshedEvent) event).getApplicationContext());
+
+            StartService startService = SpringContextUtil.getCtx().getBean(StartService.class);
+            startService.run();
             System.out.println("management service refresh");
         } else if (event instanceof ApplicationReadyEvent) {
             System.out.println("management service has launched finish");
