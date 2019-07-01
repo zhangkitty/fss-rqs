@@ -8,7 +8,7 @@ server:
 spring:
   datasource:
     mysql:
-      jdbc-url: jdbc:mysql://10.45.157.117:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+      jdbc-url: jdbc:mysql://10.45.157.42:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: zxm10
@@ -18,7 +18,7 @@ spring:
       initial-size: 10
     hbase:
       driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
-      jdbc-url: jdbc:phoenix:lv116.dct-znv.com:2181:/hbase
+      jdbc-url: jdbc:phoenix:10.45.157.104:2181:/hbase
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
@@ -34,7 +34,7 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: 10.45.157.116
+  host: 10.45.157.104
   port: 9200
   clusterName: face.dct-znv.com-es
 #海康SDK
@@ -48,11 +48,11 @@ chongqing:
   eds-url: http://50.1.64.130:10002/pingaoEds
   image-url: http://50.1.64.130:10002/getImage
 bigdata:
-  hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
+  hdfs-url: hdfs://10.45.157.104:8020/user/fss/V120
 ###缓冲服务地址配置
 mbus:
   ipps:
-  - 10.45.157.117:9008
+  - 10.45.157.42:9008
 fdfs:
   trackers:
   - 10.45.157.59:22122
@@ -74,5 +74,5 @@ person:
     person-id-length: 16
 conf:
    myServer:
-    hdfsUrl: 'hdfs://lv116.dct-znv.com:8020/user/fss/V120'
+    hdfsUrl: 'hdfs://10.45.157.104:8020/user/fss/V120'
 
