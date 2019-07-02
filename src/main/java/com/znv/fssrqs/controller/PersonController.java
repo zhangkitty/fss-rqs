@@ -24,6 +24,7 @@ import java.util.Calendar;
 @RestController
 public class PersonController {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     @Autowired
     private PhoenixService phoenixService;
 
