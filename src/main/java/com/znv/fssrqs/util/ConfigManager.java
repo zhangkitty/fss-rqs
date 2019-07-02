@@ -127,4 +127,23 @@ public class ConfigManager {
     public static Properties getProducerProps() {
         return producerProps;
     }
+
+
+    public static Properties getBlackAlarmProperties() {
+        if (groupId == null) {
+            String groupLast = FssPropertyUtils.getInstance().getProperty("kafka.web.group.last");
+            groupLast = StringUtils.isEmpty(groupLast) ? "0000" : groupLast;
+            groupId = "consumer_fss_web_V1_2_001".concat(groupLast);
+        }
+        blackAlarmProps.put("group.id", groupId);
+        blackAlarmProps.put("bootstrap.servers", "10.45.157.116:9092");
+        blackAlarmProps.put("auto.commit.interval.ms", 1000);
+        blackAlarmProps.put("enable.auto.commit", false);
+        blackAlarmProps.put("auto.offset.reset", "latest");
+        blackAlarmProps.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        blackAlarmProps.put("value.deserializer", "com.znv.fssrqs.kafka.common.KafkaAvroDeSerializer");
+        // 如果未配置默认给320
+        blackAlarmProps.put("max.poll.records", FssPropertyUtils.getInstance().getProperty("max.poll.records", "320"));
+        return blackAlarmProps;
+    }
 }

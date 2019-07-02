@@ -1,5 +1,7 @@
 package com.znv.fssrqs.util;
 
+import com.znv.fssrqs.kafka.consumer.AlarmCustume;
+import com.znv.fssrqs.service.alarmImp.FaceAlarmImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,5 +28,10 @@ public class StartService{
         // 初始化kafka组件
         KafKaClient.getInstance().init();
         log.info("Init kafka client success");
+
+        // 初始化kafka告警消费
+        AlarmCustume.initCustume();
+        log.info("初始化kafka告警消费");
+        AlarmCustume.registAlarmService(new FaceAlarmImpl());
     }
 }
