@@ -17,5 +17,5 @@ import java.util.List;
 @ConfigurationProperties("mbus")
 @Data
 public class MbusConfig {
-    private List<String> ipps;
+    private List<String> ipp;
 }

@@ -1,6 +1,7 @@
 package com.znv.fssrqs.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.kafka.ProducerBase;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +36,7 @@ public final class KafKaClient {
     public void init() {
         log.info("now init kafka producer base");
         try {
-            pb.initWithConfig(ConfigManager.getProducerProps());
+            pb.initWithConfig(HdfsConfigManager.getKafkaProducerProps());
         } catch (Exception e) {
             log.error("init kafka producer base failed", e);
             System.exit(0);

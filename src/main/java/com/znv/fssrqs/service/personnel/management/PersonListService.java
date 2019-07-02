@@ -164,11 +164,14 @@ public class PersonListService {
         if (params.containsKey("imgData")) {
             params.remove("imgData");
         }
+        long beginTime = System.currentTimeMillis();
         String esUrl = EsBaseConfig.getInstance().getIndexPersonListName() + "/" + EsBaseConfig.getInstance().getIndexPersonListType() + "/_search/template";
         Result<JSONObject, String> result = elasticSearchClient.postRequest(esUrl, obj);
         if (result.isErr()) {
             throw new RuntimeException("获取es数据失败:" + result.error());
         }
+        long endTime = System.currentTimeMillis();
+        log.info("getPersonList elasticSearchClient elapsed {}ms.", endTime - beginTime);
         JSONObject esResult = result.value().getJSONObject("hits");
 
         String remoteIp = host.split(":")[0]; // 内外网映射，在设置ImageUrl时会使用，先预留着
@@ -193,7 +196,9 @@ public class PersonListService {
                     personInfo.put("LibId", libId);
                     personInfo.put("PersonID", personId);
                 }
-                personInfo.put("ImageUrl", getChongqingPersonImgUrl(libId, personId));
+                if (personInfo != null) {
+                    personInfo.put("ImageUrl", getChongqingPersonImgUrl(libId, personId));
+                }
             }
 
             if (params.containsKey("feature_value")) {
