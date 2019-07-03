@@ -33,11 +33,11 @@ public class ApplicationEventListener implements ApplicationListener {
             System.out.println("management service initialize finish");
         } else if (event instanceof ContextRefreshedEvent) {
             SpringContextUtil.setCtx(((ContextRefreshedEvent) event).getApplicationContext());
-            StartService startService = SpringContextUtil.getCtx().getBean(StartService.class);
-            startService.run();
             System.out.println("management service refresh");
         } else if (event instanceof ApplicationReadyEvent) {
             System.out.println("management service has launched finish");
+            StartService startService = SpringContextUtil.getCtx().getBean(StartService.class);
+            startService.run();
         } else if (event instanceof ContextStartedEvent) {
             System.out.println("management service launch，it need to dynamic add listener in order to capture");
         } else if (event instanceof ContextStoppedEvent) {

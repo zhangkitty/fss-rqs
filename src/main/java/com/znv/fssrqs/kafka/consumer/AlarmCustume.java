@@ -2,21 +2,29 @@ package com.znv.fssrqs.kafka.consumer;
 
 import com.alibaba.fastjson.JSONObject;
 
+import com.google.common.eventbus.Subscribe;
+import com.znv.fssrqs.dao.mysql.MSubscribersDao;
+import com.znv.fssrqs.entity.mysql.MSubscribersEntity;
+import com.znv.fssrqs.service.alarmImp.AlarmPushImpl;
 import com.znv.fssrqs.service.api.AlarmService;
 import com.znv.fssrqs.util.ConfigManager;
 import com.znv.fssrqs.util.DataConvertUtils;
 import com.znv.fssrqs.util.FssPropertyUtils;
 
+import com.znv.fssrqs.util.SpringContextUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 /**
  * 告警消费模式.
@@ -24,7 +32,10 @@ import java.util.Properties;
  * @author xkh
  */
 @Slf4j
+@Data
 public final class AlarmCustume implements Runnable {
+
+    private ArrayList<MSubscribersEntity> subscribers;
 
     /** The consumer. */
     private KafkaConsumer<String, Map<String, Object>> consumer;
@@ -34,6 +45,8 @@ public final class AlarmCustume implements Runnable {
 
     /** The alarmservic. */
     private static List<AlarmService> alarmservic = new ArrayList<AlarmService>();
+
+    private static AlarmPushImpl alarmPush = new AlarmPushImpl();
 
     /** The is run. */
     private boolean isRun = true;
@@ -62,10 +75,10 @@ public final class AlarmCustume implements Runnable {
     public static void initCustume() {
         int count = DataConvertUtils.strToInt(FssPropertyUtils.getInstance().getProperty("alarm.custume.count", "3"));
         Thread t = null;
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < 1; i++) {
             AlarmCustume ac = new AlarmCustume();
             ac.init();
-            t = new Thread(ac, "Alarm-Custume-Thread" + i);
+            t = new Thread(ac, "mdzz-Alarm-Custume-Thread" + i);
             threads.add(ac);
             t.start();
         }
@@ -77,7 +90,7 @@ public final class AlarmCustume implements Runnable {
      */
     private void init() {
         log.info("init alarm customus.");
-        String blackTopic = "fss-alarm-v1-2-1-production";
+        String blackTopic = "fss-alarm-n-project-v1-2-production";
         ArrayList<String> topicList = new ArrayList<String>();
         if (!StringUtils.isEmpty(blackTopic)) {
             String[] ts = blackTopic.split(",");
@@ -115,13 +128,23 @@ public final class AlarmCustume implements Runnable {
                     }
                     array.add(json);
                 }
+
                 consumer.commitAsync();
+                SpringContextUtil.getCtx().getBean(MSubscribersDao.class).findAll().forEach(new Consumer<MSubscribersEntity>() {
+                    @Override
+                    public void accept(MSubscribersEntity mSubscribersEntity) {
+                        alarmPush.service(mSubscribersEntity,array);
+                    }
+                });
+
+
+
                 for (AlarmService as : alarmservic) {
                     as.service(array);
                 }
 
             } catch (Exception e) {
-                log.error("", e);
+                e.printStackTrace();
             }
         }
     }
