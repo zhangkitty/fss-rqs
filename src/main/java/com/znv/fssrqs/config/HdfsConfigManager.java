@@ -39,6 +39,9 @@ public class HdfsConfigManager {
     private static Properties phoenixProps = new Properties();
     //kafka生产者相关配置
     private static Properties kafkaProducerProps = new Properties();
+
+    private static Properties blackAlarmProps = new Properties();
+
     private static Map<String, float[]> points;
     private String hdfsUrl;
     @Value("spring.datasource.hbase.jdbc-url")
@@ -193,6 +196,19 @@ public class HdfsConfigManager {
 
     public static Properties getKafkaProducerProps() {
         return kafkaProducerProps;
+    }
+
+    public static Properties getBlackAlarmProperties() {
+        blackAlarmProps.put("group.id", "consumer_fss_rqs");
+        blackAlarmProps.put("bootstrap.servers", getString("bootstrap.servers"));
+        blackAlarmProps.put("auto.commit.interval.ms", 1000);
+        blackAlarmProps.put("enable.auto.commit", false);
+        blackAlarmProps.put("auto.offset.reset", "latest");
+        blackAlarmProps.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        blackAlarmProps.put("value.deserializer", "com.znv.fssrqs.kafka.common.KafkaAvroDeSerializer");
+        // 如果未配置默认给320
+        blackAlarmProps.put("max.poll.records", "320");
+        return blackAlarmProps;
     }
 
     public static Properties getProperties() {

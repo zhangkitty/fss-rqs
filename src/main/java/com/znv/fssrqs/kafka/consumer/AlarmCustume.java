@@ -3,6 +3,7 @@ package com.znv.fssrqs.kafka.consumer;
 import com.alibaba.fastjson.JSONObject;
 
 import com.google.common.eventbus.Subscribe;
+import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.dao.mysql.MSubscribersDao;
 import com.znv.fssrqs.entity.mysql.MSubscribersEntity;
 import com.znv.fssrqs.service.alarmImp.AlarmPushImpl;
@@ -99,7 +100,7 @@ public final class AlarmCustume implements Runnable {
             }
         }
         this.topic = topicList;
-        Properties props = ConfigManager.getBlackAlarmProperties();
+        Properties props = HdfsConfigManager.getBlackAlarmProperties();
         this.consumer = new KafkaConsumer<String, Map<String, Object>>(props);
     }
 
@@ -117,7 +118,6 @@ public final class AlarmCustume implements Runnable {
                 for (ConsumerRecord<String, Map<String, Object>> record : records) {
                     JSONObject json = new JSONObject();
                     Map<String, Object> map = record.value();
-                    log.info("poll map:{}", map);
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         String key = String.valueOf(entry.getKey());
                         if ("rt_feature".equals(key) || "rt_image_data".equals(key) || "rt_image_data2".equals(key)
