@@ -11,13 +11,13 @@ import lombok.Data;
 @Data
 public class MSubscribersEntity {
 
-    private Integer id;
+    private Integer subscriberId;
 
-    private String url;
+    private String alarmPushUrl;
 
-    private Data startTime;
+    private Data pushStartTime;
 
-    private Data endTime;
+    private Data pushEndTime;
 
     private String cameraIds;
 }

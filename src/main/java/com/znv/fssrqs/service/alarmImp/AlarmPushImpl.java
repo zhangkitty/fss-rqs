@@ -2,12 +2,10 @@ package com.znv.fssrqs.service.alarmImp;
 
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.entity.mysql.MSubscribersEntity;
-import com.znv.fssrqs.service.api.AlarmService;
 import com.znv.fssrqs.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -39,7 +37,7 @@ public class AlarmPushImpl {
         if(list.size()==0)
             return;
         try {
-            HttpUtils.sendPostData(list.toString(),mSubscribersEntity.getUrl());
+            HttpUtils.sendPostData(list.toString(),mSubscribersEntity.getAlarmPushUrl());
         } catch (IOException e) {
             e.printStackTrace();
         }

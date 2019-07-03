@@ -4,7 +4,10 @@
 <mapper namespace="com.znv.fssrqs.dao.mysql.MSubscribersDao">
 
     <select id="findAll"   resultType="com.znv.fssrqs.entity.mysql.MSubscribersEntity">
-        SELECT * from t_cfg_subscriber t
+        SELECT S.subscriber_id as subscriber_id, alarm_push_url, push_start_time, push_end_time, group_concat(SC.camera_id) as camera_ids
+        FROM t_cfg_subscriber S, t_cfg_subscriber_camera SC
+        WHERE S.subscriber_id=SC.subscriber_id
+        GROUP BY SC.subscriber_id;
     </select>
 
 
