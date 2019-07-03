@@ -8,6 +8,7 @@ import com.znv.fssrqs.dao.mysql.MSubscribersDao;
 import com.znv.fssrqs.entity.mysql.MSubscribersEntity;
 import com.znv.fssrqs.service.alarmImp.AlarmPushImpl;
 import com.znv.fssrqs.service.api.AlarmService;
+import com.znv.fssrqs.timer.SubscriberLoadTask;
 import com.znv.fssrqs.util.ConfigManager;
 import com.znv.fssrqs.util.DataConvertUtils;
 import com.znv.fssrqs.util.FssPropertyUtils;
@@ -130,14 +131,8 @@ public final class AlarmCustume implements Runnable {
                 }
 
                 consumer.commitAsync();
-                SpringContextUtil.getCtx().getBean(MSubscribersDao.class).findAll().forEach(new Consumer<MSubscribersEntity>() {
-                    @Override
-                    public void accept(MSubscribersEntity mSubscribersEntity) {
-                        alarmPush.service(mSubscribersEntity,array);
-                    }
-                });
 
-
+                alarmPush.service(array);
 
                 for (AlarmService as : alarmservic) {
                     as.service(array);
@@ -167,12 +162,6 @@ public final class AlarmCustume implements Runnable {
                 break;
             case "rt_image_data3":
                 strKey = "whiteImageData3";
-                break;
-            case "person_id":
-                strKey = "fcPid";
-                break;
-            case "lib_id":
-                strKey = "controlLevel";
                 break;
             default:
                 char[] chars = key.toCharArray();

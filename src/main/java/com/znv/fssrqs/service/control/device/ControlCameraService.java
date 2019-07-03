@@ -1,6 +1,7 @@
 package com.znv.fssrqs.service.control.device;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.dao.mysql.ControlCameraMapper;
 import com.znv.fssrqs.entity.mysql.TCfgDevice;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
@@ -82,9 +83,9 @@ public class ControlCameraService {
             KafKaClient kafKaClient = KafKaClient.getInstance();
             cameraIdList.forEach(tid -> {
                 JSONObject notifyMsg = new JSONObject();
-                String tablename = ConfigManager.getString("fss.mysql.table.cameralib.name");
+                String tablename = HdfsConfigManager.getString("fss.mysql.table.cameralib.name");
                 notifyMsg.put("table_name", tablename);
-                notifyMsg.put("msg_type", ConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
+                notifyMsg.put("msg_type", HdfsConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
                 notifyMsg.put("reference_id", libId);
                 notifyMsg.put("primary_id", tid);
                 kafKaClient.sendData(notifyMsg);
@@ -149,9 +150,9 @@ public class ControlCameraService {
         }
         KafKaClient kafKaClient = KafKaClient.getInstance();
         JSONObject notifyMsg = new JSONObject();
-        String tablename = ConfigManager.getString("fss.mysql.table.cameralib.name");
+        String tablename = HdfsConfigManager.getString("fss.mysql.table.cameralib.name");
         notifyMsg.put("table_name", tablename);
-        notifyMsg.put("msg_type", ConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
+        notifyMsg.put("msg_type", HdfsConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
         notifyMsg.put("reference_id", libId);
         notifyMsg.put("primary_id", cameraId);
         kafKaClient.sendData(notifyMsg);
@@ -172,9 +173,9 @@ public class ControlCameraService {
         String libId = cameraUnDeployDTO.getLibId();
 
         JSONObject notifyMsg = new JSONObject();
-        String tablename = ConfigManager.getString("fss.mysql.table.cameralib.name");
+        String tablename = HdfsConfigManager.getString("fss.mysql.table.cameralib.name");
         notifyMsg.put("table_name", tablename);
-        notifyMsg.put("msg_type", ConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
+        notifyMsg.put("msg_type", HdfsConfigManager.getString("fss.kafka.topic.blacklistchange.msgtype"));
         notifyMsg.put("reference_id", libId);
 
         KafKaClient kafKaClient = KafKaClient.getInstance();

@@ -199,7 +199,7 @@ public class PhoenixService {
         JSONArray data = insertData.getJSONArray("data");
         try {
             conn = connectionPool.getConnection();
-            if (CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME))) {
+            if (CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME))) {
                 //按照lib_id + person_id 查询名单库所有信息
                 result = personListService.getPersonInfo(data, conn);
             } else {

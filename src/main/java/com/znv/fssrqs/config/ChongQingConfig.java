@@ -10,4 +10,6 @@ import org.springframework.context.annotation.Configuration;
 public class ChongQingConfig {
     private String edsUrl;
     private String imageUrl;
+    private Long maxMinuteFlow;
+    private Long maxDayFlow;
 }

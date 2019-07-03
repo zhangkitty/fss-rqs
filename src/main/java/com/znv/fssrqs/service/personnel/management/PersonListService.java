@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.ChongQingConfig;
 import com.znv.fssrqs.config.EsBaseConfig;
+import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.config.PersonConfig;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
@@ -250,7 +251,7 @@ public class PersonListService {
         requestdata.put("person_id", personId);
         arrayList.add(requestdata);
 
-        String tableName = ConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
+        String tableName = HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
         JSONObject insertData = new JSONObject();
         insertData.put("id", CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST);
         insertData.put("table_name", tableName);

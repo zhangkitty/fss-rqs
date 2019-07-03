@@ -18,6 +18,4 @@ public class MSubscribersEntity {
     private Data pushStartTime;
 
     private Data pushEndTime;
-
-    private String cameraIds;
 }

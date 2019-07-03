@@ -2,12 +2,13 @@ package com.znv.fssrqs.controller.personnel.management;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.config.ChongQingConfig;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.personnel.management.PersonListService;
 import com.znv.fssrqs.service.personnel.management.VIIDHKSDKService;
 import com.znv.fssrqs.service.personnel.management.VIIDPersonService;
 import com.znv.fssrqs.util.FastJsonUtils;
-import com.znv.fssrqs.util.MinuteCounter;
+import com.znv.fssrqs.util.TimingCounter;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class PersonListController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private ChongQingConfig chongQingConfig;
 
     @GetMapping(value="/VIID/Persons")
     public ResponseVo getPersonList(@RequestHeader("Host") String host, @Valid PersonListSearchParams personListSearchParams) throws Exception {
@@ -75,10 +79,18 @@ public class PersonListController {
         JSONArray personList = new JSONArray();
         retObject.put("Data", personList);
 
-        if (MinuteCounter.getInstance().isFlowControlled("QueryPersons", 10L)) {
-            retObject.put("Code", 50000);
-            retObject.put("Message", "流量控制!");
-            return retObject;
+        int flowRet = TimingCounter.getInstance().isFlowControlled("FaceSearch",
+                chongQingConfig.getMaxMinuteFlow(), chongQingConfig.getMaxDayFlow());
+        if (flowRet < 0) {
+            if (flowRet == -1) {
+                retObject.put("Code", 50000);
+                retObject.put("Message", "分钟流量控制!");
+                return retObject;
+            } else if (flowRet == -2) {
+                retObject.put("Code", 50000);
+                retObject.put("Message", "天流量控制!");
+                return retObject;
+            }
         }
 
         if (mapParam == null

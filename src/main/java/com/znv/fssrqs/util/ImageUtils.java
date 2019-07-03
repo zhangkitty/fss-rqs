@@ -1,6 +1,7 @@
 package com.znv.fssrqs.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.config.MbusConfig;
 import com.znv.fssrqs.config.SenseTimeConfig;
 import com.znv.fssrqs.config.ServerConfig;
@@ -84,9 +85,9 @@ public class ImageUtils {
         HttpPost httpPost = new HttpPost(String.format("http://%s/verify/feature/gets", SpringContextUtil.getCtx().getBean(SenseTimeConfig.class).getStaticAiUnits().get(0)));
         httpPost.setHeader(HttpHeaders.CONNECTION, "close");
         httpPost.setConfig(HttpClientPool.requestConfig());
-        String flag = ConfigManager.getString("sensetime.http.auth");
+        String flag = HdfsConfigManager.getString("sensetime.http.auth");
         if (!StringUtils.isEmpty(flag) && flag.equals("true")) {
-            httpPost.setHeader("Authorization", ConfigManager.getString("sensetime.http.auth.header"));
+            httpPost.setHeader("Authorization", HdfsConfigManager.getString("sensetime.http.auth.header"));
         }
         ByteArrayBody bab = new ByteArrayBody(Base64Util.decode(imageData), UUID.randomUUID().toString());
         HttpEntity entity = MultipartEntityBuilder.create().addPart("imageData", bab).build();
