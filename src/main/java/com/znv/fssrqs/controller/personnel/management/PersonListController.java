@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -125,6 +127,32 @@ public class PersonListController {
             retObject.put("Message", "参数错误，CurrentPage非法!");
             return retObject;
         }
+
+
+        if (! mapParam.containsKey("ImgData")) {
+            if (! mapParam.containsKey("LibID")) {
+                retObject.put("Code", 20000);
+                retObject.put("Message", "参数错误，需要填LibID!");
+                return retObject;
+            }
+
+            if (! (mapParam.get("LibID") instanceof List)) {
+                retObject.put("Code", 20000);
+                retObject.put("Message", "参数错误，LibID需要为数组!");
+                return retObject;
+            }
+            if (chongQingConfig.getOuterLibIdsMap() != null) {
+                List<String> libIDs = (List)(mapParam.get("LibID"));
+                for (int n = 0; n < libIDs.size(); n++) {
+                    if (!chongQingConfig.getOuterLibIdsMap().containsKey(libIDs.get(n))) {
+                        retObject.put("Code", 20000);
+                        retObject.put("Message", "参数错误，LibID错误!");
+                        return retObject;
+                    }
+                }
+            }
+        }
+
         JSONObject transformedParams = new JSONObject();
         transformedParams.put("from", from);
         transformedParams.put("size", size);

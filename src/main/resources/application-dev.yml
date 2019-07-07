@@ -49,6 +49,9 @@ chongqing:
   image-url: http://50.1.64.130:10002/getImage
   max-minute-flow: 10
   max-day-flow: 1000
+  outer-lib-ids:
+    - 32
+    - 33
 bigdata:
   hdfs-url: hdfs://10.45.157.116:8020/user/fss/V120
 ###缓冲服务地址配置
