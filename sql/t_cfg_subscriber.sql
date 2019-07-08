@@ -11,7 +11,7 @@
  Target Server Version : 50715
  File Encoding         : 65001
 
- Date: 03/07/2019 10:06:46
+ Date: 08/07/2019 14:29:27
 */
 
 SET NAMES utf8mb4;
@@ -22,20 +22,19 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_cfg_subscriber`;
 CREATE TABLE `t_cfg_subscriber` (
-  `id` int(11) NOT NULL,
-  `url` varchar(255) NOT NULL COMMENT '订阅者的地址',
-  `start_time` datetime DEFAULT NULL,
-  `end_time` datetime DEFAULT NULL,
-  `camera_ids` varchar(255) NOT NULL COMMENT '订阅摄像头的ID集合',
-  PRIMARY KEY (`id`)
+  `subscriber_id` int(11) NOT NULL,
+  `alarm_push_url` varchar(255) NOT NULL COMMENT '订阅者的地址',
+  `push_start_time` datetime DEFAULT NULL,
+  `push_end_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`subscriber_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_cfg_subscriber
 -- ----------------------------
 BEGIN;
-INSERT INTO `t_cfg_subscriber` VALUES (1, 'http://www.baidu.com', NULL, NULL, '32010100001310008051');
-INSERT INTO `t_cfg_subscriber` VALUES (2, 'http://www.sina.com', NULL, NULL, '32010100001310008001,32010100001310008002');
+INSERT INTO `t_cfg_subscriber` VALUES (1, 'http://www.baidu.com', NULL, NULL);
+INSERT INTO `t_cfg_subscriber` VALUES (2, 'http://www.sina.com', NULL, NULL);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

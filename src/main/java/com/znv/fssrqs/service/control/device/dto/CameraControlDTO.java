@@ -23,7 +23,9 @@ public class CameraControlDTO {
     private String ControlEndTime;
 
     private List<String> CameraIds;
+
     private String Title;
+
     @NotNull(message = "布控数限制不能为空")
     private Integer LibCountLimit;
 
