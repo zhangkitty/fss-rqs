@@ -3,11 +3,13 @@ package com.znv.fssrqs.controller.personnel.management;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.ChongQingConfig;
+import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.personnel.management.PersonListService;
 import com.znv.fssrqs.service.personnel.management.VIIDHKSDKService;
 import com.znv.fssrqs.service.personnel.management.VIIDPersonService;
 import com.znv.fssrqs.util.FastJsonUtils;
+import com.znv.fssrqs.util.FeatureCompUtil;
 import com.znv.fssrqs.util.TimingCounter;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.modelmapper.ModelMapper;
@@ -181,8 +183,11 @@ public class PersonListController {
         transformedParams.put("order_type","desc");
         if (mapParam.containsKey("ImgData")
                 && mapParam.containsKey("SimThreshold") ) {
+            FeatureCompUtil fc = new FeatureCompUtil();
+            fc.setFeaturePoints(HdfsConfigManager.getPoints());
             transformedParams.put("imgData", mapParam.get("ImgData"));
-            transformedParams.put("sim_threshold", mapParam.get("SimThreshold"));
+            transformedParams.put("sim_threshold",
+                    fc.reversalNormalize(((Double)mapParam.get("SimThreshold")).floatValue()) );
             transformedParams.put("feature_name","feature.feature_high");
             transformedParams.put("is_calcSim", true);
         } else {

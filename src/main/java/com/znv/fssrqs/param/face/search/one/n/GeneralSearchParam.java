@@ -33,7 +33,7 @@ public class GeneralSearchParam {
     @NotNull(message = "每页记录数不能为空")
     private Integer PageSize;
 
-    private Double SimilarityDegree;
+    private Float SimilarityDegree;
 
     //查询类型， 0： 无图检索，1：极速检索，2：精确检索
     private Integer QueryType;
