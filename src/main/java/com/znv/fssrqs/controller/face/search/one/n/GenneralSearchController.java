@@ -3,6 +3,7 @@ package com.znv.fssrqs.controller.face.search.one.n;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.ChongQingConfig;
+import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
 import com.znv.fssrqs.param.face.search.one.n.ExactSearchResultParams;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.CommonSearch;
@@ -54,7 +55,9 @@ public class GenneralSearchController {
         }
 
         if(generalSearchParam.getSimilarityDegree()!=null){
-            generalSearchParam.setSimilarityDegree(generalSearchParam.getSimilarityDegree()*0.001);
+            FeatureCompUtil fc = new FeatureCompUtil();
+            generalSearchParam.setSimilarityDegree(
+                    fc.reversalNormalize(generalSearchParam.getSimilarityDegree().floatValue() * 0.01f));
         }
         JSONObject jsonObject = new JSONObject();
         switch (generalSearchParam.getQueryType()) {

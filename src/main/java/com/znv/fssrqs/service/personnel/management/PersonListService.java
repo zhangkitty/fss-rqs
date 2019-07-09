@@ -204,10 +204,12 @@ public class PersonListService {
 
             if (params.containsKey("feature_value")) {
                 Double score = list.getJSONObject(k).getDoubleValue("_score");
+                FeatureCompUtil fc = new FeatureCompUtil();
+                fc.setFeaturePoints(HdfsConfigManager.getPoints());
                 if (score >= 1.0) {
                     personInfo.put("Sim", "100%" );
                 } else {
-                    personInfo.put("Sim", ("" + score * 100).substring(0, 5) + "%" );
+                    personInfo.put("Sim", ("" + fc.Normalize(score.floatValue()) * 100).substring(0, 5) + "%" );
                 }
             }
             data.add(personInfo);
@@ -455,10 +457,11 @@ public class PersonListService {
             return null;
         }
 
-        JSONObject personInfo = PersonInfoCache.getInstance().getPersonInfo(personId);
-        if (personInfo != null) {
-            return personInfo;
-        }
+        JSONObject personInfo = null;
+        //JSONObject personInfo = PersonInfoCache.getInstance().getPersonInfo(personId);
+        //if (personInfo != null) {
+        //    return personInfo;
+        //}
 
         JSONObject requestParam = new JSONObject();
         if (CommonConstant.ChongQingLib.RESIDENT.equals(libId)
@@ -484,9 +487,9 @@ public class PersonListService {
                 JSONArray resArr = baseObj.getJSONArray("rows");
                 if (resArr != null && !resArr.isEmpty()) {
                     personInfo = parsePersonInfoByResp(resArr.getJSONObject(0), libId);
-                    if (personInfo != null) {
-                        PersonInfoCache.getInstance().cachePersonInfo(personId, personInfo);
-                    }
+                    //if (personInfo != null) {
+                    //    PersonInfoCache.getInstance().cachePersonInfo(personId, personInfo);
+                    //}
                 } else {
                     log.error("baseInfo resArr is empty. psersonId {}", personId);
                 }

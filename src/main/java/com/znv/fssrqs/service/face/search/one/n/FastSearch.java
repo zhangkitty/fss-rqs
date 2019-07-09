@@ -46,6 +46,7 @@ public class FastSearch {
     private ModelMapper modelMapper;
 
     public JSONObject fastSearch(String host,GeneralSearchParam params) throws IOException {
+        FeatureCompUtil fc = new FeatureCompUtil();
 
         String remoteIp = host.split(":")[0];
 
@@ -59,7 +60,7 @@ public class FastSearch {
         }
         commonSearchParams.setFeatureValue(arr);
         JSONObject paramsWithTempId = new JSONObject();
-        paramsWithTempId.put("id","template_fss_arbitrarysearch");
+        paramsWithTempId.put("id","template_fast_feature_search");
         paramsWithTempId.put("params",commonSearchParams);
 
         String url = calculateIndex(params,commonSearchParams);
@@ -96,6 +97,7 @@ public class FastSearch {
             }else {
                 commonSearchResultDTO.setBigPictureUrl(ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
             }
+            commonSearchResultDTO.setSimilarity(fc.Normalize(((JSONObject) v).getFloatValue("_score")));
             list.add(JSONObject.parse(JSONObject.toJSONString(commonSearchResultDTO)));
         });
 
