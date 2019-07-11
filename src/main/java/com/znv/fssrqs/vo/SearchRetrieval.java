@@ -27,5 +27,5 @@ public class SearchRetrieval {
     private boolean IsCalcSim;
     //特征值列表
     private List<String> Features;
-    private int SimilarityDegree;
+    private float SimilarityDegree;
 }
