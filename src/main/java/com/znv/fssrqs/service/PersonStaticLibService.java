@@ -49,12 +49,12 @@ public class PersonStaticLibService {
                         parseData(pLib, libArray);
                     }
                 }
-            }
-        } else {
-            List<UserLibRelation> userLibs = queryUserLibByGroupId(userGroup.getUserGroupID(), "");
-            if (userLibs != null && userLibs.size() > 0) {
-                for (UserLibRelation userLib : userLibs) {
-                    parseData(userLib, libArray);
+            } else {
+                List<UserLibRelation> userLibs = queryUserLibByGroupId(userGroup.getUserGroupID(), "");
+                if (userLibs != null && userLibs.size() > 0) {
+                    for (UserLibRelation userLib : userLibs) {
+                        parseData(userLib, libArray);
+                    }
                 }
             }
         }

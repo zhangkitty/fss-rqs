@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.znv.fnms.mapper.UserGroupMapper">
+<mapper namespace="com.znv.fssrqs.dao.mysql.UserGroupMapper">
     <resultMap id="BaseResultMap" type="com.znv.fssrqs.entity.mysql.UserGroup">
         <id column="user_group_id" jdbcType="INTEGER" property="UserGroupID"/>
         <result column="up_user_group_id" jdbcType="INTEGER" property="UpUserGroupID"/>
@@ -32,6 +32,7 @@
         <if test="UserID != null">
             and a.user_id = #{UserID,jdbcType=VARCHAR}
         </if>
+        limit 1
     </select>
     <select id="queryUserGroupByUpGroupId" parameterType="com.znv.fssrqs.entity.mysql.UserGroup"
             resultMap="BaseResultMap">
