@@ -31,12 +31,12 @@ public class HistoryAlarmController {
     @Autowired
     private HistoryAlarmService historyAlarmService;
 
-    @ModelAttribute
-    public void bindModel(HttpServletRequest request, HttpServletResponse response) {
-        this.request = request;
-        this.response = response;
-        this.session = request.getSession();
-    }
+//    @ModelAttribute
+//    public void bindModel(HttpServletRequest request, HttpServletResponse response) {
+//        this.request = request;
+//        this.response = response;
+//        this.session = request.getSession();
+//    }
 
     /**
      * 战果统计
