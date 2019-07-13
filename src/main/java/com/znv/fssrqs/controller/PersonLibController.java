@@ -42,12 +42,11 @@ public class PersonLibController {
      * 人员静态库查询
      */
     @GetMapping("/person/static/libs")
-    public String getAll(@RequestParam Map<String, Object> params) {
-        String userId = "11000000000";
-        if (params.containsKey("UserID")) {
-            userId = String.valueOf(params.get("UserID"));
+    public String getLibs(@RequestParam Map<String, Object> params) {
+        if (! params.containsKey("UserID")) {
+            params.put("UserID", "11000000000");
         }
-        return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(personLibService.getUserLibTreeByUserId(userId)).json(), new PascalNameFilter());
+        return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(personLibService.getUserLibTreeByUserId(params)).json(), new PascalNameFilter());
     }
 
     /**

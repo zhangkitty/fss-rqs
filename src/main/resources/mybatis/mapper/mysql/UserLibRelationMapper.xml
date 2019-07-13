@@ -45,7 +45,7 @@
             </if>
         </trim>
     </insert>
-    <select id="queryUserLibByGroupId" parameterType="com.znv.fssrqs.entity.mysql.UserLibRelation"
+    <select id="queryUserLib" parameterType="java.util.Map"
             resultMap="BaseResultMap">
         SELECT
         b.user_group_id,person_lib_id,power_ids,personlib_type,lib_name,plib_alarm_level,fevent_id,capacity_type,plib.creator_id,rel.hk_lib_id
@@ -53,11 +53,14 @@
         LEFT JOIN t_scim_personlib plib on b.person_lib_id=plib.lib_id LEFT JOIN fss_hk_lib_relation rel on
         plib.lib_id=rel.fss_lib_id
         where 1=1
-        <if test="UserGroupID != null and UserGroupID !=''">
+        <if test="UserGroupID != null">
             and a.user_group_id = #{UserGroupID,jdbcType=INTEGER}
         </if>
         <if test="PersonLibType != null and PersonLibType!=''">
             and plib.personlib_type = #{PersonLibType,jdbcType=VARCHAR}
+        </if>
+        <if test="LibName != null and LibName!=''">
+            and plib.lib_name like #{LibName,jdbcType=VARCHAR}
         </if>
         ORDER BY plib.personlib_type,plib.lib_name asc
     </select>

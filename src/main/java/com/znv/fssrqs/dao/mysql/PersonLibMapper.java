@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dongzelong on  2019/6/4 14:11.
@@ -28,7 +29,7 @@ public interface PersonLibMapper {
 
     int updateByPrimaryKey(PersonLib record);
 
-    List<PersonLib> queryAll();
+    List<PersonLib> query(Map<String, Object> params);
 
     List<PersonLib> queryLibByLibType(PersonLib record);
 

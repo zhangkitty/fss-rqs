@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dongzelong on  2019/6/4 14:09.
@@ -35,23 +36,35 @@ public class PersonStaticLibService {
     /**
      * 获取用户的名单库权限树
      *
-     * @param userId
+     * @param params
      */
-    public JSONArray getUserLibTreeByUserId(String userId) {
+    public JSONArray getUserLibTreeByUserId(Map<String, Object> params) {
+        String userId = String.valueOf(params.get("UserID"));
         JSONArray libArray = getBasicTreeArray();
         UserGroup userGroup = userGroupService.queryUserGroupByUserId(userId);
         if (userGroup != null) {
+            // 静态库名支持模糊查询
+            if (params.containsKey("LibName")) {
+                String fuzzyLibName = "%";
+                String libName = String.valueOf(params.get("LibName"));
+                for (int i = 0; i < libName.length(); i++) {
+                    fuzzyLibName = fuzzyLibName + libName.charAt(i) + "%";
+                }
+                params.put("LibName", fuzzyLibName);
+            }
+
             int roleId = userGroup.getRoleID();
             if (roleId == 1) {
-                List<PersonLib> personLibs = queryAll();
-                if (personLibs != null && personLibs.size() > 0) {
+                List<PersonLib> personLibs = personLibMapper.query(params);
+                if (personLibs != null) {
                     for (PersonLib pLib : personLibs) {
                         parseData(pLib, libArray);
                     }
                 }
             } else {
-                List<UserLibRelation> userLibs = queryUserLibByGroupId(userGroup.getUserGroupID(), "");
-                if (userLibs != null && userLibs.size() > 0) {
+                params.put("UserGroupID", userGroup.getUserGroupID());
+                List<UserLibRelation> userLibs = userLibRelationMapper.queryUserLib(params);
+                if (userLibs != null) {
                     for (UserLibRelation userLib : userLibs) {
                         parseData(userLib, libArray);
                     }
@@ -131,30 +144,8 @@ public class PersonStaticLibService {
         return libArr;
     }
 
-
-    public List<PersonLib> queryAll() {
-        return personLibMapper.queryAll();
-    }
-
-    public List<PersonLib> queryLibByLibType(String personLibType) {
-        PersonLib personLib = new PersonLib();
-        if (!StringUtils.isEmpty(personLibType)) {
-            personLib.setPersonLibType(personLibType);
-        }
-        return personLibMapper.queryLibByLibType(personLib);
-    }
-
     public PersonLib queryLibByLibId(Integer libId) {
         return personLibMapper.selectByPrimaryKey(libId);
-    }
-
-    public List<UserLibRelation> queryUserLibByGroupId(int userGroupId, String personLibType) {
-        UserLibRelation userLibRelation = new UserLibRelation();
-        userLibRelation.setUserGroupID(userGroupId);
-        if (!StringUtils.isEmpty(personLibType)) {
-            userLibRelation.setPersonLibType(personLibType);
-        }
-        return userLibRelationMapper.queryUserLibByGroupId(userLibRelation);
     }
 
     public HashMap<String, Object> deleteById(Integer libId) {

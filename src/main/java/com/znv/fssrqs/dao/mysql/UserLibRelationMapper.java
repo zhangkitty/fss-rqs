@@ -4,6 +4,7 @@ import com.znv.fssrqs.entity.mysql.UserLibRelation;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dongzelong on  2019/6/4 14:46.
@@ -19,5 +20,5 @@ public interface UserLibRelationMapper {
 
     int insertSelective(UserLibRelation record);
 
-    List<UserLibRelation> queryUserLibByGroupId(UserLibRelation record);
+    List<UserLibRelation> queryUserLib(Map<String, Object> queryParams);
 }
