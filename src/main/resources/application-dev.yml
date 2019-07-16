@@ -3,7 +3,7 @@ server:
   servlet: ##servlet默认超时时间30分钟
     session:
       timeout: 30m
-    context-path: /fss-rqs
+    context-path: /
 
 spring:
   datasource:
@@ -27,6 +27,12 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+  session:
+     store-type: redis
+  redis:
+    host: 10.45.157.117
+    port: 6379
+    database: 0
 #mybatis
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
