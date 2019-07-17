@@ -10,4 +10,16 @@
     </select>
 
 
+    <select id="upCfgUserlogin" statementType="CALLABLE" parameterType="java.util.Map" resultType="java.util.HashMap">
+    {
+          call up_cfg_userlogin(
+          #{userName,jdbcType=VARCHAR},
+          #{userPwd,jdbcType=VARCHAR},
+          #{sessionId,jdbcType=VARCHAR},
+          #{serverId,jdbcType=VARCHAR},
+          #{loginTime,jdbcType=VARCHAR},
+          #{clientIp,jdbcType=VARCHAR},
+          #{loginClientType,jdbcType=INTEGER})
+    }
+    </select>
 </mapper>
