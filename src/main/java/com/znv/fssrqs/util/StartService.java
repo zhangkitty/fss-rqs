@@ -1,14 +1,8 @@
 package com.znv.fssrqs.util;
 
 import com.znv.fssrqs.kafka.consumer.AlarmCustume;
-import com.znv.fssrqs.service.alarmImp.FaceAlarmImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -32,6 +26,5 @@ public class StartService{
         // 初始化kafka告警消费
         AlarmCustume.initCustume();
         log.info("初始化kafka告警消费");
-        AlarmCustume.registAlarmService(new FaceAlarmImpl());
     }
 }

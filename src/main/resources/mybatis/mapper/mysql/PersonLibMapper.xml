@@ -23,21 +23,19 @@
         from t_scim_personlib
         where lib_id = #{LibID,jdbcType=INTEGER}
     </select>
-    <select id="queryAll" resultMap="BaseResultMap">
+    <select id="query" parameterType="java.util.Map" resultMap="BaseResultMap">
         select
         lib_id, personlib_type, lib_name, plib_alarm_level, description, creator_id, fevent_id,
     region_id,capacity_type,hk_lib_id
         from t_scim_personlib a left join fss_hk_lib_relation b on a.lib_id = b.fss_lib_id
-        order by personlib_type,lib_name asc;
-    </select>
-    <select id="queryLibByLibType" parameterType="com.znv.fssrqs.entity.mysql.PersonLib" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_scim_personlib WHERE 1=1
-        <if test="PersonLibType!=null and PersonLibType!=''">
-            and personlib_type=#{PersonLibType,jdbcType=VARCHAR}
+        where 1=1
+        <if test="PersonLibType != null and PersonLibType!=''">
+            and a.personlib_type = #{PersonLibType,jdbcType=VARCHAR}
         </if>
-        order by lib_name asc;
+        <if test="LibName != null and LibName!=''">
+            and a.lib_name like #{LibName,jdbcType=VARCHAR}
+        </if>
+        order by personlib_type,lib_name asc;
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_scim_personlib

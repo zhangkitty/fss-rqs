@@ -10,6 +10,7 @@ import com.znv.fssrqs.dao.mysql.LibRelationMapper;
 import com.znv.fssrqs.service.PersonStaticLibService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,9 +42,11 @@ public class PersonLibController {
      * 人员静态库查询
      */
     @GetMapping("/person/static/libs")
-    public String getAll(@RequestParam Map<String, Object> params) {
-        String userId = "11000000000";
-        return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(personLibService.getUserLibTreeByUserId(userId)).json(), new PascalNameFilter());
+    public String getLibs(@RequestParam Map<String, Object> params) {
+        if (! params.containsKey("UserID")) {
+            params.put("UserID", "11000000000");
+        }
+        return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(personLibService.getUserLibTreeByUserId(params)).json(), new PascalNameFilter());
     }
 
     /**

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.znv.scim.fssapp.dao.FSSUserLibRelationMapper">
+<mapper namespace="com.znv.fssrqs.dao.mysql.UserLibRelationMapper">
     <resultMap id="BaseResultMap" type="com.znv.fssrqs.entity.mysql.UserLibRelation">
         <result column="user_group_id" jdbcType="INTEGER" property="UserGroupID"/>
         <result column="person_lib_id" jdbcType="INTEGER" property="PersonLibID"/>
         <result column="power_ids" jdbcType="VARCHAR" property="PowerIDs"/>
-        <result column="personlib_type" jdbcType="VARCHAR" property="PersonlibType"/>
+        <result column="personlib_type" jdbcType="VARCHAR" property="PersonLibType"/>
         <result column="lib_name" jdbcType="VARCHAR" property="LibName"/>
         <result column="plib_alarm_level" jdbcType="VARCHAR" property="LibAlarmLevel"/>
         <result column="fevent_id" jdbcType="VARCHAR" property="EventID"/>
@@ -45,7 +45,7 @@
             </if>
         </trim>
     </insert>
-    <select id="queryUserLibByGroupId" parameterType="com.znv.fssrqs.entity.mysql.UserLibRelation"
+    <select id="queryUserLib" parameterType="java.util.Map"
             resultMap="BaseResultMap">
         SELECT
         b.user_group_id,person_lib_id,power_ids,personlib_type,lib_name,plib_alarm_level,fevent_id,capacity_type,plib.creator_id,rel.hk_lib_id
@@ -53,11 +53,14 @@
         LEFT JOIN t_scim_personlib plib on b.person_lib_id=plib.lib_id LEFT JOIN fss_hk_lib_relation rel on
         plib.lib_id=rel.fss_lib_id
         where 1=1
-        <if test="UserGroupID != null and UserGroupID !=''">
+        <if test="UserGroupID != null">
             and a.user_group_id = #{UserGroupID,jdbcType=INTEGER}
         </if>
-        <if test="personlibType != null and personlibType!=''">
-            and plib.personlib_type = #{PersonlibType,jdbcType=VARCHAR}
+        <if test="PersonLibType != null and PersonLibType!=''">
+            and plib.personlib_type = #{PersonLibType,jdbcType=VARCHAR}
+        </if>
+        <if test="LibName != null and LibName!=''">
+            and plib.lib_name like #{LibName,jdbcType=VARCHAR}
         </if>
         ORDER BY plib.personlib_type,plib.lib_name asc
     </select>
