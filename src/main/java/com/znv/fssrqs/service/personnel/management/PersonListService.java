@@ -194,7 +194,7 @@ public class PersonListService {
                     personInfo = getChongqingPersonInfo(libId, personId);
                 } else {
                     personInfo = new JSONObject();
-                    personInfo.put("LibId", libId);
+                    personInfo.put("PersonLibIdParam", libId);
                     personInfo.put("PersonID", personId);
                 }
                 if (personInfo != null) {
