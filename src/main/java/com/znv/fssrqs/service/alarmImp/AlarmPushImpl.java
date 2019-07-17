@@ -97,7 +97,7 @@ public class AlarmPushImpl {
                 person = personListService.getPerson("127.0.0.1",
                         jsonObject.getString("libId"),
                         jsonObject.getString("personId"));
-                if (person != null) {
+                if (person != null && person.getJSONObject("PersonObject") != null) {
                     person = person.getJSONObject("PersonObject");
                     person.remove("Feature");
                 }

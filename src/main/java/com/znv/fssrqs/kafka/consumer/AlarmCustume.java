@@ -133,13 +133,12 @@ public final class AlarmCustume implements Runnable {
                 consumer.commitAsync();
 
                 alarmPush.service(array);
-
-                for (AlarmService as : alarmservic) {
-                    as.service(array);
-                }
-
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("consumer {}", e);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e1) {
+                }
             }
         }
     }
