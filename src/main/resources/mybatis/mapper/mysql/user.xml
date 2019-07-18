@@ -2,11 +2,46 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.znv.fssrqs.dao.mysql.MUserDao">
+    <resultMap id="BaseResultMap" type="com.znv.fssrqs.entity.mysql.MUserEntity">
+        <id column="user_id" jdbcType="VARCHAR" property="UserID"/>
+        <result column="precinct_id" jdbcType="VARCHAR" property="PrecinctId"/>
+        <result column="role_id" jdbcType="VARCHAR" property="RoleId"/>
+        <result column="usergroup_id" jdbcType="VARCHAR" property="UserGroupId"/>
+        <result column="department_id" jdbcType="VARCHAR" property="DepartmentId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="UserName"/>
+        <result column="user_type" jdbcType="INTEGER" property="UserType"/>
+        <result column="user_pwd" jdbcType="VARCHAR" property="UserPwd"/>
+        <result column="employee_id" jdbcType="INTEGER" property="EmployeeId"/>
+        <result column="true_name" jdbcType="VARCHAR" property="TrueName"/>
+        <result column="mobile_telephone" jdbcType="VARCHAR" property="MobileTelephone"/>
+        <result column="e_mail" jdbcType="VARCHAR" property="EMail"/>
+        <result column="telephone" jdbcType="VARCHAR" property="Telephone"/>
+        <result column="address" jdbcType="VARCHAR" property="Address"/>
+        <result column="user_state" jdbcType="INTEGER" property="UserState"/>
+        <result column="updatetime" jdbcType="VARCHAR" property="UpdateTime"/>
+        <result column="description" jdbcType="VARCHAR" property="Description"/>
+        <result column="admin_user" jdbcType="VARCHAR" property="AdminUser"/>
+        <result column="fax" jdbcType="VARCHAR" property="Fax"/>
+        <result column="user_sex" jdbcType="INTEGER" property="UserSex"/>
+        <result column="user_level" jdbcType="INTEGER" property="UserLevel"/>
+        <result column="login_client_type" jdbcType="INTEGER" property="LoginClientType"/>
+        <result column="dtPwUpdateTime" jdbcType="VARCHAR" property="PwUpdateTime"/>
+        <result column="iValidTime" jdbcType="INTEGER" property="IValidTime"/>
+        <result column="user_index" jdbcType="INTEGER" property="UserIndex"/>
+        <result column="dept_id" jdbcType="INTEGER" property="DeptId"/>
+        <result column="flowrole_id" jdbcType="INTEGER" property="FlowRoleId"/>
+        <result column="system_flag" jdbcType="INTEGER" property="SystemFlag"/>
+        <result column="is_show" jdbcType="INTEGER" property="IsShow"/>
+        <result column="create_time" jdbcType="VARCHAR" property="CreateTime"/>
+    </resultMap>
 
-    <select id="findAll"   resultType="com.znv.fssrqs.entity.mysql.MUserEntity">
+    <select id="getUser"  parameterType="java.util.Map" resultMap="BaseResultMap">
         select *
-        from t_cfg_user t
-        limit 1
+        from t_cfg_user u
+        where 1=1
+        <if test="UserID != null and UserID!=''">
+            and u.user_id = #{UserID,jdbcType=VARCHAR}
+        </if>
     </select>
 
 

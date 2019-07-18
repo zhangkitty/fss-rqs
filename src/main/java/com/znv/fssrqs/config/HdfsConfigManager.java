@@ -53,6 +53,7 @@ public class HdfsConfigManager {
 
     @PostConstruct
     public void init() {
+        log.info("HdfsConfigManager init...");
         initFssProperties();
         initKafkaProducer();
         initPhoenix();

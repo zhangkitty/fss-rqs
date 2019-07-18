@@ -5,10 +5,13 @@ import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.config.HkSdkConfig;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.entity.mysql.PersonLib;
+import com.znv.fssrqs.enums.ErrorCodeEnum;
+import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.service.HkSdkService;
 import com.znv.fssrqs.dao.mysql.LibRelationMapper;
 import com.znv.fssrqs.service.PersonStaticLibService;
 import com.znv.fssrqs.util.FastJsonUtils;
+import com.znv.fssrqs.util.LocalUserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +45,13 @@ public class PersonLibController {
      * 人员静态库查询
      */
     @GetMapping("/person/static/libs")
-    public String getLibs(@RequestParam Map<String, Object> params) {
-        if (! params.containsKey("UserID")) {
-            params.put("UserID", "11000000000");
+    public String getLibs(@RequestParam Map<String, Object> params)
+            throws BusinessException{
+        String userId = LocalUserUtil.getLocalUserId();
+        if (userId == null) {
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
         }
+        params.put("UserID", userId);
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(personLibService.getUserLibTreeByUserId(params)).json(), new PascalNameFilter());
     }
 

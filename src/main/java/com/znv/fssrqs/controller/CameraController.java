@@ -6,10 +6,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
+import com.znv.fssrqs.enums.ErrorCodeEnum;
+import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.service.UserGroupDeviceService;
 import com.znv.fssrqs.service.UserGroupService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.LicenseUtil;
+import com.znv.fssrqs.util.LocalUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +39,7 @@ public class CameraController {
      *
      * @param userId 用户ID
      */
-    @GetMapping("/{userId}/VIID/APEs")
+    @GetMapping("/VIID/APEs/{userId}")
     public String getCameras(@PathVariable(value = "userId") String userId) {
         JSONArray jsonArray = new JSONArray();
         UserGroup userGroup = userGroupService.queryUserGroupByUserId(userId);
@@ -69,11 +72,15 @@ public class CameraController {
     /**
      * 查询用户下设备列表
      *
-     * @param userId
+     * @param
      * @return
      */
-    @GetMapping("/{userId}/cameras")
-    public String selectCameras(@PathVariable(value = "userId") String userId) {
+    @GetMapping("/cameras")
+    public String selectCameras() {
+        String userId = LocalUserUtil.getLocalUserId();
+        if (userId == null) {
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+        }
         String cameras = getCameras(userId);
         JSONObject jsonObject = JSON.parseObject(cameras, JSONObject.class);
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(jsonObject.getJSONArray("APEList")).json(), new PascalNameFilter());

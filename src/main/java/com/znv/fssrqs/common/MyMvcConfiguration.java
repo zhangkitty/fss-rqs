@@ -13,6 +13,6 @@ public class MyMvcConfiguration extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
         registry.addInterceptor(new SessionHandler())
-                .addPathPatterns("/person/static/**");
+                .excludePathPatterns("/VIID/**");
     }
 }

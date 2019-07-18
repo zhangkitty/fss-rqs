@@ -3,6 +3,8 @@ server:
   servlet: ##servlet默认超时时间30分钟
     session:
       timeout: 30m
+    context-path: /
+
 spring:
   datasource:
     mysql:
@@ -16,7 +18,7 @@ spring:
       initial-size: 10
     hbase:
       driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
-      jdbc-url: jdbc:phoenix:lv116.dct-znv.com:2181:/hbase
+      jdbc-url: jdbc:phoenix:10.45.157.104:2181:/hbase
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
@@ -25,6 +27,12 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+  session:
+    store-type: redis
+  redis:
+    host: 10.45.157.42
+    port: 6379
+    database: 0
 #mybatis
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
@@ -42,15 +50,23 @@ hksdk:
   base-url: 10.45.157.59
   app-key: '24606272'
   app-secret: 'S2K5ChipGIr6elg2RPbC'
+chongqing:
+  eds-url: http://50.1.64.130:10002/pingaoEds
+  image-url: http://50.1.64.130:10002/getImage
+  max-minute-flow: 10
+  max-day-flow: 1000
+  outer-lib-ids:
+    - 32
+    - 33
 bigdata:
-  hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
+  hdfs-url: hdfs://10.45.157.104:8020/user/fss/V120
 ###缓冲服务地址配置
 mbus:
   ipp:
-  - 10.45.157.42:9008
+    - 10.45.157.42:9008
 fdfs:
   trackers:
-  - 10.45.157.59:22122
+    - 10.45.157.59:22122
 ####管理服务相关配置
 ms:
   image-store-type: 0
@@ -59,14 +75,15 @@ ms:
 ####商汤服务分析引擎配置
 sensetime:
   static-ai-units:
-  - 10.45.157.115:9001
+    - 10.45.157.115:9001
   dynamic-ai-units:
-  - 10.45.157.115:80
+    - 10.45.157.115:80
   feature:
     srcPoints: {-1.0f,0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}
     dstPoints: {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
+person:
+  person-id-length: 16
 conf:
-   myServer:
-    hdfsUrl: 'hdfs://lv116.dct-znv.com:8020/user/fss/V120'
-
+  myServer:
+    hdfsUrl: 'hdfs://10.45.157.104:8020/user/fss/V120'
 

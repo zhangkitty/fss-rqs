@@ -5,59 +5,33 @@ import lombok.Data;
 @Data
 public class MUserEntity {
     private String UserID;
-
-
-    private String SessionId;
-    private String UserName;
-    private String Password;
     private String PrecinctId;
-    private String roleId;
-
-    private String usergroupId;
-
-    private String departmentId;
-
-    private Integer userType;
-
-    private String employeeId;
-
-    private String trueName;
-
-    private String mobileTelephone;
-
-    private String eMail;
-
-    private String telephone;
-
-    private String address;
-
-    private Integer userState;
-
-    private String updateTime;
-
-    private String description;
-
-    private String adminUser;
-
-    private String fax;
-
-    private Integer userSex;
-
-    private Integer userLevel;
-
-    private Integer loginClientType;
-
-    private String dtpwupdatetime;
-
-    private Long userIndex;
-
-    private Integer flowroleId;
-
-    private Integer systemFlag;
-
-    private Integer isShow;
-
-    private String createTime;
-
-    private byte[] userImg;
+    private String RoleId;
+    private String UserGroupId;
+    private String DepartmentId;
+    private String UserName;
+    private Integer UserType;
+    private String UserPwd;
+    private Integer EmployeeId;
+    private String TrueName;
+    private String MobileTelephone;
+    private String EMail;
+    private String Telephone;
+    private String Address;
+    private Integer UserState;
+    private String UpdateTime;
+    private String Description;
+    private String AdminUser;
+    private String Fax;
+    private Integer UserSex;
+    private Integer UserLevel;
+    private Integer LoginClientType;
+    private String PwUpdateTime;
+    private Long IValidTime;
+    private Long UserIndex;
+    private Long DeptId;
+    private Integer FlowRoleId;
+    private Integer SystemFlag;
+    private Integer IsShow;
+    private String CreateTime;
 }

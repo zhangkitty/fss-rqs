@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,8 @@ public class UserService {
     private HUserDao hUserDao;
 
     public List<MUserEntity> findAll() throws Exception{
-        return mUserDao.findAll();
+        Map<String, Object> params = new HashMap<>();
+        return mUserDao.getUser(params);
     }
 
     public List<HUserEntity> find() throws Exception{
@@ -33,24 +35,30 @@ public class UserService {
     }
 
     public Map<String, Object> upCfgUserlogin(Map<String, Object> params) throws BusinessException {
+
         List<Map<String, Object>> procedureRet = mUserDao.upCfgUserlogin(params);
         if (procedureRet.isEmpty()) {
+            log.info("user {} login failed, ret list empty.", params.get("userName"));
             throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOGIN_ERROR);
         }
 
         Map<String, Object> map = procedureRet.iterator().next();
         if (map == null || !map.containsKey("ret")) {
+            log.info("user {} login failed, ret map empty.", params.get("userName"));
             throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOGIN_ERROR);
         }
 
         int ret = Integer.valueOf(String.valueOf(map.get("ret")) );
+        log.info("user {} login ret {}.", params.get("userName"), ret);
         switch (ret) {
-            case 5: // 用户不存在
+            case 1:
+                break;
+            case -536861934: // 用户不存在
                 throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOGIN_ERROR);
-            case 6: // 用户超过最大登录数
-                throw new BusinessException(ErrorCodeEnum.UNAUTHED_MAX_FAILED_TIMES);
-            case 17: // 用户被锁
+            case -536861613: // 用户被锁
                 throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOCKED);
+            default:
+                throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOGIN_ERROR);
         }
 
         // TODO: 写日志

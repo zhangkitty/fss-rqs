@@ -382,6 +382,7 @@ public class CameraLibService extends PhoenixSqlClient {
      * 初始化kafka
      */
     private static void init() {
+        log.info("CameraLibService init kafka... ");
         try {
             Properties props = HdfsConfigManager.getKafkaProducerProps();
             producer.initWithConfig(props);

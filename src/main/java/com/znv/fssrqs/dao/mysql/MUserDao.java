@@ -11,7 +11,7 @@ import java.util.Map;
 @Qualifier("mysqlSqlSessionTemplate")
 public interface MUserDao {
 
-    List<MUserEntity> findAll();
+    List<MUserEntity> getUser(Map<String, Object> params);
 
     List<Map<String, Object>> upCfgUserlogin(Map<String, Object> params);
 }
