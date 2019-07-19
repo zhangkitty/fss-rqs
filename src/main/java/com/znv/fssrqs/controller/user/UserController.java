@@ -11,10 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
-@RequestMapping(value="/user")
+@RequestMapping(value="/user", produces = { "application/json;charset=UTF-8" })
 public class UserController {
 
     @Autowired

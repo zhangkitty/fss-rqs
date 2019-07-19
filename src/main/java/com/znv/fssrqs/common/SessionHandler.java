@@ -6,18 +6,27 @@ import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.util.LocalUserUtil;
 import com.znv.fssrqs.vo.ResponseVo;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Component
 public class SessionHandler implements HandlerInterceptor {
+    @Value("${conf.defaultUserId:}")
+    private String defaultUserId;
+
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
+        if (!StringUtils.isEmpty(defaultUserId)) {
+            LocalUserUtil.setLocalUserId(defaultUserId);
+            return true;
+        }
+
         if ("/user/login".equals(request.getRequestURI())) {
             return true;
         }

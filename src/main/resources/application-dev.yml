@@ -86,4 +86,5 @@ person:
 conf:
   myServer:
     hdfsUrl: 'hdfs://10.45.157.104:8020/user/fss/V120'
+  defaultUserId: "11000000000"
 

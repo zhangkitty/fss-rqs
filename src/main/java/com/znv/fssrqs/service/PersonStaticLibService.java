@@ -100,7 +100,7 @@ public class PersonStaticLibService {
 
     private JSONArray getBasicTreeArray() {
         JSONArray libArr = new JSONArray();
-        JSONObject temp1 = new JSONObject();
+        /*JSONObject temp1 = new JSONObject();
         temp1.put("CreatorID", "11000000000");
         temp1.put("Description", "");
         temp1.put("EventID", "");
@@ -140,7 +140,7 @@ public class PersonStaticLibService {
         temp3.put("LibAlarmLevel", "");
         temp3.put("RegionID", "");
         temp3.put("LibInfo", "库名：人员库    库ID：-3");
-        libArr.add(temp3);
+        libArr.add(temp3);*/
         return libArr;
     }
 

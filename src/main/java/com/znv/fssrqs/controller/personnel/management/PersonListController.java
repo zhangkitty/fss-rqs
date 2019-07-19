@@ -28,6 +28,7 @@ import java.util.Map;
  */
 
 @RestController
+@RequestMapping(produces = { "application/json;charset=UTF-8" })
 public class PersonListController {
 
     @Autowired

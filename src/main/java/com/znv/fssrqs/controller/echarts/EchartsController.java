@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
+@RequestMapping(produces = { "application/json;charset=UTF-8" })
 public class EchartsController {
 
     @Autowired

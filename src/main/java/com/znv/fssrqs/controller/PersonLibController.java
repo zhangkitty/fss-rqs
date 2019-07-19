@@ -30,6 +30,7 @@ import java.util.Objects;
  * @Description TODO
  */
 @RestController
+@RequestMapping(produces = { "application/json;charset=UTF-8" })
 @Slf4j
 public class PersonLibController {
     @Autowired
