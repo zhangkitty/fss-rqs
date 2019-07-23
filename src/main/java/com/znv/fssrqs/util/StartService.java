@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class StartService{
+public class StartService {
 
     @Value("${conf.myServer.hdfsUrl}")
     private String hdfsUrl;
 
-    public void run(){
+    public void run() {
         log.info("********************************************************");
         log.info("*********************fss-rsq start**********************");
         log.info("********************************************************");
@@ -21,10 +21,10 @@ public class StartService{
 
         // 初始化kafka组件
         KafKaClient.getInstance().init();
-        log.info("Init kafka client success");
+        log.info("init kafka client success");
 
         // 初始化kafka告警消费
         AlarmCustume.initCustume();
-        log.info("初始化kafka告警消费");
+        log.info("init kafka alarm consume");
     }
 }
