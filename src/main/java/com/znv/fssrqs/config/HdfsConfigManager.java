@@ -10,6 +10,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.annotation.Order;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
 @org.springframework.context.annotation.Configuration
 @ConfigurationProperties("bigdata")
 @Data
+@Order(1)
 public class HdfsConfigManager {
     private static final Pattern PATTERN = Pattern.compile("\\$\\{([^\\}]+)\\}"); // 正则匹配
     //大数据相关配置
