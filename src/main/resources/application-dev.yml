@@ -30,7 +30,7 @@ spring:
   session:
      store-type: redis
   redis:
-    host: 10.45.157.42
+    host: 10.45.149.27
     port: 6379
     database: 0
 #mybatis
