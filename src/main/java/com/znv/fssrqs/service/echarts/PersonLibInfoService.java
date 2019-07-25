@@ -1,12 +1,10 @@
 package com.znv.fssrqs.service.echarts;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.param.echarts.PersonLibIdParam;
 import com.znv.fssrqs.param.echarts.PersonListGroupQueryParam;
-import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.util.FormatObject;
 import com.znv.fssrqs.util.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -27,53 +25,36 @@ import java.util.List;
 @Service
 @Slf4j
 public class PersonLibInfoService {
-
     @Autowired
     private ElasticSearchClient elasticSearchClient;
-
     private final String esurl = "person_list_data_n_project_v1_2/person_list/_search/template";
-
     private final String templateName = "template_person_list_group";
 
-
-
-    public JSONObject requestSearch(PersonListGroupQueryParam queryParams,PersonLibIdParam libID) {
-
-        List<String>  list = new ArrayList<>();
-
-
+    public JSONObject requestSearch(PersonListGroupQueryParam queryParams, PersonLibIdParam libID) {
+        List<String> list = new ArrayList<>();
         queryParams.setAddr(list);
         queryParams.setLibId(libID.getLibID());
-
-        long t1 = System.currentTimeMillis();
-
-
-
+        long startTime = System.currentTimeMillis();
         JSONObject jsonEsResult = new JSONObject();
         try {
             // 执行第一次ES分组查询
             JSONObject obj = getAggsResult(queryParams, jsonEsResult);
-
             // 执行第二次ES分组查询
             obj = getAgeGroupResult(queryParams, jsonEsResult);
-
             // 执行第三次ES分组查询
             obj = getAddrGroupResult(queryParams, jsonEsResult);
-
         } catch (Exception e) {
             e.printStackTrace();
-
         }
 
-
-        long time = System.currentTimeMillis();
-        jsonEsResult.put("Time", String.valueOf(time - t1));
-
+        long endTime = System.currentTimeMillis();
+        jsonEsResult.put("Time", String.valueOf(endTime - startTime));
         return jsonEsResult;
     }
 
     /**
      * 第三次分组聚合查询
+     *
      * @param queryParams 查询参数
      * @param resObj      前两次查询结果
      * @return
@@ -81,7 +62,6 @@ public class PersonLibInfoService {
     private JSONObject getAddrGroupResult(PersonListGroupQueryParam queryParams, JSONObject resObj) {
         JSONArray bucketsArray = new JSONArray();
         int total = 0;
-
         if (queryParams.getAddr() != null && !queryParams.getAddr().isEmpty()) {
             for (String key : queryParams.getAddr()) {
                 if (key == null || (key != null && key.trim().equals(""))) {
@@ -92,11 +72,7 @@ public class PersonLibInfoService {
                 params.put("addr", key);
                 // 查询结果
                 Result<JSONObject, String> sb = elasticSearchClient.postRequest(esurl, obj);
-
-
                 JSONObject jsonEsResult = sb.value();
-
-
                 JSONObject buckets = new JSONObject();
                 buckets.put("key", key);
                 int count = jsonEsResult.getJSONObject("hits").getInteger("total");
@@ -126,6 +102,7 @@ public class PersonLibInfoService {
 
     /**
      * 第二次分组聚合查询
+     *
      * @param queryParams 查询参数
      * @param resObj      getAggsResult查询结果
      * @return
@@ -133,7 +110,6 @@ public class PersonLibInfoService {
     private JSONObject getAgeGroupResult(PersonListGroupQueryParam queryParams, JSONObject resObj) {
         if (queryParams.getAgeGroup()) {
             JSONArray bucketsArray = new JSONArray();
-
             for (int i = 0; i < 4; i++) {
                 JSONObject obj = getTemplateParams(queryParams);
                 JSONObject params = obj.getJSONObject("params");
@@ -158,10 +134,7 @@ public class PersonLibInfoService {
                 }
                 // 查询结果
                 Result<JSONObject, String> sb = elasticSearchClient.postRequest(esurl, obj);
-
-
                 JSONObject jsonEsResult = sb.value();
-
                 JSONObject buckets = new JSONObject();
                 buckets.put("key", key);
                 buckets.put("doc_count", jsonEsResult.getJSONObject("hits").getInteger("total"));
@@ -178,6 +151,7 @@ public class PersonLibInfoService {
 
     /**
      * 第一次分组聚合查询
+     *
      * @param queryParams 查询参数
      * @param resObj      空json类
      * @return
@@ -193,17 +167,11 @@ public class PersonLibInfoService {
         }
         // 查询结果
         Result<JSONObject, String> sb = elasticSearchClient.postRequest(esurl, obj);
-
-
         JSONObject jsonEsResult = sb.value();
-
-
-
         // 从es查询结果中获取hits
         resObj.put("Total", jsonEsResult.getJSONObject("hits").getInteger("total"));
         if (jsonEsResult.getJSONObject("aggregations") != null) {
             JSONObject aggResult = jsonEsResult.getJSONObject("aggregations");
-
             if (aggResult.getJSONObject("time_group") != null) {
                 resObj.put("TimeGroup", aggResult.getJSONObject("time_group"));
             }
@@ -214,12 +182,12 @@ public class PersonLibInfoService {
                 resObj.put("FlagGroup", aggResult.getJSONObject("flag_group"));
             }
         }
-
         return resObj;
     }
 
     /**
      * 模板查询参数封装
+     *
      * @param inParam
      * @return
      */
