@@ -26,5 +26,8 @@ public class StartService {
         // 初始化kafka告警消费
         AlarmCustume.initCustume();
         log.info("init kafka alarm consume");
+
+        // 初始化Sim
+        SimUtil.init();
     }
 }
