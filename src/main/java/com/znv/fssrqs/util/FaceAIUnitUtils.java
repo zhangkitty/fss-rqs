@@ -48,4 +48,31 @@ public class FaceAIUnitUtils {
         }
         return result;
     }
+
+    public static String getAttribute(String imageData) {
+        String result = null;
+        CloseableHttpClient client = HttpClientPool.getInstance().getHttpClient();
+        HttpPost httpPost = new HttpPost("http://" + SpringContextUtil.getCtx().getBean(SenseTimeConfig.class).getStaticAiUnits().get(0) + "/verify/attribute/gets");
+        httpPost.setHeader(HttpHeaders.CONNECTION, "close");
+        httpPost.setConfig(HttpClientPool.requestConfig());
+        String flag = HdfsConfigManager.getString("sensetime.http.auth");
+        if (!StringUtils.isEmpty(flag) && flag.equals("true")) {
+            httpPost.setHeader("Authorization", HdfsConfigManager.getString("sensetime.http.auth.header"));
+        }
+        ByteArrayBody bab = new ByteArrayBody(Base64Util.decode(imageData), UUID.randomUUID().toString());
+        HttpEntity entity = MultipartEntityBuilder.create().addPart("imageData", bab).build();
+        httpPost.setEntity(entity);
+        CloseableHttpResponse response = null;
+        HttpEntity resEntity = null;
+        try {
+            response = client.execute(httpPost);
+            resEntity = response.getEntity();
+            result = EntityUtils.toString(resEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("获取静态图片特征值失败");
+        } finally {
+            httpPost.releaseConnection();
+        }
+        return result;
+    }
 }

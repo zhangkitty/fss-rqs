@@ -16,6 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class One2OneFaceCompareService {
 
+    public JSONObject getFaceAttr(String imageData) {
+        JSONObject result = new JSONObject();
+        result = (JSONObject) JSONObject.parseObject(FaceAIUnitUtils.getAttribute(imageData)).get("data");
+        return result;
+    }
+
     public JSONObject getCompareValue(String imageData1, String imageData2) {
         JSONObject json = new JSONObject();
 

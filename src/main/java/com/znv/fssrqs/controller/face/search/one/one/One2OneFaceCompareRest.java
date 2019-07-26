@@ -22,7 +22,15 @@ public class One2OneFaceCompareRest {
     private One2OneFaceCompareService one2OneFaceCompareService;
 
 
-    @PostMapping("/img_compara_value")
+    @PostMapping("/compare/img_character_value")
+    public ResponseVo getFaceAttr(@RequestBody String content) {
+        JSONObject json = JSON.parseObject(content);
+        String imageData = json.getString("ImageData");
+        return ResponseVo.success(one2OneFaceCompareService.getFaceAttr(imageData));
+    }
+
+
+    @PostMapping("/compare/img_compara_value")
     public ResponseVo getComparaValue(@RequestBody One2OneFaceCompareRestParams one2OneFaceCompareRestParams) {
 
         JSONObject result  =  one2OneFaceCompareService.getCompareValue(one2OneFaceCompareRestParams.getImageOne(), one2OneFaceCompareRestParams.getImageTwo());
