@@ -14,8 +14,10 @@
     <name>fss-rqs</name>
     <description>Fss Query system project for Spring Boot</description>
     <properties>
+        <start-class>com.znv.fssrqs.FssRqsApplication</start-class>
         <java.version>1.8</java.version>
     </properties>
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -113,6 +115,14 @@
             <version>1.1.14</version>
         </dependency>
         <!-- 大数据hadoop-common -->
+
+
+        <dependency>
+            <groupId>org.apache.htrace</groupId>
+            <artifactId>htrace-core4</artifactId>
+            <version>4.0.1-incubating</version>
+        </dependency>
+
         <dependency>
             <groupId>com.znv</groupId>
             <artifactId>hadoop-common</artifactId>
@@ -204,10 +214,10 @@
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.apache.hadoop</groupId>
-                    <artifactId>hadoop-common</artifactId>
-                </exclusion>
+                <!--<exclusion>-->
+                    <!--<groupId>org.apache.hadoop</groupId>-->
+                    <!--<artifactId>hadoop-common</artifactId>-->
+                <!--</exclusion>-->
             </exclusions>
         </dependency>
 
@@ -339,23 +349,17 @@
     <build>
         <finalName>fss-rqs</finalName>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
-            <!--</plugin>-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.znv.fssrqs.FssRqsApplication</mainClass>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>repackage</goal>
                         </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/thirdparty</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -370,8 +374,6 @@
                     <overwrite>true</overwrite>
                 </configuration>
             </plugin>
-
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
