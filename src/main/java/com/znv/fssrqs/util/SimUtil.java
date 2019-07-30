@@ -14,26 +14,29 @@
  *    修 改 人：
  *    修改内容：
  * </pre>
- * @version 1.0
+ *
+ * @version 1.6.0
  * @author ZhuHongxia
  */
 
 package com.znv.fssrqs.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.config.HdfsConfigManager;
+import com.znv.fssrqs.constant.CommonConstant;
 import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author ZhuHongxia
  */
 public class SimUtil {
-
     private static float[] src_points = null;
     private static float[] dst_points = null;
+
     public static void init() {
-        String srcPoints = "{-1.0f,0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}";
+        String srcPoints = PropertiesUtil.get(HdfsConfigManager.getProperties(), CommonConstant.SenseTime.SENSETIME_FEATURE_SRC);
         src_points = parseFloatArray(srcPoints);
-        String dstPoints = "{0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}";
+        String dstPoints = PropertiesUtil.get(HdfsConfigManager.getProperties(), CommonConstant.SenseTime.SENSETIME_FEATURE_DST);
         dst_points = parseFloatArray(dstPoints);
     }
 
@@ -88,7 +91,7 @@ public class SimUtil {
         for (int i = 1; i < src_points.length; i++) {
             if (score < src_points[i]) {
                 result = dst_points[i - 1] + (score - src_points[i - 1]) * (dst_points[i] - dst_points[i - 1])
-                    / (src_points[i] - src_points[i - 1]);
+                        / (src_points[i] - src_points[i - 1]);
                 break;
             }
         }
@@ -135,7 +138,7 @@ public class SimUtil {
     private static int GetInt(byte[] bytes, int offset) {
         // TODO Auto-generated method stub
         return (0xff & bytes[offset]) | ((0xff & bytes[offset + 1]) << 8) | ((0xff & bytes[offset + 2]) << 16)
-            | ((0xff & bytes[offset + 3]) << 24);
+                | ((0xff & bytes[offset + 3]) << 24);
     }
 
 }
