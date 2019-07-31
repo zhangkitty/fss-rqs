@@ -4,16 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.config.HkSdkConfig;
 import com.znv.fssrqs.constant.CommonConstant;
+import com.znv.fssrqs.dao.mysql.LibRelationMapper;
 import com.znv.fssrqs.entity.mysql.PersonLib;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.service.HkSdkService;
-import com.znv.fssrqs.dao.mysql.LibRelationMapper;
 import com.znv.fssrqs.service.PersonStaticLibService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.LocalUserUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

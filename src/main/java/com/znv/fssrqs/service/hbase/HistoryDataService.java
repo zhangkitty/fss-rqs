@@ -4,18 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.constant.CommonConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Base64;
+import java.util.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by dongzelong on  2019/6/20 14:26.
@@ -73,11 +68,11 @@ public class HistoryDataService {
 
         // 没有符合条件的记录，直接返回
         if (count == 0) {
-            result.put("data", objList);
-            result.put("time", System.currentTimeMillis() - t1);
-            result.put("count", count);
-            result.put("total_page", totalPage);
-            result.put("id", CommonConstant.PhoenixProtocolId.QUERY_HISTORY);
+            result.put("Data", objList);
+            result.put("Time", System.currentTimeMillis() - t1);
+            result.put("Count", count);
+            result.put("TotalPage", totalPage);
+            result.put("ID", CommonConstant.PhoenixProtocolId.QUERY_HISTORY);
         } else {
             StringBuilder sql = new StringBuilder();
 
@@ -251,8 +246,7 @@ public class HistoryDataService {
                 }
 
                 // 按图片查询（查询条件）
-                if (isSearchFeature /* !feature.equals("") */) {
-
+                if (isSearchFeature) {
                     byte[] byteFeature = Base64.getDecoder().decode(feature);
                     stat.setObject(i, byteFeature);
                     i++;
@@ -265,13 +259,18 @@ public class HistoryDataService {
                 rs = stat.executeQuery();
 
                 while (rs.next()) {
-                    JSONObject record = new JSONObject();
+
                     ResultSetMetaData rsMetaData = rs.getMetaData();
                     int columnCount = rsMetaData.getColumnCount();
-
+                    JSONObject record = new JSONObject();
                     for (int column = 0; column < columnCount; column++) {
                         String field = rsMetaData.getColumnLabel(column + 1).toLowerCase();
-                        record.put(field, rs.getObject(field));
+                        String[] fieldNames = field.split("_");
+                        StringBuffer sb = new StringBuffer();
+                        for (String fieldName : fieldNames) {
+                            sb.append(fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
+                        }
+                        record.put(sb.toString(), rs.getObject(field));
                     }
                     objList.add(record);
                 }
@@ -288,11 +287,11 @@ public class HistoryDataService {
                 }
             }
 
-            result.put("data", objList);
-            result.put("time", System.currentTimeMillis() - t1);
-            result.put("total_page", totalPage);
-            result.put("count", count);
-            result.put("id", CommonConstant.PhoenixProtocolId.QUERY_HISTORY);
+            result.put("Data", objList);
+            result.put("Time", System.currentTimeMillis() - t1);
+            result.put("TotalPage", totalPage);
+            result.put("Count", count);
+            result.put("ID", CommonConstant.PhoenixProtocolId.QUERY_HISTORY);
         }
         return result;
     }
