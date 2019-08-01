@@ -4,14 +4,18 @@ server:
     session:
       timeout: 30m
     context-path: /
-
+  tomcat:
+    accesslog:
+      enabled: true
+      pattern: combined
+    basedir: tomcat
+    uri-encoding: UTF-8
 logging:
   level:
     root: info
-    org.mybatis: debug
-    java.sql: debug
+    org.mybatis: error
+    java.sql: error
     org.springframework.web: trace
-
 spring:
   datasource:
     mysql:
@@ -25,7 +29,7 @@ spring:
       initial-size: 10
     hbase:
       driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
-      jdbc-url: jdbc:phoenix:10.45.152.230:2181:/hbase
+      jdbc-url: jdbc:phoenix:lv116.dct-znv.com:2181:/hbase
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
@@ -35,9 +39,9 @@ spring:
       enabled: true
       force: true
   session:
-     store-type: redis
+    store-type: redis
   redis:
-    host: 10.45.152.172
+    host: 10.45.157.117
     port: 6379
     database: 0
 #mybatis
@@ -47,9 +51,9 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: 10.45.152.230
+  host: lv116.dct-znv.com
   port: 9200
-  clusterName: lv230.dct-znv.com-es
+  clusterName: lv116.dct-znv.com-es
 #海康SDK
 hksdk:
   # false不支持海康脸谱算法 true支持海康脸谱算法
@@ -63,17 +67,17 @@ chongqing:
   max-minute-flow: 10
   max-day-flow: 1000
   outer-lib-ids:
-    - 32
-    - 33
+  - 32
+  - 33
 bigdata:
-  hdfs-url: hdfs://10.45.152.230:8020/user/fss/V120
+  hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
 ###缓冲服务地址配置
 mbus:
   ipp:
-    - 10.45.152.172:9008
+  - 10.45.157.117:9008
 fdfs:
   trackers:
-    - 10.45.157.59:22122
+  - 10.45.157.59:22122
 ####管理服务相关配置
 ms:
   image-store-type: 0
@@ -82,9 +86,9 @@ ms:
 ####商汤服务分析引擎配置
 sensetime:
   static-ai-units:
-    - 10.45.157.115:9001
+  - 10.45.157.115:9001
   dynamic-ai-units:
-    - 10.45.157.115:80
+  - 10.45.157.115:80
   feature:
     srcPoints: {-1.0f,0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}
     dstPoints: {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
@@ -92,5 +96,5 @@ person:
   person-id-length: 16
 conf:
   myServer:
-    hdfsUrl: 'hdfs://10.45.152.230:8020/user/fss/V120'
+    hdfsUrl: 'hdfs://lv116.dct-znv.com:8020/user/fss/V120'
 
