@@ -1,17 +1,20 @@
 package com.znv.fssrqs.util;
 
-public class LocalUserUtil {
-    public static ThreadLocal<String> localUser = new ThreadLocal();
 
-    public static String getLocalUserId(){
+import com.alibaba.fastjson.JSONObject;
+
+public class LocalUserUtil {
+    public static ThreadLocal<JSONObject> localUser = new ThreadLocal();
+
+    public static JSONObject getLocalUser(){
         return localUser.get();
     }
 
-    public static void setLocalUserId(String userId) {
-        localUser.set(userId);
+    public static void setLocalUser(JSONObject user) {
+        localUser.set(user);
     }
 
-    public static void removeLocalUserId() {
+    public static void removeLocalUser() {
         localUser.remove();
     }
 }

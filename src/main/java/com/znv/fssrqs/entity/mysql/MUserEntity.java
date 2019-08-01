@@ -12,7 +12,7 @@ public class MUserEntity {
     private String UserName;
     private Integer UserType;
     private String UserPwd;
-    private Integer EmployeeId;
+    private String EmployeeId;
     private String TrueName;
     private String MobileTelephone;
     private String EMail;

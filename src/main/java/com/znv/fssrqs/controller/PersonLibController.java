@@ -1,6 +1,7 @@
 package com.znv.fssrqs.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.config.HkSdkConfig;
 import com.znv.fssrqs.constant.CommonConstant;
@@ -47,11 +48,11 @@ public class PersonLibController {
     @GetMapping("/person/static/libs")
     public String getLibs(@RequestParam Map<String, Object> params)
             throws BusinessException{
-        String userId = LocalUserUtil.getLocalUserId();
-        if (userId == null) {
+        JSONObject user = LocalUserUtil.getLocalUser();
+        if (user == null || !user.containsKey("UserId")) {
             throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
         }
-        params.put("UserID", userId);
+        params.put("UserID", user.getString("UserId"));
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(personLibService.getUserLibTreeByUserId(params)).json(), new PascalNameFilter());
     }
 

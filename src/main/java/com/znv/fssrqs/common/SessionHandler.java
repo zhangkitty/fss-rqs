@@ -8,7 +8,6 @@ import com.znv.fssrqs.util.LocalUserUtil;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,9 @@ public class SessionHandler implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
         if (!StringUtils.isEmpty(defaultUserId)) {
-            LocalUserUtil.setLocalUserId(defaultUserId);
+            JSONObject user = new JSONObject();
+            user.put("UserId", defaultUserId);
+            LocalUserUtil.setLocalUser(user);
             return true;
         }
 
@@ -38,7 +39,7 @@ public class SessionHandler implements HandlerInterceptor {
             response.getWriter().write(JSON.toJSONString(responseVo));
             return false;
         } else {
-            LocalUserUtil.setLocalUserId(userLogin.getString("UserId"));
+            LocalUserUtil.setLocalUser(userLogin);
             return true;
         }
     }
@@ -49,6 +50,6 @@ public class SessionHandler implements HandlerInterceptor {
                                 Object handler,
                                 Exception ex)
             throws Exception {
-        LocalUserUtil.removeLocalUserId();
+        LocalUserUtil.removeLocalUser();
     }
 }

@@ -45,7 +45,7 @@
     </select>
 
 
-    <select id="upCfgUserlogin" statementType="CALLABLE" parameterType="java.util.Map" resultType="java.util.HashMap">
+    <select id="upCfgUserLogin" statementType="CALLABLE" parameterType="java.util.Map" resultType="java.util.HashMap">
     {
           call up_cfg_userlogin(
           #{userName,jdbcType=VARCHAR},
@@ -55,6 +55,36 @@
           #{loginTime,jdbcType=VARCHAR},
           #{clientIp,jdbcType=VARCHAR},
           #{loginClientType,jdbcType=INTEGER})
+    }
+    </select>
+
+    <select id="upCfgUserLogout" statementType="CALLABLE" parameterType="java.util.Map">
+    {
+          call up_cfg_userlogout(
+          #{sessionId,jdbcType=VARCHAR},
+          #{serverId,jdbcType=VARCHAR},
+          #{logoutTime,jdbcType=VARCHAR},
+          #{clientIp,jdbcType=VARCHAR},
+          #{description,jdbcType=VARCHAR},
+          #{detailStyle,jdbcType=INTEGER},
+          #{userId,jdbcType=VARCHAR})
+    }
+    </select>
+
+    <select id="upCfgSaveSystemLog" statementType="CALLABLE" parameterType="java.util.Map" resultType="int">
+    {
+          call up_cfg_savesystemlog(
+          #{userId,jdbcType=VARCHAR},
+          #{deviceId,jdbcType=VARCHAR},
+          #{accessStyle,jdbcType=INTEGER},
+          #{accessTime,jdbcType=VARCHAR},
+          #{accessDescription,jdbcType=VARCHAR},
+          #{remoteHost,jdbcType=VARCHAR},
+          #{detailStyle,jdbcType=INTEGER},
+          #{loginClientType,jdbcType=INTEGER},
+          #{logState,jdbcType=INTEGER},
+          #{logParam,jdbcType=VARCHAR},
+          #{deviceName,jdbcType=VARCHAR})
     }
     </select>
 </mapper>
