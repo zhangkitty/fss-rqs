@@ -2,9 +2,7 @@
 <configuration>
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>
-                %d - %msg%n
-            </pattern>
+                <pattern>%d %p (%file:%line\)- %m%n</pattern>
         </layout>
     </appender>
 
@@ -15,9 +13,7 @@
             <onMismatch>ACCEPT</onMismatch>
         </filter>
         <encoder>
-            <pattern>
-                %msg%n
-            </pattern>
+            <pattern>%d %p (%file:%line\)- %m%n</pattern>
         </encoder>
         <!--滚动策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -31,9 +27,7 @@
             <level>ERROR</level>
         </filter>
         <encoder>
-            <pattern>
-                %msg%n
-            </pattern>
+            <pattern>%d %p (%file:%line\)- %m%n</pattern>
         </encoder>
         <!--滚动策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
