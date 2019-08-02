@@ -514,14 +514,14 @@ public class PersonListService {
             return null;
         }
 
-        String imgUrl = PersonInfoCache.getInstance().getPersonImage(personId);
+        String imgUrl = PersonInfoCache.getInstance().getPersonImage(personId + libId);
         if (imgUrl != null) {
             return imgUrl;
         }
 
         JSONObject requestParam = new JSONObject();
         if (CommonConstant.ChongQingLib.RESIDENT.equals(libId)) { // 常口库
-            requestParam.put("dataServiceCode", "cqdsjbedzsy");
+            requestParam.put("dataServiceCode", "cqdsjbzasy");
         } else if (CommonConstant.ChongQingLib.SECOND_GENERATION_ID_CARD.equals(libId)) { // 二代证库
             requestParam.put("dataServiceCode", "cqdsjbedzsy");
         } else if (CommonConstant.ChongQingLib.RUN_CRIMINAL.equals(libId)) {
@@ -545,7 +545,7 @@ public class PersonListService {
 
         imgUrl = parseImgUrlByResp(personId, imageInfo);
         if (imgUrl != null) {
-            PersonInfoCache.getInstance().cachePersonImage(personId, imgUrl);
+            PersonInfoCache.getInstance().cachePersonImage(personId + libId, imgUrl);
         }
 
         return imgUrl;

@@ -15,15 +15,4 @@ public class ChongQingConfig {
     private String imageUrl;
     private Long maxMinuteFlow;
     private Long maxDayFlow;
-    private String[] outerLibIds;
-
-
-    private HashMap<String, String> outerLibIdsMap;
-    @Bean
-    public void setOuterLibIdsMap() {
-        outerLibIdsMap = new HashMap<>();
-        for (int i = 0; i < outerLibIds.length; i++) {
-            outerLibIdsMap.put(outerLibIds[i], outerLibIds[i]);
-        }
-    }
 }
