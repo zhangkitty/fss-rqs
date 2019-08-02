@@ -36,8 +36,6 @@ public class NtoNCompare {
 
     @Scheduled(fixedRate = 3000)
     public void query() {
-        log.error("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        log.error(Thread.currentThread().getName());
         if (CompareTaskLoader.getInstance().getExecQueue().size()==0) {
             if (CompareTaskLoader.getInstance().getWaitQueue().size() != 0) {
                 CompareTaskEntity o = (CompareTaskEntity) CompareTaskLoader.getInstance().getWaitQueue().poll();

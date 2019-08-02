@@ -7,12 +7,14 @@ import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam;
 import com.znv.fssrqs.timer.CompareTaskLoader;
 import com.znv.fssrqs.util.HttpUtils;
+import com.znv.fssrqs.util.ICAPVThreadPool;
 import com.znv.fssrqs.util.MD5Util;
 import com.znv.fssrqs.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * @author zhangcaochao
@@ -68,6 +70,24 @@ public class CompareService {
             CompareTaskLoader.getInstance().registerObserver(o);
         }
         return result;
+   }
+
+
+   public Integer delete(String taskId){
+       ICAPVThreadPool.getInstance().execute(new Runnable() {
+           @Override
+           public void run() {
+               ConcurrentLinkedDeque<CompareTaskEntity> waitTask= CompareTaskLoader.getInstance().getWaitQueue();
+               for (CompareTaskEntity wq : waitTask) {
+                   if (wq.getTaskId().equals(taskId)) {
+                       waitTask.remove(wq);
+                   }
+               }
+           }
+       });
+
+       Integer result  = compareTaskDao.delete(taskId);
+       return result;
    }
 
 
