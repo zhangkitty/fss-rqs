@@ -68,7 +68,7 @@ public class UserService {
         logParams.put("accessDescription", "Login System success username="+params.get("userName"));
         logParams.put("remoteHost", params.get("clientIp"));
         logParams.put("detailStyle", 1);
-        logParams.put("loginClientType", 1);
+        logParams.put("loginClientType", params.get("loginClientType"));
         logParams.put("logState", 0); // 0 成功
         logParams.put("logParam", "");
         logParams.put("deviceName", "");
@@ -79,6 +79,7 @@ public class UserService {
 
 
     public void upCfgUserLogout(Map<String, Object> params) throws BusinessException {
+        log.info("user logout, userId {}, sessionId {}.", params.get("userId"), params.get("sessionId"));
         mUserDao.upCfgUserLogout(params);
 
         Map<String, Object> logParams = new HashMap<>();

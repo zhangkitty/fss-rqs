@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,27 +47,60 @@ public class PersonListController {
     @Autowired
     private ChongQingConfig chongQingConfig;
 
-    @GetMapping(value="/VIID/Persons")
-    public ResponseVo getPersonList(@RequestHeader("Host") String host, @Valid PersonListSearchParams personListSearchParams) throws Exception {
-        if(personListSearchParams.getAlgorithmType()!=null&&personListSearchParams.getAlgorithmType().equals("1")){
-            JSONObject result =  viidhksdkService.queryHkPerson(personListSearchParams);
-            return ResponseVo.success(result);
-        }
-        JSONObject jsonObject = personListService.getPersonList(host, personListSearchParams);
-        return ResponseVo.success(jsonObject);
-    }
+//    @GetMapping(value="/VIID/Persons")
+//    public ResponseVo getPersonList(@RequestHeader("Host") String host, @Valid PersonListSearchParams personListSearchParams) throws Exception {
+//        if(personListSearchParams.getAlgorithmType()!=null&&personListSearchParams.getAlgorithmType().equals("1")){
+//            JSONObject result =  viidhksdkService.queryHkPerson(personListSearchParams);
+//            return ResponseVo.success(result);
+//        }
+//        JSONObject jsonObject = personListService.getPersonList(host, personListSearchParams);
+//        return ResponseVo.success(jsonObject);
+//    }
+
 
     @RequestMapping(value="/VIID/Persons",method = RequestMethod.POST)
-    public ResponseVo PostPersonList(@RequestHeader("Host") String host, @RequestBody String json) throws Exception {
+    public JSONObject PostPersonList(@RequestHeader("Host") String host, @RequestBody String json) throws Exception {
 
         PersonListSearchParams personListSearchParams = modelMapper.map(JSONObject.parseObject(json),PersonListSearchParams.class);
 
-        if(personListSearchParams.getAlgorithmType()!=null&&personListSearchParams.getAlgorithmType().equals("1")){
-            JSONObject result =  viidhksdkService.queryHkPerson(personListSearchParams);
-            return ResponseVo.success(result);
+        return getPersonList(host, personListSearchParams);
+    }
+
+    @GetMapping(value="/VIID/Persons")
+    public JSONObject getPersonList(@RequestHeader("Host") String host,
+                                    @Valid PersonListSearchParams personListSearchParams) throws Exception {
+        // ！！暂时先这样写，因为上面的代码返回的值少了
+        Map<String, Object> mapParam = new HashMap<>();
+        if (personListSearchParams.getStartTime() != null) {
+            mapParam.put("StartTime", personListSearchParams.getStartTime());
         }
-        JSONObject jsonObject = personListService.getPersonList(host, personListSearchParams);
-        return ResponseVo.success(jsonObject);
+        if (personListSearchParams.getEndTime() != null) {
+            mapParam.put("EndTime", personListSearchParams.getEndTime());
+        }
+        if (personListSearchParams.getLibId() != null) {
+            mapParam.put("LibId", personListSearchParams.getLibId());
+        }
+        if (personListSearchParams.getIsDel() != null) {
+            mapParam.put("IsDel", personListSearchParams.getIsDel());
+        }
+        mapParam.put("CurrentPage", personListSearchParams.getCurrentPage());
+        mapParam.put("PageSize", personListSearchParams.getPageSize());
+        if (personListSearchParams.getName() != null) {
+            mapParam.put("Name", personListSearchParams.getName());
+        }
+        if (personListSearchParams.getIDNumber() != null) {
+            mapParam.put("IDNumber", personListSearchParams.getIDNumber());
+        }
+        if (personListSearchParams.getAlgorithmType() != null) {
+            mapParam.put("AlgorithmType", personListSearchParams.getAlgorithmType());
+        }
+        if (personListSearchParams.getImgData() != null) {
+            mapParam.put("ImgData", personListSearchParams.getImgData());
+        }
+        if (personListSearchParams.getSimThreshold() != null) {
+            mapParam.put("SimThreshold", personListSearchParams.getSimThreshold());
+        }
+        return getPersonListByPost(host, mapParam);
     }
 
     /**
@@ -132,27 +166,11 @@ public class PersonListController {
         }
 
 
-        if (! mapParam.containsKey("ImgData")) {
-            if (! mapParam.containsKey("LibID")) {
-                retObject.put("Code", 20000);
-                retObject.put("Message", "参数错误，需要填LibID!");
-                return retObject;
-            }
-
+        if (mapParam.containsKey("LibID")) {
             if (! (mapParam.get("LibID") instanceof List)) {
                 retObject.put("Code", 20000);
                 retObject.put("Message", "参数错误，LibID需要为数组!");
                 return retObject;
-            }
-            if (chongQingConfig.getOuterLibIdsMap() != null) {
-                List<String> libIDs = (List)(mapParam.get("LibID"));
-                for (int n = 0; n < libIDs.size(); n++) {
-                    if (!chongQingConfig.getOuterLibIdsMap().containsKey(libIDs.get(n))) {
-                        retObject.put("Code", 20000);
-                        retObject.put("Message", "参数错误，LibID错误!");
-                        return retObject;
-                    }
-                }
             }
         }
 

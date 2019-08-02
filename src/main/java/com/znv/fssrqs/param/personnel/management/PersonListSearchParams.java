@@ -14,11 +14,8 @@ import java.util.Date;
  */
 @Data
 public class PersonListSearchParams {
-
-    @NotBlank(message = "开始时间不能为空")
     private String StartTime;
 
-    @NotBlank(message = "结束时间不能为空")
     private String EndTime;
 
     private String[] LibId;
@@ -27,13 +24,11 @@ public class PersonListSearchParams {
 
     private String ImgData;
 
-    private String SimThreshold;
+    private Double SimThreshold;
 
-    @NotBlank(message = "分页参数不能为空")
-    private String CurrentPage;
+    private Integer CurrentPage;
 
-    @NotBlank(message = "分页参数不能为空")
-    private String PageSize;
+    private Integer PageSize;
 
     private String Name;
 

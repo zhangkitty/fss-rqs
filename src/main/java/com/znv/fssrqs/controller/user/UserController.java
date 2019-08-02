@@ -28,7 +28,7 @@ public class UserController {
 
         if (!loginObject.containsKey("UserName")
                 || !loginObject.containsKey("UserPassword")
-                || !loginObject.containsKey("ServerId")
+                || !loginObject.containsKey("ClientType")
         ) {
             throw new BusinessException(ErrorCodeEnum.PARAM_ILLEGAL);
         }
@@ -41,11 +41,11 @@ public class UserController {
         params.put("userName", loginObject.getString("UserName"));
         params.put("userPwd", loginObject.getString("UserPassword"));
         params.put("sessionId", session.getId());
-        params.put("serverId", loginObject.getString("ServerId"));
+        params.put("serverId", "110000010005");
         params.put("loginTime", DataConvertUtils.dateToStr());
         String remoteIp = host.split(":")[0];
         params.put("clientIp", remoteIp);
-        params.put("loginClientType", "1"); // 1 WEB
+        params.put("loginClientType", loginObject.getIntValue("ClientType")); // 1 WEB
         Map<String, Object> ret = userService.upCfgUserLogin(params);
         JSONObject retData = new JSONObject();
         if (ret.containsKey("user_id")) {
@@ -79,21 +79,15 @@ public class UserController {
     }
 
 
-    @PostMapping(value = "/logout")
-    public ResponseVo logout() {
-        JSONObject user = LocalUserUtil.getLocalUser();
-        if (user == null || user.getString("SessionId") == null) {
-            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+    @DeleteMapping(value = "/logout")
+    public ResponseVo logout(HttpServletRequest request) {
+        // 更新session
+        HttpSession session = request.getSession();
+        if (session != null) {
+            session.invalidate();
+            request.getSession();
         }
 
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("userId", user.getString("UserId"));
-        params.put("sessionId", user.getString("SessionId"));
-        params.put("serverId", user.getString("ServerId"));
-        params.put("clientIp", user.getString("ClientIp"));
-        params.put("logoutTime", DataConvertUtils.dateToStr());
-
-        userService.upCfgUserLogout(params);
         return ResponseVo.success(null);
     }
 }
