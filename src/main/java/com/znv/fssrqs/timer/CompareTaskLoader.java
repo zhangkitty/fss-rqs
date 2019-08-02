@@ -43,8 +43,8 @@ public class CompareTaskLoader {
     @Autowired
     private CompareTaskDao compareTaskDao;
 
-    private  ConcurrentLinkedDeque waitQueue = new ConcurrentLinkedDeque();
-    private  ConcurrentLinkedDeque execQueue = new ConcurrentLinkedDeque();
+    private  ConcurrentLinkedDeque<CompareTaskEntity> waitQueue = new ConcurrentLinkedDeque<CompareTaskEntity>();
+    private  ConcurrentLinkedDeque<CompareTaskEntity> execQueue = new ConcurrentLinkedDeque<CompareTaskEntity>();
 
     public void loadCompareTask(){
 

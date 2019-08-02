@@ -2,11 +2,13 @@ package com.znv.fssrqs.service.echarts;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.constant.Echarts;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.param.echarts.PersonLibIdParam;
 import com.znv.fssrqs.param.echarts.PersonListGroupQueryParam;
 import com.znv.fssrqs.util.FormatObject;
 import com.znv.fssrqs.util.Result;
+import com.znv.fssrqs.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,13 @@ public class PersonLibInfoService {
         List<String> list = new ArrayList<>();
         queryParams.setAddr(list);
         queryParams.setLibId(libID.getLibID());
+        List<String> add = new ArrayList<>();
+        if(SpringContextUtil.getCtx().getBean(Echarts.class).getAdd().split(",").length>0){
+            for (String str:SpringContextUtil.getCtx().getBean(Echarts.class).getAdd().split(",")){
+                add.add(str);
+            }
+        }
+        queryParams.setAddr(add);
         long startTime = System.currentTimeMillis();
         JSONObject jsonEsResult = new JSONObject();
         try {
