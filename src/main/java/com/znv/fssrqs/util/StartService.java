@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class StartService {
-
-    @Value("${conf.myServer.hdfsUrl}")
-    private String hdfsUrl;
-
     public void run() {
         log.info("********************************************************");
         log.info("*********************fss-rsq start**********************");
