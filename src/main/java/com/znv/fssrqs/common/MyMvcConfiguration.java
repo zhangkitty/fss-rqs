@@ -16,7 +16,6 @@ public class MyMvcConfiguration extends WebMvcConfigurationSupport {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
-        registry.addInterceptor(sessionHandler())
-                .excludePathPatterns("/VIID/**");
+        registry.addInterceptor(sessionHandler());
     }
 }

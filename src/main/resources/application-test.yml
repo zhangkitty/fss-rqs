@@ -28,11 +28,8 @@ spring:
       enabled: true
       force: true
   session:
-     store-type: redis
-  redis:
-    host: 10.45.149.27
-    port: 6379
-    database: 0
+    store-type: none
+
 #mybatis
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
@@ -55,9 +52,6 @@ chongqing:
   image-url: http://50.1.64.130:10002/getImage
   max-minute-flow: 10
   max-day-flow: 1000
-  outer-lib-ids:
-    - 32
-    - 33
 bigdata:
   hdfs-url: hdfs://10.45.152.202:8020/user/fss/V120
 ###缓冲服务地址配置
@@ -84,7 +78,13 @@ sensetime:
 person:
   person-id-length: 16
 conf:
-  myServer:
-    hdfsUrl: 'hdfs://10.45.152.202:8020/user/fss/V120'
-  defaultUserId: "11000000000"
+  ##配置defaultUserId后，所有接口不登录
+  ##defaultUserId: "11000000000"
+
+#pagehelper.
+pagehelper:
+  autoDialect: true
+  closeConn: true
+  offset-as-page-num: false
+
 

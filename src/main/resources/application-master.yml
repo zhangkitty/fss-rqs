@@ -1,10 +1,9 @@
-
 server:
   port: 9003
   servlet: ##servlet默认超时时间30分钟
     session:
       timeout: 30m
-    context-path: /fss-rqs
+    context-path: /
 
 spring:
   datasource:
@@ -28,6 +27,9 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+  session:
+    store-type: none
+
 #mybatis
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
@@ -50,17 +52,6 @@ chongqing:
   image-url: http://50.1.64.130:10002/getImage
   max-minute-flow: 10
   max-day-flow: 1000
-  outer-lib-ids:
-    - 1
-    - 4
-    - 5
-    - 10
-    - 11
-    - 12
-    - 25
-    - 29
-    - 30
-    - 37
 bigdata:
   hdfs-url: hdfs://face.dct-unis.com:8020/user/fss/V120
 ###缓冲服务地址配置
@@ -94,6 +85,13 @@ sensetime:
 person:
   person-id-length: 16
 conf:
-  myServer:
-    hdfsUrl: 'hdfs://face.dct-unis.com:8020/user/fss/V120'
+  ##配置defaultUserId后，所有接口不登录
+  defaultUserId: "11000000000"
+
+#pagehelper.
+pagehelper:
+  autoDialect: true
+  closeConn: true
+  offset-as-page-num: false
+
 
