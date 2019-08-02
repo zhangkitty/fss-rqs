@@ -31,7 +31,6 @@ public class SubscriberLoadTask {
 
     @Scheduled(initialDelay = 10000, fixedRate = 300000)
     public void loadSubscribers(){
-        log.error("-----------------------------------------------------");
         List<MSubscribersEntity> subscriberList = subscribersDao.findAll();
         subscriberInfoMap.clear();
         for (MSubscribersEntity subscribersEntity : subscriberList) {

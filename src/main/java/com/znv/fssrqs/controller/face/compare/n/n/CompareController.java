@@ -1,6 +1,8 @@
 package com.znv.fssrqs.controller.face.compare.n.n;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.exception.BusinessException;
@@ -62,9 +64,21 @@ public class CompareController {
 
     @RequestMapping(value = "/site/FSSAPP/pc/nvsm/queryTask.ds",method = RequestMethod.POST)
     public ResponseVo queryTask(@RequestBody QueryTaskParams queryTaskParams){
-        //PageHelper.startPage(1, 1);
-        List<CompareTaskEntity> list=compareTaskDao.findAllCompareTask();
+        Page page = PageHelper.startPage(queryTaskParams.getPageNum(), queryTaskParams.getPageSize());
+        List<CompareTaskEntity> list=compareTaskDao.query(queryTaskParams);
+        HashMap map = new HashMap();
+        map.put("total",page.getTotal());
+        map.put("list",list);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data",map);
+        return  ResponseVo.success(jsonObject);
+    }
 
-        return  null;
+    @RequestMapping(value = "/site/FSSAPP/pc/nvsm/taskdelete.ds",method = RequestMethod.POST)
+    public ResponseVo deleteTask(@RequestBody String deleteTaskParams){
+        String taskId = (String) JSONObject.parseObject(deleteTaskParams).get("taskId");
+        if(compareService.delete(taskId)>0)
+            return ResponseVo.success("删除任务成功",null);
+        return ResponseVo.error("删除任务失败");
     }
 }

@@ -1,5 +1,6 @@
 package com.znv.fssrqs.dao.mysql;
 
+import com.znv.fssrqs.controller.face.compare.n.n.QueryTaskParams;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,6 +20,11 @@ public interface CompareTaskDao {
     void update(CompareTaskEntity compareTaskEntity);
 
     Integer save(NToNCompareTaskParam nToNCompareTaskParam);
+
+    List<CompareTaskEntity> query(QueryTaskParams queryTaskParams);
+
+
+    Integer delete(String taskId);
 
 
 }

@@ -17,7 +17,7 @@ public class QueryTaskParams {
 
     private Integer status;
 
-    private Integer from;
+    private Integer pageNum;
 
-    private Integer size;
+    private Integer pageSize;
 }
