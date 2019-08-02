@@ -21,4 +21,6 @@ public interface UserLibRelationMapper {
     int insertSelective(UserLibRelation record);
 
     List<UserLibRelation> queryUserLib(Map<String, Object> queryParams);
+
+    List<UserLibRelation> queryUserLibByGroupId(UserLibRelation record);
 }

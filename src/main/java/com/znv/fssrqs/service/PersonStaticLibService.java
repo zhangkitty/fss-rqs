@@ -9,6 +9,7 @@ import com.znv.fssrqs.dao.mysql.UserLibRelationMapper;
 import com.znv.fssrqs.entity.mysql.PersonLib;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserLibRelation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -147,8 +148,26 @@ public class PersonStaticLibService {
         return personLibMapper.selectByPrimaryKey(libId);
     }
 
+    public List<PersonLib> queryLibByLibType(String personLibType) {
+        PersonLib record = new PersonLib();
+        if (!StringUtils.isEmpty(personLibType)) {
+            record.setPersonLibType(personLibType);
+        }
+
+        return personLibMapper.queryLibByLibType(record);
+    }
+
     public HashMap<String, Object> deleteById(Integer libId) {
         return personLibMapper.deleteByLibId(libId);
+    }
+
+    public List<UserLibRelation> queryUserLibByGoupId(int userGroupId,String personLibType) {
+        UserLibRelation record = new UserLibRelation();
+        record.setUserGroupID(userGroupId);
+        if (!StringUtils.isEmpty(personLibType)) {
+            record.setPersonLibType(personLibType);
+        }
+        return userLibRelationMapper.queryUserLibByGroupId(record);
     }
 
     /**

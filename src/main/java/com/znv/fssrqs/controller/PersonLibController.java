@@ -1,16 +1,23 @@
 package com.znv.fssrqs.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.znv.fssrqs.config.HkSdkConfig;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.LibRelationMapper;
 import com.znv.fssrqs.entity.mysql.PersonLib;
+import com.znv.fssrqs.entity.mysql.UserGroup;
+import com.znv.fssrqs.entity.mysql.UserLibRelation;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.service.HkSdkService;
 import com.znv.fssrqs.service.PersonStaticLibService;
+import com.znv.fssrqs.service.UserGroupService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.LocalUserUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by dongzelong on  2019/6/1 13:53.
@@ -30,7 +35,7 @@ import java.util.Objects;
  * @Description TODO
  */
 @RestController
-@RequestMapping(produces = { "application/json;charset=UTF-8" })
+@RequestMapping(produces = {"application/json;charset=UTF-8"})
 @Slf4j
 public class PersonLibController {
     @Autowired
@@ -41,13 +46,15 @@ public class PersonLibController {
     private HkSdkService hksdkService;
     @Resource
     private LibRelationMapper libRelationService;
+    @Autowired
+    private UserGroupService userGroupService;
 
     /**
      * 人员静态库查询
      */
     @GetMapping("/person/static/libs")
     public String getLibs(@RequestParam Map<String, Object> params)
-            throws BusinessException{
+            throws BusinessException {
         JSONObject user = LocalUserUtil.getLocalUser();
         if (user == null || !user.containsKey("UserId")) {
             throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
@@ -122,5 +129,31 @@ public class PersonLibController {
         } else {
             return FastJsonUtils.JsonBuilder.badRequest(400).message("人员库下有人员信息或数据异常，不能删除!").json().toJSONString();
         }
+    }
+
+    @GetMapping("/{userId}/person/static/lib")
+    public JSONObject getUserLibByUserId(@PathVariable("userId") String userId, @RequestParam Map<String, Object> params) {
+        List<Object> list = Lists.newArrayList();
+        UserGroup userGroup = userGroupService.queryUserGroupByUserId(userId);
+        String personLibType = (String) params.get("PersonLibType");
+        if (userGroup != null) {
+            int roleId = userGroup.getRoleID();
+            if (roleId == 1) {
+                List<PersonLib> personLibs = personLibService.queryLibByLibType(personLibType);
+                if (personLibs != null && personLibs.size() > 0) {
+                    for (PersonLib personLib : personLibs) {
+                        list.add(personLib);
+                    }
+                }
+            } else {
+                List<UserLibRelation> userLibs = personLibService.queryUserLibByGoupId(userGroup.getUserGroupID(), personLibType);
+                if (userLibs != null && userLibs.size() > 0) {
+                    for (UserLibRelation userLibRelation : userLibs) {
+                        list.add(userLibRelation);
+                    }
+                }
+            }
+        }
+        return FastJsonUtils.JsonBuilder.ok().list(list).json();
     }
 }

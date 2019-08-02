@@ -26,7 +26,7 @@
     <select id="query" parameterType="java.util.Map" resultMap="BaseResultMap">
         select
         lib_id, personlib_type, lib_name, plib_alarm_level, description, creator_id, fevent_id,
-    region_id,capacity_type,hk_lib_id
+        region_id,capacity_type,hk_lib_id
         from t_scim_personlib a left join fss_hk_lib_relation b on a.lib_id = b.fss_lib_id
         where 1=1
         <if test="PersonLibType != null and PersonLibType!=''">
@@ -142,7 +142,8 @@
       region_id = #{RegionID,jdbcType=VARCHAR}
     where lib_id = #{LibID,jdbcType=INTEGER}
   </update>
-    <select id="deleteByLibId" parameterType="java.lang.Integer" statementType="CALLABLE" resultType="java.util.HashMap">
+    <select id="deleteByLibId" parameterType="java.lang.Integer" statementType="CALLABLE"
+            resultType="java.util.HashMap">
     {
           call up_scim_PersonLib_Del(#{libId,mode=IN,jdbcType=INTEGER})
     }
@@ -159,5 +160,14 @@
           #{RegionID,mode=IN,jdbcType=VARCHAR},
           #{CapacityType,mode=IN,jdbcType=INTEGER})
     }
+    </select>
+    <select id="queryLibByLibType" parameterType="com.znv.fssrqs.entity.mysql.PersonLib" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_scim_personlib WHERE 1=1
+        <if test="PersonLibType != null and PersonLibType != ''">
+            and personlib_type=#{personlibType,jdbcType=VARCHAR}
+        </if>
+        order by lib_name asc;
     </select>
 </mapper>
