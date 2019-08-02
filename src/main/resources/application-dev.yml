@@ -40,6 +40,10 @@ spring:
     host: 10.45.149.27
     port: 6379
     database: 0
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
 #mybatis
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
@@ -94,4 +98,11 @@ conf:
   myServer:
     hdfsUrl: 'hdfs://10.45.152.230:8020/user/fss/V120'
   defaultUserId: "11000000000"
+
+#pagehelper.
+pagehelper:
+  autoDialect: true
+  closeConn: true
+  offset-as-page-num: false
+
 

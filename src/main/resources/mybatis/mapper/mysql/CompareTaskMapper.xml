@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znv.fssrqs.dao.mysql.CompareTaskDao">
+
+
+
+
+    <select id="findAllCompareTask" resultType="com.znv.fssrqs.entity.mysql.CompareTaskEntity">
+        select * from t_fss_nvsmtask;
+    </select>
+
+
+    <update id="update" parameterType="com.znv.fssrqs.entity.mysql.CompareTaskEntity">
+        update  t_fss_nvsmtask
+        <set>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="process != null">
+                process = #{process,jdbcType=FLOAT},
+            </if>
+        </set>
+        where task_id=#{taskId}
+    </update>
+
+    <insert id="save" parameterType="com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam">
+      insert INTO t_fss_nvsmtask(
+        task_id,task_name,lib_1,lib_2,status,create_user,update_time,remainning_time,error_message,process,sim,lib_1_name,lib_2_name
+      )values(
+        #{TaskId},#{TaskName},#{Lib1},#{Lib2},#{Status},#{CreateUser},now(),#{RemainningTime},#{ErrorMessage},#{Process},#{Sim},#{Lib1Name},#{Lib2Name}
+      )
+    </insert>
+</mapper>

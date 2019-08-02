@@ -55,12 +55,12 @@ public class HttpUtils {
     public static String sendGet(String url) throws ParseException, IOException {
         HttpGet get = new HttpGet(url);
         get.setHeader("Content-Type", "charset=utf-8");
-        get.setHeader(HttpHeaders.CONNECTION, "close");
+        get.setHeader(HttpHeaders.CONNECTION,"close");
         get.setConfig(HttpClientPool.requestConfig());
-        CloseableHttpResponse response;
+        CloseableHttpResponse chc = null;
         try {
-            response = HttpClientPool.getInstance().getHttpClient().execute(get);
-            return EntityUtils.toString(response.getEntity(), "utf-8");
+            chc = HttpClientPool.getInstance().getHttpClient().execute(get);
+            return EntityUtils.toString(chc.getEntity(), "utf-8");
         } catch (Exception e) {
             throw e;
         } finally {

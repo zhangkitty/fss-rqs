@@ -3,6 +3,7 @@ package com.znv.fssrqs;
 import com.znv.fssrqs.elasticsearch.index.mapper.image.FeatureFieldMapper;
 import com.znv.fssrqs.elasticsearch.lopq.LOPQModel;
 import com.znv.fssrqs.listener.ApplicationEventListener;
+import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;

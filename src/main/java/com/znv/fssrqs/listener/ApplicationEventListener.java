@@ -32,8 +32,8 @@ public class ApplicationEventListener implements ApplicationListener {
         } else if (event instanceof ApplicationPreparedEvent) {
             System.out.println("management service initialize finish");
         } else if (event instanceof ContextRefreshedEvent) {
+            System.out.println("management service refresh");
             SpringContextUtil.setCtx(((ContextRefreshedEvent) event).getApplicationContext());
-
             StartService startService = SpringContextUtil.getCtx().getBean(StartService.class);
             startService.run();
             System.out.println("management service refresh");

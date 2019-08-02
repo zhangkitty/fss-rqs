@@ -39,17 +39,11 @@ public final class ICAPVThreadPool {
      * Instantiates a new ICAPV thread pool.
      */
     private ICAPVThreadPool() {
-        Properties p = new Properties();
-        try {
-            p.load(new FileInputStream(new File(ClassPath.getClassPath() + "config/" + THREAD_POOL_CONFIG)));
-        } catch (Exception e) {
-            log.error("", e);
-        }
-        maxmumPoolsize = DataConvertUtils.strToInt(p.getProperty("maxmumPoolsize"));
-        corePoolsize = DataConvertUtils.strToInt(p.getProperty("corePoolsize"));
-        keepAliveTime = DataConvertUtils.strToLong(p.getProperty("keepAliveTime"));
-        blockqueuesize = DataConvertUtils.strToInt(p.getProperty("blockqueuesize"));
-        name = p.getProperty("threadpoolName");
+        maxmumPoolsize = DataConvertUtils.strToInt("200");
+        corePoolsize = DataConvertUtils.strToInt("100");
+        keepAliveTime = DataConvertUtils.strToLong("5");
+        blockqueuesize = DataConvertUtils.strToInt("20000");
+        name = "ICAPVThreadpool";
         t = new ThreadPoolExecutor(corePoolsize, maxmumPoolsize, keepAliveTime, TimeUnit.SECONDS,
                 new LinkedBlockingQueue(blockqueuesize));
         NamedThreadFactory fa = new NamedThreadFactory(name);

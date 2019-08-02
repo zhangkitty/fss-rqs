@@ -1,6 +1,7 @@
 package com.znv.fssrqs.util;
 
 import com.znv.fssrqs.kafka.consumer.AlarmCustume;
+import com.znv.fssrqs.timer.CompareTaskLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,5 +30,8 @@ public class StartService {
 
         // 初始化Sim
         SimUtil.init();
+
+        //n:n任务加载
+        CompareTaskLoader.getInstance().loadCompareTask();
     }
 }

@@ -78,6 +78,10 @@ public class ResponseVo {
         return ResponseVo.getInstance(ErrorCodeEnum.SUCCESS.getCode(),message,data);
     }
 
+    public static ResponseVo error(String message){
+        return ResponseVo.getInstance(ErrorCodeEnum.ERROR_GENERAL.getCode(),message,null);
+    }
+
 
 
 }
