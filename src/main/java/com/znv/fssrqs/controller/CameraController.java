@@ -77,11 +77,11 @@ public class CameraController {
      */
     @GetMapping("/cameras")
     public String selectCameras() {
-        String userId = LocalUserUtil.getLocalUserId();
-        if (userId == null) {
+        JSONObject user = LocalUserUtil.getLocalUser();
+        if (user == null || !user.containsKey("UserId")) {
             throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
         }
-        String cameras = getCameras(userId);
+        String cameras = getCameras(user.getString("UserId"));
         JSONObject jsonObject = JSON.parseObject(cameras, JSONObject.class);
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(jsonObject.getJSONArray("APEList")).json(), new PascalNameFilter());
     }

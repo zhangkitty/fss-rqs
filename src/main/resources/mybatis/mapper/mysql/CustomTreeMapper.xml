@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znv.fssrqs.dao.mysql.CustomTreeMapper">
+    <resultMap id="BaseResultMap" type="com.znv.fssrqs.entity.mysql.CustomTree">
+        <id column="tree_id" jdbcType="INTEGER" property="treeId"/>
+        <result column="tree_name" jdbcType="VARCHAR" property="treeName"/>
+        <result column="tree_desc" jdbcType="VARCHAR" property="treeDesc"/>
+        <result column="default_tree" jdbcType="INTEGER" property="defaultTree"/>
+        <result column="system_tree" jdbcType="INTEGER" property="systemTree"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    tree_id, tree_name, tree_desc, default_tree, system_tree
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_fss_customtree
+        where tree_id = #{treeId,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_fss_customtree order by tree_id
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_fss_customtree
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyProperty="treeId" useGeneratedKeys="true"
+            parameterType="com.znv.fssrqs.entity.mysql.CustomTree">
+    insert ignore t_fss_customtree (tree_name, tree_desc, 
+      default_tree, system_tree)
+    values (#{treeName,jdbcType=VARCHAR}, #{treeDesc,jdbcType=VARCHAR}, 
+      #{defaultTree,jdbcType=INTEGER}, #{systemTree,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.CustomTree">
+        insert into t_fss_customtree
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="treeId != null">
+                tree_id,
+            </if>
+            <if test="treeName != null">
+                tree_name,
+            </if>
+            <if test="treeDesc != null">
+                tree_desc,
+            </if>
+            <if test="defaultTree != null">
+                default_tree,
+            </if>
+            <if test="systemTree != null">
+                system_tree,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="treeId != null">
+                #{treeId,jdbcType=INTEGER},
+            </if>
+            <if test="treeName != null">
+                #{treeName,jdbcType=VARCHAR},
+            </if>
+            <if test="treeDesc != null">
+                #{treeDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultTree != null">
+                #{defaultTree,jdbcType=INTEGER},
+            </if>
+            <if test="systemTree != null">
+                #{systemTree,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.znv.fssrqs.entity.mysql.CustomTree">
+        update t_fss_customtree
+        <set>
+            <if test="treeName != null">
+                tree_name = #{treeName,jdbcType=VARCHAR},
+            </if>
+            <if test="treeDesc != null">
+                tree_desc = #{treeDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultTree != null">
+                default_tree = #{defaultTree,jdbcType=INTEGER},
+            </if>
+            <if test="systemTree != null">
+                system_tree = #{systemTree,jdbcType=INTEGER},
+            </if>
+        </set>
+        where tree_id = #{treeId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.znv.fssrqs.entity.mysql.CustomTree">
+    update t_fss_customtree
+    set tree_name = #{treeName,jdbcType=VARCHAR},
+      tree_desc = #{treeDesc,jdbcType=VARCHAR},
+      default_tree = #{defaultTree,jdbcType=INTEGER},
+      system_tree = #{systemTree,jdbcType=INTEGER}
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </update>
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update t_fss_customtree
+            <set>
+                <if test="item.treeName != null">
+                    tree_name=#{item.treeName},
+                </if>
+                <if test="item.defaultTree != null">
+                    default_tree=#{item.defaultTree}
+                </if>
+            </set>
+            where tree_id = #{item.treeId}
+        </foreach>
+    </update>
+</mapper>

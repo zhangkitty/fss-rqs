@@ -13,5 +13,9 @@ public interface MUserDao {
 
     List<MUserEntity> getUser(Map<String, Object> params);
 
-    List<Map<String, Object>> upCfgUserlogin(Map<String, Object> params);
+    List<Map<String, Object>> upCfgUserLogin(Map<String, Object> params);
+
+    void upCfgUserLogout(Map<String, Object> params);
+
+    int upCfgSaveSystemLog(Map<String, Object> params);
 }
