@@ -19,6 +19,18 @@ public class One2OneFaceCompareService {
     public JSONObject getFaceAttr(String imageData) {
         JSONObject result = new JSONObject();
         result = (JSONObject) JSONObject.parseObject(FaceAIUnitUtils.getAttribute(imageData)).get("data");
+        if((Integer)result.get("gender")==1){
+            result.put("gender",2);
+            return result;
+        }
+        if((Integer)result.get("gender")==0){
+            result.put("gender",1);
+            return result;
+        }
+        if((Integer)result.get("gender")==2){
+            result.put("gender",0);
+            return result;
+        }
         return result;
     }
 
