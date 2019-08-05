@@ -7,7 +7,9 @@ import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.config.PersonConfig;
 import com.znv.fssrqs.constant.CommonConstant;
+import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
+import com.znv.fssrqs.entity.mysql.PersonLib;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.hbase.PhoenixService;
 import com.znv.fssrqs.service.personnel.management.dto.OnePersonListDTO;
@@ -50,6 +52,9 @@ public class PersonListService {
 
     @Autowired
     private ChongQingConfig chongQingConfig;
+
+    @Autowired
+    private PersonLibMapper personLibMapper;
 
     public JSONObject getPersonList(String host, PersonListSearchParams personListSearchParams) throws IOException {
 
@@ -207,6 +212,12 @@ public class PersonListService {
                 continue;
             }
 
+            if (! StringUtils.isEmpty(libId)) {
+                PersonLib peronLib = personLibMapper.selectByPrimaryKey(Integer.valueOf(libId));
+                if (peronLib != null) {
+                    personInfo.put("LibName", peronLib.getLibName());
+                }
+            }
             if (params.containsKey("feature_value")) {
                 Double score = list.getJSONObject(k).getDoubleValue("_score");
                 FeatureCompUtil fc = new FeatureCompUtil();
