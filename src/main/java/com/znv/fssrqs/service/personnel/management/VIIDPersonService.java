@@ -127,7 +127,7 @@ public class VIIDPersonService {
 
         JSONObject insertData = new JSONObject();
         insertData.put("id", CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST);
-        String tablename = HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
+        String tablename = HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
         insertData.put("table_name", tablename);
         insertData.put("data", personData);
         JSONObject hbaseRet = phoenixService.insert(insertData);
@@ -326,7 +326,7 @@ public class VIIDPersonService {
 
         JSONObject insertData = new JSONObject();
         insertData.put("id", CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST);
-        String tablename = HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
+        String tablename = HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
         insertData.put("table_name", tablename);
         insertData.put("data", personData);
         JSONObject hbaseRet = phoenixService.update(insertData);
@@ -356,7 +356,7 @@ public class VIIDPersonService {
         JSONObject deleteData = new JSONObject();
         JSONObject personData = new JSONObject();
         deleteData.put("id", CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST);
-        String tableName = HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
+        String tableName = HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
         data.put("person_id",personID);
         personData.put("data", data);
         personData.put("lib_id", libID);
