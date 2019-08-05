@@ -1,8 +1,10 @@
 package com.znv.fssrqs.entity.mysql;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
@@ -16,34 +18,79 @@ import java.util.Date;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Device {
+    @JSONField(name = "ApeID")
+    @JsonProperty("ApeID")
     private String ApeID;
+    @JSONField(name = "PrecinctID")
+    @JsonProperty("PrecinctID")
     private String PrecinctID;
+    @JSONField(name = "StationID")
+    @JsonProperty("StationID")
     private String StationID;
     //设备名称
+    @JSONField(name = "Name")
+    @JsonProperty("Name")
     private String Name;
+    @JSONField(name = "ApeKind")
+    @JsonProperty("ApeKind")
     private Integer ApeKind;
+    @JSONField(name = "DeviceType")
+    @JsonProperty("DeviceType")
     private Integer DeviceType;
+    @JSONField(name = "ManufactureID")
+    @JsonProperty("ManufactureID")
     private Integer ManufactureID;
+    @JSONField(name = "ModelID")
+    @JsonProperty("ModelID")
     private Integer ModelID;
+    @JSONField(name = "LaunchTime")
+    @JsonProperty("LaunchTime")
     private Date LaunchTime;
+    @JSONField(name = "UserDeviceID")
+    @JsonProperty("UserDeviceID")
     private String UserDeviceID;
+    @JSONField(name = "DeviceIndex")
+    @JsonProperty("DeviceIndex")
     private Integer DeviceIndex;
+    @JSONField(name = "DeviceUseState")
+    @JsonProperty("DeviceUseState")
     private Integer DeviceUseState;
+    @JSONField(name = "DeviceModel")
+    @JsonProperty("DeviceModel")
     private String DeviceModel;
+    @JSONField(name = "PurchaseTime")
+    @JsonProperty("PurchaseTime")
     private Date PurchaseTime;
+    @JSONField(name = "UseTime")
+    @JsonProperty("UseTime")
     private Date UseTime;
+    @JSONField(name = "UseYears")
+    @JsonProperty("UseYears")
     private Integer UseYears;
+    @JSONField(name = "UpdateTime")
+    @JsonProperty("UpdateTime")
     private Date UpdateTime;
+    @JSONField(name = "InstallSite")
+    @JsonProperty("InstallSite")
     private String InstallSite;
+    @JSONField(name = "DevicePrincipal")
+    @JsonProperty("DevicePrincipal")
     private String DevicePrincipal;
-
+    @JSONField(name = "PrincipalTel")
+    @JsonProperty("PrincipalTel")
     private String PrincipalTel;
-
+    @JSONField(name = "PrincipalEmail")
+    @JsonProperty("PrincipalEmail")
     private String PrincipalEmail;
-
+    @JSONField(name = "PreDel")
+    @JsonProperty("PreDel")
     private Integer PreDel;
 
+    @JSONField(name = "X")
+    @JsonProperty("X")
     private Integer X;
+    @JSONField(name = "Y")
+    @JsonProperty("Y")
     private Integer Y;
 
     @JsonIgnore
