@@ -1,5 +1,6 @@
 package com.znv.fssrqs.vo;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 import java.util.List;
@@ -23,4 +24,7 @@ public class TrackSearch {
     private Integer TotalPage;
     private Integer QueryType;
     private List<String> OfficeIDs;
+    private List<JSONObject> FilterCondition;
+    private List<String> EventIDs;
+    private Integer OrderWay;
 }

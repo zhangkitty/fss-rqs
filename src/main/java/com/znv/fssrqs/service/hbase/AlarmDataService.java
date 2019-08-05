@@ -80,11 +80,11 @@ public class AlarmDataService extends PhoenixSqlClient {
 
         //没有符合条件的记录，直接返回
         if (count == 0) {
-            result.put("data", objList);
-            result.put("time", System.currentTimeMillis() - currentTimeMillis);
-            result.put("count", count);
-            result.put("total_page", totalPage);
-            result.put("id", CommonConstant.PhoenixProtocolId.QUERY_ALARM);
+            result.put("Data", objList);
+            result.put("Time", System.currentTimeMillis() - currentTimeMillis);
+            result.put("Count", count);
+            result.put("TotalPage", totalPage);
+            result.put("ID", CommonConstant.PhoenixProtocolId.QUERY_ALARM);
         } else {
             StringBuilder sql = new StringBuilder();
             int pageNo = searchData.getIntValue("page_no");
@@ -268,7 +268,7 @@ public class AlarmDataService extends PhoenixSqlClient {
                 }
 
                 // 按图片查询（查询条件）
-                if (isSearchFeature /* !feature.equals("") */) {
+                if (isSearchFeature) {
                     byte[] byteFeature = Base64.getDecoder().decode(feature);
                     stat.setObject(i, byteFeature);
                     i++;
@@ -287,12 +287,18 @@ public class AlarmDataService extends PhoenixSqlClient {
                     int columnCount = rsMetaData.getColumnCount();
                     for (int column = 0; column < columnCount; column++) {
                         String field = rsMetaData.getColumnLabel(column + 1).toLowerCase();
-                        record.put(field, rs.getObject(field));
+                        String[] fieldNames = field.split("_");
+                        StringBuffer sb = new StringBuffer();
+                        for (String fieldName : fieldNames) {
+                            sb.append(fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
+                        }
+                        record.put(sb.toString(), rs.getObject(field));
                     }
 
                     if (record.containsKey("sim") && null != record.get("sim")) {
                         float simFlloat = fc.Normalize(Float.parseFloat(record.get("sim").toString()));
-                        record.put("sim", simFlloat);
+                        record.put("Sim", simFlloat);
+                        record.remove("sim");
                     }
                     objList.add(record);
                 }
@@ -308,11 +314,11 @@ public class AlarmDataService extends PhoenixSqlClient {
                 }
             }
 
-            result.put("data", objList);
-            result.put("time", System.currentTimeMillis() - currentTimeMillis);
-            result.put("total_page", totalPage);
-            result.put("count", count);
-            result.put("id", CommonConstant.PhoenixProtocolId.QUERY_ALARM);
+            result.put("Data", objList);
+            result.put("Time", System.currentTimeMillis() - currentTimeMillis);
+            result.put("TotalPage", totalPage);
+            result.put("Count", count);
+            result.put("ID", CommonConstant.PhoenixProtocolId.QUERY_ALARM);
         }
 
         return result;

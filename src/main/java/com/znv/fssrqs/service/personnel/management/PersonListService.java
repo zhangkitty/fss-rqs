@@ -202,6 +202,11 @@ public class PersonListService {
                 }
             }
 
+            if (personInfo == null) {
+                log.error("get personInfo failed. peronId {}, libId {}.", personId, libId);
+                continue;
+            }
+
             if (params.containsKey("feature_value")) {
                 Double score = list.getJSONObject(k).getDoubleValue("_score");
                 FeatureCompUtil fc = new FeatureCompUtil();
