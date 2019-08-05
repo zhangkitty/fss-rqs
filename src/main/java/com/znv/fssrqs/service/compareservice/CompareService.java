@@ -2,6 +2,7 @@ package com.znv.fssrqs.service.compareservice;
 
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
+import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam;
@@ -30,6 +31,8 @@ public class CompareService {
 
     @Autowired
     private CompareTaskDao compareTaskDao;
+
+
 
 
 
