@@ -2,17 +2,15 @@ package com.znv.fssrqs.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.entity.mysql.CustomTree;
+import com.znv.fssrqs.entity.mysql.CustomTreeNode;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
-import com.znv.fssrqs.service.CustomTreeNodeService;
-import com.znv.fssrqs.service.CustomTreeService;
-import com.znv.fssrqs.service.UserGroupDeviceService;
-import com.znv.fssrqs.service.UserGroupService;
+import com.znv.fssrqs.service.*;
+import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.LocalUserUtil;
-import com.znv.fssrqs.entity.mysql.CustomTree;
-import com.znv.fssrqs.entity.mysql.CustomTreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +40,8 @@ public class DeviceTreeController {
     private UserGroupService userGroupService;
     @Autowired
     private UserGroupDeviceService userGroupDeviceService;
+    @Autowired
+    private DeviceService deviceService;
 
     @GetMapping("/customize/device/tree/{id}")
     public String getCustomTreeById(@PathVariable(value = "id") String treeId, HttpServletRequest request) {
@@ -52,7 +52,7 @@ public class DeviceTreeController {
         nodes = filterCustomNodes(request, nodes); // 根据权限过滤
         JSONArray retArr = new JSONArray();
         if (treeObj == null) {
-            return retArr.toJSONString();
+            return FastJsonUtils.JsonBuilder.ok().list(null).json().toJSONString();
         }
         //顶级树
         JSONObject treeJs = new JSONObject();
@@ -112,7 +112,7 @@ public class DeviceTreeController {
         retArr.addAll(Arrays.asList(objects));
         retArr.addAll(cameraMap.values());
         treeJs.put("name", treeObj.getTreeName() + "(" + rootMap.get("count") + ")");
-        return retArr.toJSONString();
+        return FastJsonUtils.JsonBuilder.ok().list(retArr).json().toJSONString();
     }
 
     private List<CustomTreeNode> filterCustomNodes(HttpServletRequest request, List<CustomTreeNode> nodes) {
@@ -162,5 +162,18 @@ public class DeviceTreeController {
             area.put("total", area.getInteger("total") + 1);
             recursive(area.getString("pId"), areaMap);
         }
+    }
+
+    /**
+     * 获取设备树列表
+     */
+    @GetMapping("/device/tree")
+    public JSONObject getDeviceTree(HttpServletRequest request) {
+        JSONObject user = LocalUserUtil.getLocalUser();
+        if (user == null || !user.containsKey("UserId")) {
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+        }
+        JSONArray array = deviceService.getUserDeviceTree(user.getString("UserId"));
+        return FastJsonUtils.JsonBuilder.ok().list(array).json();
     }
 }

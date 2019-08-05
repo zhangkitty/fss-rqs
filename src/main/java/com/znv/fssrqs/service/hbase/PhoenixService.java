@@ -228,19 +228,19 @@ public class PhoenixService {
         JSONObject data = insertData.getJSONObject("data");
         try {
             conn = connectionPool.getConnection();
-            if (CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME))) {
+            if (CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME))) {
                 //单条数据写入名单库 or 批量新增
                 result = personListService.insert(data, conn);
-            } else if (CommonConstant.PhoenixProtocolId.QUERY_CAMERA_LIB.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.CAMERA_LIB_TABLE_NAME))) {
+            } else if (CommonConstant.PhoenixProtocolId.QUERY_CAMERA_LIB.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.CAMERA_LIB_TABLE_NAME))) {
                 //数据写入布控表
                 result = cameraLibService.insert(data, conn);
-            } else if (CommonConstant.PhoenixProtocolId.QUERY_REALTIONSHIP.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.RELATIONSHIP_TABLE_NAME))) {
+            } else if (CommonConstant.PhoenixProtocolId.QUERY_REALTIONSHIP.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.RELATIONSHIP_TABLE_NAME))) {
                 //数据写入人员关系表
                 result = relationShipService.insert(data, conn);
-            } else if (CommonConstant.PhoenixProtocolId.QUERY_ALARM.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.ALARM_TABLE_NAME))) {
+            } else if (CommonConstant.PhoenixProtocolId.QUERY_ALARM.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.ALARM_TABLE_NAME))) {
                 //数据写入告警表（告警确认）
                 alarmDataService.insert(data, conn);
-            } else if (CommonConstant.PhoenixProtocolId.QUERY_LIB_CONFIG.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.LIB_CONFIG_TABLE_NAME))) {
+            } else if (CommonConstant.PhoenixProtocolId.QUERY_LIB_CONFIG.equals(id) && tableName.equalsIgnoreCase(HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.LIB_CONFIG_TABLE_NAME))) {
                 //数据写入配置表
                 libConfigService.insert(data, conn);
             } else {

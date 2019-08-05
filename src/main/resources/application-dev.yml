@@ -33,6 +33,18 @@ spring:
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
+  redis: #redis相关配置
+    host: 10.45.157.117
+    port: 6379
+    #连接超时时间(毫秒)
+    timeout: 100ms
+    #password: redis
+    jedis:
+      pool:
+        max-active: 10
+        max-idle: 10
+        #连接池最大阻塞等待时间(使用负值表示没有限制)
+        max-wait: -1ms
   http:
     encoding:
       charset: UTF-8

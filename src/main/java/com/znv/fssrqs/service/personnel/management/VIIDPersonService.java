@@ -108,7 +108,7 @@ public class VIIDPersonService {
         obj.put("control_person_id", personObject.getString("ControlPersonID"));
         obj.put("control_event_id", personObject.getString("ControlEventID"));
         obj.put("personlib_type", personObject.getIntValue("PersonlibType"));
-        obj.put("control_police_category", personObject.getString("ControlPoliceCategory"));
+        obj.put("control_police_category", personObject.getIntValue("ControlPoliceCategory"));
         obj.put("control_person_tel", personObject.getString("ControlPersonTel"));
         obj.put("control_person_name", personObject.getString("ControlPersonName"));
         obj.put("belong_police_station", personObject.getString("BelongPoliceStation"));
@@ -284,7 +284,7 @@ public class VIIDPersonService {
         }
         obj.put("personlib_type", personObject.getIntValue("PersonlibType"));
         if (personObject.containsKey("ControlPoliceCategory")) {
-            obj.put("control_police_category", personObject.getString("ControlPoliceCategory"));
+            obj.put("control_police_category", personObject.getIntValue("ControlPoliceCategory"));
         }
         if (personObject.containsKey("ControlPersonTel")) {
             obj.put("control_person_tel", personObject.getString("ControlPersonTel"));
