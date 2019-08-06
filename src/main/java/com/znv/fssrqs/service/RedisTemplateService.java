@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -331,10 +332,39 @@ public class RedisTemplateService {
         return redisTemplate.hasKey(key).booleanValue();
     }
 
+    /**
+     * 若key不存在,设置key的值为value
+     *
+     * @param key   不能为空
+     * @param value 不能为空
+     * @return true:success,false:failure
+     */
     public boolean setNx(Object key, Object value) {
         return redisTemplate.opsForValue().setIfAbsent(key, value).booleanValue();
     }
 
+    /**
+     * 删除指定数据库索引数据
+     *
+     * @param index 数据库索引
+     */
+    public void flushDb(int index) {
+        stringRedisTemplate.execute(new RedisCallback<Object>() {
+            @Override
+            public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.select(index);
+                connection.flushDb();
+                return "ok";
+            }
+        });
+    }
+
+    /**
+     * 获取当前数据库索引
+     */
+    public int getCurrentDb() {
+        return ((LettuceConnectionFactory) redisTemplate.getConnectionFactory()).getDatabase();
+    }
 
     /**
      * 删除当前数据库的所有key

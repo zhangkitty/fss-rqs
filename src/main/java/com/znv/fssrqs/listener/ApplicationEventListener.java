@@ -1,13 +1,11 @@
 package com.znv.fssrqs.listener;
 
-import com.znv.fssrqs.util.ConfigManager;
 import com.znv.fssrqs.util.SpringContextUtil;
 import com.znv.fssrqs.util.StartService;
-import org.apache.commons.lang.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
@@ -22,29 +20,29 @@ import org.springframework.context.event.ContextStoppedEvent;
  * @version 1.0
  * @Description TODO
  */
+@Slf4j
 public class ApplicationEventListener implements ApplicationListener {
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
         // 在这里可以监听到Spring Boot的生命周期
         if (event instanceof ApplicationEnvironmentPreparedEvent) {
-            System.out.println("management service start to initialize environment variable");
+            log.info("management service start to initialize environment variable");
         } else if (event instanceof ApplicationPreparedEvent) {
-            System.out.println("management service initialize finish");
+            log.info("management service initialize finish");
         } else if (event instanceof ContextRefreshedEvent) {
-            System.out.println("management service refresh");
             SpringContextUtil.setCtx(((ContextRefreshedEvent) event).getApplicationContext());
             StartService startService = SpringContextUtil.getCtx().getBean(StartService.class);
             startService.run();
-            System.out.println("management service refresh");
+            log.info("management service refresh");
         } else if (event instanceof ApplicationReadyEvent) {
-            System.out.println("management service has launched finish");
+            log.info("management service has launched finish");
         } else if (event instanceof ContextStartedEvent) {
-            System.out.println("management service launch，it need to dynamic add listener in order to capture");
+            log.info("management service launch，it need to dynamic add listener in order to capture");
         } else if (event instanceof ContextStoppedEvent) {
-            System.out.println("management service has stopped");
+            log.info("management service has stopped");
         } else if (event instanceof ContextClosedEvent) {
-            System.out.println("management service has closed");
+            log.info("management service has closed");
         } else {
             return;
         }
