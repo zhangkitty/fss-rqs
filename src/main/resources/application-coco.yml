@@ -14,8 +14,11 @@ logging:
   level:
     root: info
     org.mybatis: error
-    java.sql: error
+    java.sql: debug
     org.springframework.web: trace
+    com:
+      looedu:
+        mapper: debug
 spring:
   datasource:
     mysql:

@@ -33,6 +33,8 @@ public interface PersonLibMapper {
 
     List<PersonLib> queryLibByLibType(PersonLib record);
 
+    List<PersonLib> findAll();
+
     HashMap<String, Object> deleteByLibId(Integer libId);
 
     HashMap<String, Object> save(PersonLib personLib);

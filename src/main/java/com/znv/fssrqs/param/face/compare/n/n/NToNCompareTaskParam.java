@@ -19,7 +19,7 @@ public class NToNCompareTaskParam {
 
     private String TaskName;
 
-    private String CreateUser;
+    private String CreateUser = "11000000000";
 
     private Long RemainningTime;
 

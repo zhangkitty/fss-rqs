@@ -23,7 +23,6 @@ public interface CompareTaskDao {
 
     List<CompareTaskEntity> query(QueryTaskParams queryTaskParams);
 
-
     Integer delete(String taskId);
 
 
