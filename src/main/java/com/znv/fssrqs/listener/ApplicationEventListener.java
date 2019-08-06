@@ -1,5 +1,7 @@
 package com.znv.fssrqs.listener;
 
+import com.znv.fssrqs.support.I18nHelper;
+import com.znv.fssrqs.util.I18nUtils;
 import com.znv.fssrqs.util.SpringContextUtil;
 import com.znv.fssrqs.util.StartService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,8 @@ public class ApplicationEventListener implements ApplicationListener {
             log.info("management service initialize finish");
         } else if (event instanceof ContextRefreshedEvent) {
             SpringContextUtil.setCtx(((ContextRefreshedEvent) event).getApplicationContext());
+            final I18nHelper i18nHelper = SpringContextUtil.getCtx().getBean(I18nHelper.class);
+            I18nUtils.setHolder(i18nHelper);
             StartService startService = SpringContextUtil.getCtx().getBean(StartService.class);
             startService.run();
             log.info("management service refresh");
