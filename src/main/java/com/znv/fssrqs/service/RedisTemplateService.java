@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -11,9 +12,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by dongzelong on  2019/8/5 9:32.
@@ -138,28 +138,8 @@ public class RedisTemplateService {
         });
     }
 
-//    /**
-//     * 批量获取hash数据结构value,自定义序列化
-//     *
-//     * @return
-//     */
-//    public List<Object> executePipelined() {
-//        return redisTemplate.executePipelined(
-//                new RedisCallback<String>() {
-//                    // 自定义序列化
-//                    RedisSerializer keyS = redisTemplate.getKeySerializer();
-//
-//                    @Override
-//                    public String doInRedis(RedisConnection redisConnection) throws DataAccessException {
-//                        redisConnection.hGet(keyS.serialize(""), keyS.serialize(""));
-//                        return null;
-//                    }
-//                }, redisTemplate.getValueSerializer());
-//    }
-
     public Set<String> getSet(String key) {
         final Set<String> members = redisTemplate.opsForSet().members(key);
-        //System.out.println("通过members(K key)方法获取变量中的元素值:" + members);
         return members;
     }
 
@@ -173,5 +153,243 @@ public class RedisTemplateService {
 
     public long getSetSize(String key) {
         return redisTemplate.opsForSet().size(key);
+    }
+
+    public long addList(Object key, Object... values) {
+        return redisTemplate.opsForList().leftPushAll(key, values);
+    }
+
+    public long addList(Object key, List<Object> values) {
+        return redisTemplate.opsForList().leftPush(key, values);
+    }
+
+    public Object popLeft(Object key) {
+        return redisTemplate.opsForList().leftPop(key);
+    }
+
+    public List<Object> getAllList(String key) {
+        return redisTemplate.opsForList().range(key, 0, getSetSize(key));
+    }
+
+    public long getListSize(String key) {
+        return redisTemplate.opsForList().size(key);
+    }
+
+    public <K, V> void putMap(String key, Map<K, V> map) {
+        redisTemplate.opsForHash().putAll(key, map);
+    }
+
+    public <V> List<V> getValues4Map(Object key) {
+        return redisTemplate.opsForHash().values(key);
+    }
+
+    public <K> Set<K> getKeysFromMap(Object key) {
+        return redisTemplate.opsForHash().keys(key);
+    }
+
+    public Object getValueFromMap(Object key, Object hashKey) {
+        return redisTemplate.opsForHash().get(key, hashKey);
+    }
+
+    public boolean addZSet(Object key, Object value, double score) {
+        return redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    public Set<?> keys(Object pattern) {
+        return redisTemplate.keys(pattern);
+    }
+
+    public boolean expire(Object key, long timeout, TimeUnit timeUnit) {
+        return redisTemplate.expire(key, timeout, timeUnit).booleanValue();
+    }
+
+    public boolean expireAt(Object key, Date date) {
+        return redisTemplate.expireAt(key, date).booleanValue();
+    }
+
+    public void rename(Object oldKey, Object newKey) {
+        redisTemplate.rename(oldKey, newKey);
+    }
+
+    public Object ping() {
+        return redisTemplate.execute(new RedisCallback<String>() {
+
+            @Override
+            public String doInRedis(RedisConnection connection) throws DataAccessException {
+                final String ping = connection.ping();
+                return ping;
+            }
+        });
+    }
+
+    public void seleteDb(int index) {
+        assert index >= 0 && index <= 15;
+        redisTemplate.execute(new RedisCallback() {
+
+            @Override
+            public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.select(index);
+                return "ok";
+            }
+        });
+    }
+
+    public void config(String param, String value) {
+        redisTemplate.execute(new RedisCallback() {
+            @Override
+            public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.setConfig(param, value);
+                return "ok";
+            }
+        });
+    }
+
+    /**
+     * 将key中存储的数字增加1
+     *
+     * @param key
+     * @return
+     */
+    public long increment(Object key) {
+        return redisTemplate.opsForValue().increment(key).longValue();
+    }
+
+    public long increment(Object key, long delta) {
+        return redisTemplate.opsForValue().increment(key, delta).longValue();
+    }
+
+    public double increment(Object key, double delta) {
+        return redisTemplate.opsForValue().increment(key, delta).doubleValue();
+    }
+
+    public long decrease(Object key) {
+        return redisTemplate.opsForValue().decrement(key).longValue();
+    }
+
+    public long decrease(Object key, long delta) {
+        return redisTemplate.opsForValue().decrement(key, delta).longValue();
+    }
+
+    /**
+     * key存在并且为一个字符串,追加key原来值的末尾
+     *
+     * @param key
+     * @param value
+     */
+    public int append(Object key, String value) {
+        return redisTemplate.opsForValue().append(key, value).intValue();
+    }
+
+    /**
+     * 移动指定key到另一个索引
+     *
+     * @param key
+     * @param index
+     * @return
+     */
+    public boolean move(Object key, int index) {
+        return redisTemplate.move(key, index).booleanValue();
+    }
+
+    /**
+     * 获取key存储的值的类型
+     *
+     * @param key
+     * @return
+     */
+    public DataType typeOf(Object key) {
+        return redisTemplate.type(key);
+    }
+
+    /**
+     * 移除key的过期时间,key将持久保持
+     *
+     * @param key
+     * @return
+     */
+    public boolean persist(Object key) {
+        return redisTemplate.persist(key).booleanValue();
+    }
+
+    /**
+     * 如果key不存在，则替换成功
+     *
+     * @param oldKey
+     * @param newKey
+     */
+    public boolean renamenx(Object oldKey, Object newKey) {
+        return redisTemplate.renameIfAbsent(oldKey, newKey).booleanValue();
+    }
+
+    /**
+     * 检查key是否存在
+     *
+     * @param key
+     * @return
+     */
+    public boolean isExists(Object key) {
+        return redisTemplate.hasKey(key).booleanValue();
+    }
+
+    public boolean setNx(Object key, Object value) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value).booleanValue();
+    }
+
+
+    /**
+     * 删除当前数据库的所有key
+     */
+    public void flushDb() {
+        stringRedisTemplate.execute(new RedisCallback<Object>() {
+            @Override
+            public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.flushDb();
+                return "ok";
+            }
+        });
+    }
+
+    /**
+     * 删除所有数据库的key
+     */
+    public void flushAll() {
+        stringRedisTemplate.execute(new RedisCallback<Object>() {
+            @Override
+            public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.flushAll();
+                return "ok";
+            }
+        });
+    }
+
+    /**
+     * 序列化给定的key,并返回被序列化的值
+     *
+     * @param key
+     * @return
+     */
+    public byte[] dump(Object key) {
+        return redisTemplate.dump(key);
+    }
+
+    public void beginTransaction() {
+        redisTemplate.setEnableTransactionSupport(true);
+        redisTemplate.multi();
+    }
+
+    public void commit() {
+        redisTemplate.exec();
+    }
+
+    public void closeTransaction() {
+        redisTemplate.setEnableTransactionSupport(false);
+    }
+
+    public void discard() {
+        redisTemplate.discard();
+    }
+
+    public void watch(Object key) {
+        redisTemplate.watch(key);
     }
 }
