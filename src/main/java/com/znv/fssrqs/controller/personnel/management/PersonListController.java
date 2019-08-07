@@ -192,6 +192,12 @@ public class PersonListController {
         if (mapParam.containsKey("IDNumber")) {
             transformedParams.put("person_name", mapParam.get("IDNumber")); // 老接口ID搜索也是传的这个字段
         }
+        if (mapParam.containsKey("Addr")) {
+            transformedParams.put("addr", mapParam.get("Addr"));
+        }
+        if (mapParam.containsKey("GenderCode")) {
+            transformedParams.put("sex", mapParam.get("GenderCode"));
+        }
         if (mapParam.containsKey("LibID")) {
             transformedParams.put("lib_id", mapParam.get("LibID"));
             transformedParams.put("is_lib", true);
