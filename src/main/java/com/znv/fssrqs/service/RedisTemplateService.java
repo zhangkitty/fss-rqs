@@ -8,9 +8,7 @@ import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -421,5 +419,15 @@ public class RedisTemplateService {
 
     public void watch(Object key) {
         redisTemplate.watch(key);
+    }
+
+    public Map<Object, Double> scan4Zset(Object key) {
+        final Cursor<ZSetOperations.TypedTuple<Object>> scan = redisTemplate.opsForZSet().scan(key, ScanOptions.NONE);
+        Map<Object, Double> map = new HashMap<>();
+        while (scan.hasNext()) {
+            final ZSetOperations.TypedTuple<Object> item = scan.next();
+            map.put(item.getValue(), item.getScore());
+        }
+        return map;
     }
 }

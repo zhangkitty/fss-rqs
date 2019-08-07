@@ -130,7 +130,7 @@ public class DeviceService {
         //设备ID
         userGroupDeviceObject.put("ID", userGroupDeviceObject.getString("ApeID"));
         //设备名称
-        userGroupDeviceObject.put("NAME", userGroupDeviceObject.getString("Name"));
+        userGroupDeviceObject.put("Name", userGroupDeviceObject.getString("Name"));
         //图标皮肤
         userGroupDeviceObject.put("IconSkin", "icon-camera-fss");
         retCameras.add(userGroupDeviceObject);

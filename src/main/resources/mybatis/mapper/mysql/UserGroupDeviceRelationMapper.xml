@@ -95,7 +95,7 @@
   </select>
     <select id="queryAdminMapDevice" resultType="com.znv.fssrqs.entity.mysql.MapDeviceLocation">
     select 
-	a.camera_id as cameraId,c.device_name as cameraName,a.latitude,a.longitude
+	a.camera_id as ApeID,c.device_name as ApeName,a.latitude,a.longitude
 	from t_sps_camera_ex a  
     left join t_cfg_device c on c.device_id=a.camera_id where c.device_kind=4 or c.device_kind = 10
   </select>
