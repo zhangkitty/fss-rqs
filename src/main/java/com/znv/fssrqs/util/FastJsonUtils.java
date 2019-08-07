@@ -6,8 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.JSONLibDataFormatSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.znv.fssrqs.support.I18nHelper;
 import org.springframework.util.Assert;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -290,24 +292,24 @@ public class FastJsonUtils {
             return badRequest().message(message);
         }
 
-//        public static JsonBuilder badRequest(String message, I18nService I18nService, HttpServletRequest request) {
-////            return badRequest().message(I18nService.getMessage(message, request));
-////        }
-////
-////        public static JsonBuilder badRequest(int code, String message) {
-////            return badRequest(code).message(message);
-////        }
-////
-////        public static JsonBuilder badRequest(int code, String message, I18nService i18nService, HttpServletRequest request) {
-////            return badRequest(code).message(i18nService.getMessage(message, request));
-////        }
+        public static JsonBuilder badRequest(String message, I18nHelper i18nHelper, HttpServletRequest request) {
+            return badRequest().message(i18nHelper.getMessage(message, request));
+        }
+
+        public static JsonBuilder badRequest(int code, String message) {
+            return badRequest(code).message(message);
+        }
+
+        public static JsonBuilder badRequest(int code, String message, I18nHelper i18nHelper, HttpServletRequest request) {
+            return badRequest(code).message(i18nHelper.getMessage(message, request));
+        }
 
         public static JsonBuilder error() {
             return new JsonBuilder(50000);
         }
 
         public static JsonBuilder error(int code) {
-            Assert.isTrue(code >= 50000 || code < 0, "expression is not true:code>=500");
+            Assert.isTrue(code >= 50000 || code < 0, "expression is not true:code>=50000");
             return new JsonBuilder(code);
         }
 
@@ -319,13 +321,13 @@ public class FastJsonUtils {
             return error(code).message(message);
         }
 
-//        public static JsonBuilder error(int code, String message, I18nService I18nService, HttpServletRequest request) {
-//            return error(code).message(I18nService.getMessage(message, request));
-//        }
-//
-//        public static JsonBuilder error(String message, I18nService I18nService, HttpServletRequest request) {
-//            return error().message(I18nService.getMessage(message, request));
-//        }
+        public static JsonBuilder error(int code, String message, I18nHelper i18nHelper, HttpServletRequest request) {
+            return error(code).message(i18nHelper.getMessage(message, request));
+        }
+
+        public static JsonBuilder error(String message, I18nHelper i18nHelper, HttpServletRequest request) {
+            return error().message(i18nHelper.getMessage(message, request));
+        }
 
         public JSONObject json() {
             JSONObject object = new JSONObject();
