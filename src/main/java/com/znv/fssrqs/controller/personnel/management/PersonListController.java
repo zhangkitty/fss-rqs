@@ -19,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zhangcaochao
@@ -230,31 +227,104 @@ public class PersonListController {
         retObject.put("Code", 10000);
         retObject.put("Message", "ok");
 
+        boolean isMultiAlgorithm = true;
         JSONObject data = null;
         if (mapParam.containsKey("AlgorithmType")) {
-            Integer algorithmType = (Integer) mapParam.get("AlgorithmType");
-            if (1 == algorithmType) {
-                try {
-                    data = viidhksdkService.queryHkPerson(transformedParams);
-                    retObject.put("Data", data);
-                    return retObject;
-                } catch (Exception e) {
-                    retObject.put("Code", 50000);
-                    retObject.put("Message", e.getMessage());
-                    return retObject;
-                }
+            List algorithmType = (List) mapParam.get("AlgorithmType");
+            if (algorithmType.isEmpty()) {
+                isMultiAlgorithm = false;
+            } else {
+                Integer isAlgorithmIntersection = (Integer)mapParam.get("IsAlgorithmIntersection");
+                data = multiAlgoriPersonList(host, transformedParams, algorithmType, isAlgorithmIntersection);
+                retObject.put("Data", data);
+                return retObject;
             }
         }
 
-        try {
+        if (!isMultiAlgorithm) {
             data = personListService.getPersonList(host, transformedParams);
             retObject.put("Data", data);
             return retObject;
-        } catch (Exception e) {
-            retObject.put("Code", 50000);
-            retObject.put("Message", e.getMessage());
+        } else {
             return retObject;
         }
+    }
+
+    private JSONObject multiAlgoriPersonList(String host, JSONObject params,
+                                             List<Integer> algorithmType,
+                                             Integer isAlgorithmIntersection) {
+        JSONObject data = new JSONObject();
+        for (int i = 0; i < algorithmType.size(); i++) {
+            switch (algorithmType.get(i)) {
+                case 0: {// 默认算法
+                    data.put(String.valueOf(i), personListService.getPersonList(host, params));
+                    break;
+                }
+                case 1: {// 海康算法
+                    data.put(String.valueOf(i), viidhksdkService.queryHkPerson(params));
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        JSONObject ret = new JSONObject();
+        if (isAlgorithmIntersection != null && 1 == isAlgorithmIntersection) {
+            Map<String, JSONObject> personIdMap = new HashMap<>();
+            int algorithmNumber = algorithmType.size();
+            // 交集，先遍历一轮，对personId计数
+            for (int i = 0; i < algorithmNumber; i++) {
+                if (data.containsKey(String.valueOf(i)) &&
+                        data.getJSONObject(String.valueOf(i)).containsKey("PersonList")) {
+                    JSONArray personList = data.getJSONObject(String.valueOf(i)).getJSONArray("PersonList");
+                    for (Object person : personList) {
+                        JSONObject personObject = (JSONObject) person;
+                        String personId = personObject.getString("PersonID");
+                        if (personIdMap.containsKey(personId)) {
+                            JSONObject personsObject = personIdMap.get(personId);
+                            Integer count = personIdMap.get(personId).getInteger("count");
+                            count += 1;
+                            personsObject.put("count", count);
+                            personsObject.put(String.valueOf(i), personObject);
+                            personIdMap.put(personId, personsObject);
+                        } else {
+                            JSONObject personsObject = new JSONObject();
+                            personsObject.put("count", new Integer(1));
+                            personsObject.put(String.valueOf(i), personObject);
+                            personIdMap.put(personId, personsObject);
+                        }
+                    }
+                }
+            }
+
+            // 以默认算法为基础，如果personId的计数为算法数量，则返回结果
+            JSONArray personList = new JSONArray();
+            if (data.containsKey(String.valueOf(0)) &&
+                    data.getJSONObject(String.valueOf(0)).containsKey("PersonList")) {
+                JSONArray personListBase = data.getJSONObject(String.valueOf(0)).getJSONArray("PersonList");
+                for (Object person : personListBase) {
+                    JSONObject personObject = (JSONObject) person;
+                    String personId = personObject.getString("PersonID");
+                    if (personIdMap.containsKey(personId) && personIdMap.get(personId).getIntValue("count") >= algorithmNumber) {
+                        JSONObject personsObject = personIdMap.get(personId);
+
+                        for (int j = 0; j < algorithmNumber; j++) {
+                            personList.add(personsObject.getJSONObject(String.valueOf(j)));
+                        }
+                    }
+                }
+            }
+
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("PersonList", personList);
+            return jsonData;
+        } else {
+            for (int i = 0; i < algorithmType.size(); i++) {
+                ret.putAll(data.getJSONObject(String.valueOf(i)));
+            }
+        }
+        return ret;
     }
 
     @RequestMapping(value = "/VIID/Person/{LibID}/{PersonID}", method = RequestMethod.GET)

@@ -53,9 +53,9 @@ public class UserService {
             case 1:
                 break;
             case -536861934: // 用户不存在
-                throw ZnvException.badRequest("UserNotExisted");
+                throw ZnvException.badRequest(20002,"UserNotExisted");
             case -536861613: // 用户被锁
-                throw ZnvException.badRequest("UserLocked");
+                throw ZnvException.badRequest(20001,"UserLocked");
             default:
                 throw ZnvException.badRequest("UserLoginFailed");
         }
