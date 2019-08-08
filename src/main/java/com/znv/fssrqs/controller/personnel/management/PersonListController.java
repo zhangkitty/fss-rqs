@@ -318,13 +318,22 @@ public class PersonListController {
 
             JSONObject jsonData = new JSONObject();
             jsonData.put("PersonList", personList);
+            jsonData.put("TotalRows", personList.size() / algorithmType.size());
             return jsonData;
         } else {
+            JSONArray personList = new JSONArray();
+            Integer totalRows = 0;
             for (int i = 0; i < algorithmType.size(); i++) {
-                ret.putAll(data.getJSONObject(String.valueOf(i)));
+                personList.addAll(data.getJSONObject(String.valueOf(i)).getJSONArray("PersonList"));
+                if (data.getJSONObject(String.valueOf(i)).getJSONArray("PersonList").size() > totalRows) {
+                    totalRows = data.getJSONObject(String.valueOf(i)).getJSONArray("PersonList").size();
+                }
             }
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("PersonList", personList);
+            jsonData.put("TotalRows", totalRows);
+            return jsonData;
         }
-        return ret;
     }
 
     @RequestMapping(value = "/VIID/Person/{LibID}/{PersonID}", method = RequestMethod.GET)
