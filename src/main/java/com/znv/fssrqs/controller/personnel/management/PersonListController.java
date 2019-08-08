@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.ChongQingConfig;
 import com.znv.fssrqs.config.HdfsConfigManager;
+import com.znv.fssrqs.exception.BusinessException;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.personnel.management.PersonListService;
 import com.znv.fssrqs.service.personnel.management.VIIDHKSDKService;
@@ -208,6 +210,9 @@ public class PersonListController {
         transformedParams.put("order_type","desc");
         if (mapParam.containsKey("ImgData")
                 && mapParam.containsKey("SimThreshold") ) {
+            if (! (mapParam.get("SimThreshold") instanceof  Double)) {
+                throw  ZnvException.badRequest("RequestException", "SimThreshold");
+            }
             FeatureCompUtil fc = new FeatureCompUtil();
             fc.setFeaturePoints(HdfsConfigManager.getPoints());
             transformedParams.put("imgData", mapParam.get("ImgData"));
