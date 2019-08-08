@@ -227,13 +227,10 @@ public class PersonListController {
         retObject.put("Code", 10000);
         retObject.put("Message", "ok");
 
-        boolean isMultiAlgorithm = true;
         JSONObject data = null;
         if (mapParam.containsKey("AlgorithmType")) {
             List algorithmType = (List) mapParam.get("AlgorithmType");
-            if (algorithmType.isEmpty()) {
-                isMultiAlgorithm = false;
-            } else {
+            if (!algorithmType.isEmpty()) {
                 Integer isAlgorithmIntersection = (Integer)mapParam.get("IsAlgorithmIntersection");
                 data = multiAlgoriPersonList(host, transformedParams, algorithmType, isAlgorithmIntersection);
                 retObject.put("Data", data);
@@ -241,13 +238,9 @@ public class PersonListController {
             }
         }
 
-        if (!isMultiAlgorithm) {
-            data = personListService.getPersonList(host, transformedParams);
-            retObject.put("Data", data);
-            return retObject;
-        } else {
-            return retObject;
-        }
+        data = personListService.getPersonList(host, transformedParams);
+        retObject.put("Data", data);
+        return retObject;
     }
 
     private JSONObject multiAlgoriPersonList(String host, JSONObject params,
