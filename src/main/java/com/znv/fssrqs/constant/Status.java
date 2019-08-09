@@ -26,9 +26,4 @@ public enum Status {
 	public String getDesc() {
 		return desc;
 	}
-	
-	
-	
-	
-
 }

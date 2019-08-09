@@ -73,7 +73,7 @@ public class CompareController {
             nToNCompareTaskParam.setStatus(1);
             nToNCompareTaskParam.setProcess(0f);
             Long num = compareTaskDao.findAllCompareTask().stream().filter(value->{
-                if(value.getTaskId().equals(MD5Util.encode(nToNCompareTaskParam.toString()))){
+                if(value.getTaskId().equals(MD5)){
                     return true;
                 }else {
                     return false;

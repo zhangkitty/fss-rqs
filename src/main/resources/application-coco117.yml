@@ -106,5 +106,7 @@ pagehelper:
 
 echarts:
   add: 南京,北京
+spark:
+  shellscript: cd /home/fss/v1.50/fssDeployUtil &&  ./fss_service.sh execNNCompare
 
 
