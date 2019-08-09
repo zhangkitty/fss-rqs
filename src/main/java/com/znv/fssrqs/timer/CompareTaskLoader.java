@@ -1,9 +1,11 @@
 package com.znv.fssrqs.timer;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.config.SparkConfig;
 import com.znv.fssrqs.constant.FnmsConsts;
 import com.znv.fssrqs.constant.Status;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
+import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.util.*;
 import com.znv.fssrqs.util.command.ssh.SSHCommandExecutor;
@@ -43,6 +45,14 @@ public class CompareTaskLoader {
     @Autowired
     private CompareTaskDao compareTaskDao;
 
+
+    @Autowired
+    private SparkConfig sparkConfig;
+
+
+    @Autowired
+    private ElasticSearchClient elasticSearchClient;
+
     private  ConcurrentLinkedDeque<CompareTaskEntity> waitQueue = new ConcurrentLinkedDeque<CompareTaskEntity>();
     private  ConcurrentLinkedDeque<CompareTaskEntity> execQueue = new ConcurrentLinkedDeque<CompareTaskEntity>();
 
@@ -70,11 +80,11 @@ public class CompareTaskLoader {
         String lib2 = String.valueOf(o.getLib2());
         String sim = String.valueOf(o.getSim());
 
-        String sparkStart = "cd /home/fss/v1.32/fssDeployUtil/ &&  ./fss_service.sh execNNCompare ";//FssPropertyUtils.getInstance().getProperty("fss.spark.start");
+        String sparkStart = SpringContextUtil.getCtx().getBean(SparkConfig.class).getShellscript()+" ";//FssPropertyUtils.getInstance().getProperty("fss.spark.start");
         String userName = null;
         String password = null;
         String[] userPwdArr = null;
-        String zookeepers = "lv230.dct-znv.com"; //FssPropertyUtils.getInstance().getProperty("conf.spark.host");
+        String zookeepers = SpringContextUtil.getCtx().getBean(ElasticSearchClient.class).getHost(); //FssPropertyUtils.getInstance().getProperty("conf.spark.host");
         //String sshUserPwd = FssPropertyUtils.getInstance().getProperty("bigdata.ssh.username.password");
         //userPwdArr = sshUserPwd.split(",");
         userName = "root";//userPwdArr[0].split(":")[0];
@@ -85,6 +95,9 @@ public class CompareTaskLoader {
         log.info("startSpark:" + startCommand);
         sshExecutor.execute(startCommand);
     }
+
+
+
 
 
     public void registerObserver(CompareTaskEntity o) {

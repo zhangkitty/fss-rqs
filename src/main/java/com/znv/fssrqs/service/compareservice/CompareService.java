@@ -1,12 +1,15 @@
 package com.znv.fssrqs.service.compareservice;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.constant.FnmsConsts;
+import com.znv.fssrqs.constant.Status;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
 import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam;
 import com.znv.fssrqs.timer.CompareTaskLoader;
+import com.znv.fssrqs.timer.NtoNCompare;
 import com.znv.fssrqs.util.HttpUtils;
 import com.znv.fssrqs.util.ICAPVThreadPool;
 import com.znv.fssrqs.util.MD5Util;
@@ -32,9 +35,8 @@ public class CompareService {
     @Autowired
     private CompareTaskDao compareTaskDao;
 
-
-
-
+    @Autowired
+    private CompareTaskLoader compareTaskLoader;
 
     public HashMap check(JSONObject jsonObject){
 
@@ -53,27 +55,36 @@ public class CompareService {
 
 
    public Integer save(NToNCompareTaskParam nToNCompareTaskParam){
-
-        String MD5 = MD5Util.encode(nToNCompareTaskParam.toString());
-
-        nToNCompareTaskParam.setTaskId(MD5);
-        nToNCompareTaskParam.setStatus(1);
-        nToNCompareTaskParam.setProcess(0f);
         Integer result = compareTaskDao.save(nToNCompareTaskParam);
-
         CompareTaskEntity o = new CompareTaskEntity();
-        o.setTaskId(MD5);
-        o.setStatus(1);
-        o.setProcess(0f);
+        o.setTaskId(nToNCompareTaskParam.getTaskId());
+        o.setStatus(nToNCompareTaskParam.getStatus());
+        o.setProcess(nToNCompareTaskParam.getProcess());
         o.setLib1(nToNCompareTaskParam.getLib1());
         o.setLib2(nToNCompareTaskParam.getLib2());
         o.setSim(nToNCompareTaskParam.getSim());
-
         if(result>0){
             CompareTaskLoader.getInstance().registerObserver(o);
         }
         return result;
    }
+
+    public Integer update(NToNCompareTaskParam nToNCompareTaskParam){
+        CompareTaskEntity o = new CompareTaskEntity();
+        o.setTaskId(nToNCompareTaskParam.getTaskId());
+        o.setStatus(nToNCompareTaskParam.getStatus());
+        o.setProcess(nToNCompareTaskParam.getProcess());
+        o.setLib1(nToNCompareTaskParam.getLib1());
+        o.setLib2(nToNCompareTaskParam.getLib2());
+        o.setSim(nToNCompareTaskParam.getSim());
+        Integer result = compareTaskDao.update(o);
+        if(result>0){
+            CompareTaskLoader.getInstance().registerObserver(o);
+        }
+        return result;
+    }
+
+
 
 
    public Integer delete(String taskId){
@@ -105,6 +116,49 @@ public class CompareService {
         Result<JSONObject, String> result = elasticSearchClient.postRequest("http://10.45.152.230:9200/person_list_data_n_project_v1_2/person_list/_search?pretty",jsonObject);
 
        return (Integer) result.value().getJSONObject("hits").get("total");
+    }
+
+
+    /**
+     * N：M 暂停
+     */
+    public void stop() {
+        ICAPVThreadPool.getInstance().execute(new Runnable() {
+            @Override
+            public void run() {
+                CompareTaskEntity task = CompareTaskLoader.getInstance().getExecQueue().element();
+                task.setStatus(Status.PAUSING.getCode());
+                CompareTaskLoader.getInstance().notifyObserver(task);
+                NtoNCompare.getInstance().sendSpark(task, FnmsConsts.StatisticsModeIds.STOP_ACTION);
+            }
+        });
+    }
+
+    /**
+     * 强制开始
+     * @param taskId
+     */
+    public void forceStart(String taskId) {
+        ICAPVThreadPool.getInstance().execute(new Runnable() {
+            @Override
+            public void run() {
+                CompareTaskEntity execTask = CompareTaskLoader.getInstance().getExecQueue().element();
+                NtoNCompare.getInstance().sendSpark(execTask, FnmsConsts.StatisticsModeIds.STOP_ACTION);
+                execTask.setStatus(Status.PAUSING.getCode());
+                CompareTaskLoader.getInstance().notifyObserver(execTask);
+                CompareTaskEntity target = null;
+                for (CompareTaskEntity q : CompareTaskLoader.getInstance().getWaitQueue()) {
+                    if (q.getTaskId().equals(taskId)) {
+                        target = q;
+                        CompareTaskLoader.getInstance().getWaitQueue().remove(q);
+                        break;
+                    }
+                }
+                if (target != null) {
+                    CompareTaskLoader.getInstance().getWaitQueue().addFirst(target);
+                }
+            }
+        });
     }
 
 }

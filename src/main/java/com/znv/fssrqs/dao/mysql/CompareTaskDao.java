@@ -17,7 +17,7 @@ public interface CompareTaskDao {
 
     List<CompareTaskEntity> findAllCompareTask();
 
-    void update(CompareTaskEntity compareTaskEntity);
+    Integer update(CompareTaskEntity compareTaskEntity);
 
     Integer save(NToNCompareTaskParam nToNCompareTaskParam);
 
