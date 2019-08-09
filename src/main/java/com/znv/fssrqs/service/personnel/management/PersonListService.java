@@ -10,6 +10,7 @@ import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.entity.mysql.PersonLib;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.hbase.PhoenixService;
 import com.znv.fssrqs.service.personnel.management.dto.OnePersonListDTO;
@@ -155,12 +156,10 @@ public class PersonListService {
             String feature = FaceAIUnitUtils.getImageFeature(searchFeatures);
             JSONObject parseObject = JSONObject.parseObject(feature);
             if (feature == null){
-                ret.put("StatusString", "未获取到图片特征值！");
-                return ret;
+                throw ZnvException.badRequest("ImageNoFeature");
             }
             if (!"success".equals(parseObject.getString("result"))) {
-                ret.put("StatusString", "获取图片特征值失败！");
-                return ret;
+                throw ZnvException.badRequest("ImageNoFeature");
             }
             params.put("feature_value", parseObject.getString("feature"));
         }
@@ -174,7 +173,7 @@ public class PersonListService {
         String esUrl = EsBaseConfig.getInstance().getIndexPersonListName() + "/" + EsBaseConfig.getInstance().getIndexPersonListType() + "/_search/template";
         Result<JSONObject, String> result = elasticSearchClient.postRequest(esUrl, obj);
         if (result.isErr()) {
-            throw new RuntimeException("获取es数据失败:" + result.error());
+            throw ZnvException.error("EsAccessFailed", result.error());
         }
         long endTime = System.currentTimeMillis();
         log.info("getPersonList elasticSearchClient elapsed {}ms.", endTime - beginTime);
@@ -211,6 +210,8 @@ public class PersonListService {
                 log.error("get personInfo failed. peronId {}, libId {}.", personId, libId);
                 continue;
             }
+
+            personInfo.put("AlgorithmType", 0);
 
             if (! StringUtils.isEmpty(libId)) {
                 PersonLib peronLib = personLibMapper.selectByPrimaryKey(Integer.valueOf(libId));

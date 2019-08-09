@@ -15,6 +15,9 @@ public interface HkPersonRelationMap {
     @Select("SELECT hk_person_id FROM fss_hk_person_relation WHERE fss_person_id=#{fssPersonId}")
     Map<String, Object> getByFssPersonId(String fssPersonId);
 
+    @Select("SELECT fss_person_id FROM fss_hk_person_relation WHERE hk_person_id=#{hkPersonId}")
+    Map<String, Object> getByHkPersonId(String hkPersonId);
+
     @Delete("DELETE FROM fss_hk_person_relation WHERE fss_person_id = #{fssPersonId}")
     int delete(Map<String, Object> map);
 }
