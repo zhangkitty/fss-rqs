@@ -229,10 +229,26 @@ public class PersonListController {
 
         JSONObject data = null;
         if (mapParam.containsKey("AlgorithmType")) {
-            List algorithmType = (List) mapParam.get("AlgorithmType");
-            if (!algorithmType.isEmpty()) {
+            List<Integer> algorithmType = (List) mapParam.get("AlgorithmType");
+            if (algorithmType.size() > 1) {
                 Integer isAlgorithmIntersection = (Integer)mapParam.get("IsAlgorithmIntersection");
                 data = multiAlgoriPersonList(host, transformedParams, algorithmType, isAlgorithmIntersection);
+                retObject.put("Data", data);
+                return retObject;
+            } else if (algorithmType.size() > 0) {
+                switch (algorithmType.get(0)) {
+                    case 0: {// 默认算法
+                        data = personListService.getPersonList(host, transformedParams);
+                        break;
+                    }
+                    case 1: {// 海康算法
+                        data = viidhksdkService.queryHkPerson(transformedParams);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+
                 retObject.put("Data", data);
                 return retObject;
             }
