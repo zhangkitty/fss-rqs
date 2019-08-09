@@ -46,8 +46,18 @@ public class QueryResultService {
 
         Result<JSONObject, String> result = elasticSearchClient.postRequest(url,esBody);
 
+//        ArrayList list = result.value().getJSONObject("hits").getJSONArray("hits")
+//                .stream().map(v->((JSONObject)v).get("_source")).collect(Collectors.toCollection(ArrayList::new));
+
+
         ArrayList list = result.value().getJSONObject("hits").getJSONArray("hits")
-                .stream().map(v->((JSONObject)v).get("_source")).collect(Collectors.toCollection(ArrayList::new));
+                .stream().map(v->(JSONObject)v).map(t->{
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject = t.getJSONObject("_source");
+                    jsonObject.put("id",t.getString("_id"));
+                    return jsonObject;
+                })
+                .collect(ArrayList::new,(list1,value)->list1.add(value),(list1,list2)->list1.addAll(list2));
 
         Integer total = result.value().getJSONObject("hits").getInteger("total");
 

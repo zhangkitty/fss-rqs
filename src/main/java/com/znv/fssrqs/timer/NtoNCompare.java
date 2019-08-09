@@ -5,11 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.FnmsConsts;
 import com.znv.fssrqs.constant.Status;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
+import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.timer.CompareTaskLoader;
 import com.znv.fssrqs.util.ConfigManager;
 import com.znv.fssrqs.util.DataConvertUtils;
 import com.znv.fssrqs.util.HttpUtils;
+import com.znv.fssrqs.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,19 @@ import java.util.Date;
 @Slf4j
 @Component
 public class NtoNCompare {
+
+
+    private static class SingletonHolder {
+        private static NtoNCompare instance = new NtoNCompare();
+    }
+
+    public static NtoNCompare getInstance() {
+        return NtoNCompare.SingletonHolder.instance;
+    }
+
+    @Autowired
+    private ElasticSearchClient elasticSearchClient;
+
 
     @Autowired
     private CompareTaskDao compareTaskDao;
@@ -112,7 +127,7 @@ public class NtoNCompare {
         sendObj.put("task_id", taskId);
         sendObj.put("send_time", DataConvertUtils.dateToStr(new Date()));
         sendObj.put("action", action);
-        String dct = "10.45.152.230";//ConfigManager.getString("zookeeper.quorum");
+        String dct = SpringContextUtil.getCtx().getBean(ElasticSearchClient.class).getHost();//ConfigManager.getString("zookeeper.quorum");
         String[] ips = dct.split(",");
         String data = null;
         if (StringUtils.isEmpty(online)) {

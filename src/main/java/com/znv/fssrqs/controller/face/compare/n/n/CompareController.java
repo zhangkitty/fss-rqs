@@ -9,6 +9,7 @@ import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam;
 import com.znv.fssrqs.service.compareservice.CompareService;
+import com.znv.fssrqs.timer.CompareTaskLoader;
 import com.znv.fssrqs.util.MD5Util;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class CompareController {
 
     @Autowired
     private CompareService compareService;
+
+    @Autowired
+    private CompareTaskLoader compareTaskLoader;
 
     @Autowired
     private CompareTaskDao compareTaskDao;
@@ -57,21 +61,32 @@ public class CompareController {
                 nToNCompareTaskParam.setLib2Name(value.getLibName());
             }
         });
-        Long num = compareTaskDao.findAllCompareTask().stream().filter(value->{
-            if(value.getTaskId().equals(MD5Util.encode(nToNCompareTaskParam.toString()))){
-                return true;
-            }else {
-                return false;
-            }
-        }).count();
-        if(num>0){
-            return ResponseVo.error("任务已经存在");
-        }
-        Integer result = compareService.save(nToNCompareTaskParam);
 
-        if(result>0)
-            return  ResponseVo.success(result);
-        return ResponseVo.error("失败");
+        if(nToNCompareTaskParam.getTaskId()!=null){
+            Integer result = compareService.update(nToNCompareTaskParam);
+            if(result>0)
+                return  ResponseVo.success(result);
+            return ResponseVo.error("失败");
+        }else {
+            String MD5 = MD5Util.encode(nToNCompareTaskParam.toString());
+            nToNCompareTaskParam.setTaskId(MD5);
+            nToNCompareTaskParam.setStatus(1);
+            nToNCompareTaskParam.setProcess(0f);
+            Long num = compareTaskDao.findAllCompareTask().stream().filter(value->{
+                if(value.getTaskId().equals(MD5Util.encode(nToNCompareTaskParam.toString()))){
+                    return true;
+                }else {
+                    return false;
+                }
+            }).count();
+            if(num>0){
+                return ResponseVo.error("任务已经存在");
+            }
+            Integer result = compareService.save(nToNCompareTaskParam);
+            if(result>0)
+                return  ResponseVo.success(result);
+            return ResponseVo.error("失败");
+        }
     }
 
     @RequestMapping(value = "/site/FSSAPP/pc/nvsm/queryTask.ds",method = RequestMethod.POST)
@@ -92,5 +107,23 @@ public class CompareController {
         if(compareService.delete(taskId)>0)
             return ResponseVo.success("删除任务成功",null);
         return ResponseVo.error("删除任务失败");
+    }
+
+    /**
+     * 暂停
+     */
+    @RequestMapping(value = "/site/FSSAPP/pc/nvsm/taskstop.ds",method = RequestMethod.GET)
+    public void pause(){
+        compareService.stop();
+    }
+
+
+    /**
+     * 强制开始
+     * @param taskId
+     */
+    @RequestMapping(value = "/site/FSSAPP/pc/nvsm/taskstart.ds/{taskId}",method = RequestMethod.GET)
+    public void start(@PathVariable String taskId){
+        compareService.forceStart(taskId);
     }
 }
