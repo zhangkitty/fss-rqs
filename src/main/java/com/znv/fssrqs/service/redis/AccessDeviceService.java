@@ -12,19 +12,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by dongzelong on  2019/8/5 15:37.
+ * Created by dongzelong on  2019/8/5 18:22.
  *
  * @author dongzelong
  * @version 1.0
  * @Description TODO
  */
 @Service
-public class AccessPrecintService {
+public class AccessDeviceService {
     @Autowired
     private RedisTemplateService redisTemplateService;
-    private final String TABLE_NAME = "MPrecinct";
+    private final String TABLE_NAME = "MDevice";
 
-    public Map<String, JSONObject> getAllPrecint() {
+    public Map<String, JSONObject> getAllDevice() {
         final Set<String> keys = redisTemplateService.getSet(TABLE_NAME);
         final List<String> list = redisTemplateService.multiGet(keys);
         Map<String, JSONObject> map = Maps.newHashMap();
@@ -32,16 +32,16 @@ public class AccessPrecintService {
             final JSONObject precinct = JSON.toJavaObject(JSON.parseObject(object), JSONObject.class);
             JSONObject jsonObject = new JSONObject();
             for (Map.Entry<String, Object> entry : precinct.entrySet()) {
-                final String key = entry.getKey();
                 final Object value = entry.getValue();
+                final String key = entry.getKey();
                 String[] keyArray = key.split("_");
                 StringBuffer sb = new StringBuffer();
                 for (String tmpKey : keyArray) {
-                    sb.append(tmpKey.substring(0, 1) + tmpKey.substring(1).toLowerCase());
+                    sb.append(tmpKey.substring(0, 1).toUpperCase() + tmpKey.substring(1).toLowerCase());
                 }
                 jsonObject.put(sb.toString(), value);
             }
-            map.put(jsonObject.getString("PrecinctId"), jsonObject);
+            map.put(jsonObject.getString("DeviceId"), jsonObject);
         });
         return map;
     }
