@@ -56,15 +56,15 @@ public class DeviceTreeController {
         }
         //顶级树
         JSONObject treeJs = new JSONObject();
-        treeJs.put("id", treeId);
-        treeJs.put("name", treeObj.getTreeName());
-        treeJs.put("device_kind", 2);
-        treeJs.put("iconSkin", "icon-precinct");
-        treeJs.put("pId", -1);
-        treeJs.put("open", true);
+        treeJs.put("ID", treeId);
+        treeJs.put("Name", treeObj.getTreeName());
+        treeJs.put("DeviceKind", 2);
+        treeJs.put("IconSkin", "IconPrecinct");
+        treeJs.put("PID", -1);
+        treeJs.put("Open", true);
         retArr.add(treeJs);
         Map<String, Long> rootMap = new HashMap<>();
-        rootMap.put("count", 0L);
+        rootMap.put("Count", 0L);
         Map<String, JSONObject> areaMap = new HashMap<>();
         Map<String, JSONObject> cameraMap = new HashMap<>();
         nodes.forEach(n -> {
@@ -76,42 +76,42 @@ public class DeviceTreeController {
             //节点类型
             int deviceKind = n.getNodeKind();
             if (deviceKind == 4) {
-                Long count = rootMap.get("count");
+                Long count = rootMap.get("Count");
                 count += 1;
-                rootMap.put("count", count);
+                rootMap.put("Count", count);
                 cameraMap.put(id, js);
             } else {
                 //初始化设备总量为0
-                js.put("total", 0);
+                js.put("Total", 0);
                 areaMap.put(id, js);
             }
             //2-区域,4-摄像机
-            String iconSkin = deviceKind == 4 ? "icon-camera-fss" : "icon-precinct";
+            String iconSkin = deviceKind == 4 ? "IconCameraFss" : "IconPrecinct";
             id = deviceKind == 4 ? id.replaceFirst(treeId, "") : id;
             //节点类型,上级节点ID
-            js.put("id", id);
-            js.put("pId", n.getUpNodeId());
-            js.put("name", name);
-            js.put("device_kind", deviceKind);
-            js.put("iconSkin", iconSkin);
+            js.put("ID", id);
+            js.put("PID", n.getUpNodeId());
+            js.put("Name", name);
+            js.put("DeviceKind", deviceKind);
+            js.put("IconSkin", iconSkin);
         });
 
         for (Map.Entry<String, JSONObject> entry : cameraMap.entrySet()) {
             JSONObject cameraObject = entry.getValue();
-            String pId = cameraObject.getString("pId");
+            String pId = cameraObject.getString("PId");
             recursive(pId, areaMap);
         }
 
         Stream<JSONObject> stream = areaMap.values().parallelStream()
-                .filter(jsonObject -> jsonObject.getInteger("total") != 0 || String.valueOf(jsonObject.get("pId")).equals("-1"));
+                .filter(jsonObject -> jsonObject.getInteger("Total") != 0 || String.valueOf(jsonObject.get("PId")).equals("-1"));
         Object[] objects = stream.toArray();
         Arrays.stream(objects).parallel().forEach(object -> {
             JSONObject jsonObject = (JSONObject) object;
-            jsonObject.put("name", jsonObject.getString("name") + "(" + jsonObject.getInteger("total") + ")");
+            jsonObject.put("Name", jsonObject.getString("Name") + "(" + jsonObject.getInteger("Total") + ")");
         });
         retArr.addAll(Arrays.asList(objects));
         retArr.addAll(cameraMap.values());
-        treeJs.put("name", treeObj.getTreeName() + "(" + rootMap.get("count") + ")");
+        treeJs.put("Name", treeObj.getTreeName() + "(" + rootMap.get("Count") + ")");
         return FastJsonUtils.JsonBuilder.ok().list(retArr).json().toJSONString();
     }
 

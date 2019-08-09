@@ -6,6 +6,7 @@ import com.znv.fssrqs.entity.hbase.HUserEntity;
 import com.znv.fssrqs.entity.mysql.MUserEntity;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
+import com.znv.fssrqs.exception.ZnvException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,13 +38,13 @@ public class UserService {
         List<Map<String, Object>> procedureRet = mUserDao.upCfgUserLogin(params);
         if (procedureRet.isEmpty()) {
             log.info("user {} login failed, ret list empty.", params.get("userName"));
-            throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOGIN_ERROR);
+            throw ZnvException.badRequest("UserLoginFailed");
         }
 
         Map<String, Object> map = procedureRet.iterator().next();
         if (map == null || !map.containsKey("ret")) {
             log.info("user {} login failed, ret map empty.", params.get("userName"));
-            throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOGIN_ERROR);
+            throw ZnvException.badRequest("UserLoginFailed");
         }
 
         int ret = Integer.valueOf(String.valueOf(map.get("ret")) );
@@ -52,11 +53,11 @@ public class UserService {
             case 1:
                 break;
             case -536861934: // 用户不存在
-                throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOGIN_ERROR);
+                throw ZnvException.badRequest(20002,"UserNotExisted");
             case -536861613: // 用户被锁
-                throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOCKED);
+                throw ZnvException.badRequest(20001,"UserLocked");
             default:
-                throw new BusinessException(ErrorCodeEnum.UNAUTHED_LOGIN_ERROR);
+                throw ZnvException.badRequest("UserLoginFailed");
         }
 
         // TODO: 写日志

@@ -166,7 +166,7 @@
         <include refid="Base_Column_List"/>
         from t_scim_personlib WHERE 1=1
         <if test="PersonLibType != null and PersonLibType != ''">
-            and personlib_type=#{personlibType,jdbcType=VARCHAR}
+            and personlib_type=#{PersonLibType,jdbcType=VARCHAR}
         </if>
         order by lib_name asc;
     </select>

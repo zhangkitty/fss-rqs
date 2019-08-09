@@ -3,7 +3,6 @@ package com.znv.fssrqs.util;
 import com.znv.fssrqs.kafka.consumer.AlarmCustume;
 import com.znv.fssrqs.timer.CompareTaskLoader;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j

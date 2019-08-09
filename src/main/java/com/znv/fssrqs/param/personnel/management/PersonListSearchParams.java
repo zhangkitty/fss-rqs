@@ -34,5 +34,5 @@ public class PersonListSearchParams {
 
     private String IDNumber;
 
-    private String AlgorithmType;
+    private Integer[] AlgorithmType;
 }

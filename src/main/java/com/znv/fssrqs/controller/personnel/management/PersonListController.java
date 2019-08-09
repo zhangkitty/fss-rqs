@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.ChongQingConfig;
 import com.znv.fssrqs.config.HdfsConfigManager;
+import com.znv.fssrqs.exception.BusinessException;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.personnel.management.PersonListService;
 import com.znv.fssrqs.service.personnel.management.VIIDHKSDKService;
@@ -17,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zhangcaochao
@@ -192,6 +191,12 @@ public class PersonListController {
         if (mapParam.containsKey("IDNumber")) {
             transformedParams.put("person_name", mapParam.get("IDNumber")); // 老接口ID搜索也是传的这个字段
         }
+        if (mapParam.containsKey("Addr")) {
+            transformedParams.put("addr", mapParam.get("Addr"));
+        }
+        if (mapParam.containsKey("GenderCode")) {
+            transformedParams.put("sex", mapParam.get("GenderCode"));
+        }
         if (mapParam.containsKey("LibID")) {
             transformedParams.put("lib_id", mapParam.get("LibID"));
             transformedParams.put("is_lib", true);
@@ -202,6 +207,9 @@ public class PersonListController {
         transformedParams.put("order_type","desc");
         if (mapParam.containsKey("ImgData")
                 && mapParam.containsKey("SimThreshold") ) {
+            if (! (mapParam.get("SimThreshold") instanceof  Double)) {
+                throw  ZnvException.badRequest("RequestException", "SimThreshold");
+            }
             FeatureCompUtil fc = new FeatureCompUtil();
             fc.setFeaturePoints(HdfsConfigManager.getPoints());
             transformedParams.put("imgData", mapParam.get("ImgData"));
@@ -221,28 +229,103 @@ public class PersonListController {
 
         JSONObject data = null;
         if (mapParam.containsKey("AlgorithmType")) {
-            Integer algorithmType = (Integer) mapParam.get("AlgorithmType");
-            if (1 == algorithmType) {
-                try {
-                    data = viidhksdkService.queryHkPerson(transformedParams);
-                    retObject.put("Data", data);
-                    return retObject;
-                } catch (Exception e) {
-                    retObject.put("Code", 50000);
-                    retObject.put("Message", e.getMessage());
-                    return retObject;
-                }
+            List algorithmType = (List) mapParam.get("AlgorithmType");
+            if (!algorithmType.isEmpty()) {
+                Integer isAlgorithmIntersection = (Integer)mapParam.get("IsAlgorithmIntersection");
+                data = multiAlgoriPersonList(host, transformedParams, algorithmType, isAlgorithmIntersection);
+                retObject.put("Data", data);
+                return retObject;
             }
         }
 
-        try {
-            data = personListService.getPersonList(host, transformedParams);
-            retObject.put("Data", data);
-            return retObject;
-        } catch (Exception e) {
-            retObject.put("Code", 50000);
-            retObject.put("Message", e.getMessage());
-            return retObject;
+        data = personListService.getPersonList(host, transformedParams);
+        retObject.put("Data", data);
+        return retObject;
+    }
+
+    private JSONObject multiAlgoriPersonList(String host, JSONObject params,
+                                             List<Integer> algorithmType,
+                                             Integer isAlgorithmIntersection) {
+        JSONObject data = new JSONObject();
+        for (int i = 0; i < algorithmType.size(); i++) {
+            switch (algorithmType.get(i)) {
+                case 0: {// 默认算法
+                    data.put(String.valueOf(i), personListService.getPersonList(host, params));
+                    break;
+                }
+                case 1: {// 海康算法
+                    data.put(String.valueOf(i), viidhksdkService.queryHkPerson(params));
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        JSONObject ret = new JSONObject();
+        if (isAlgorithmIntersection != null && 1 == isAlgorithmIntersection) {
+            Map<String, JSONObject> personIdMap = new HashMap<>();
+            int algorithmNumber = algorithmType.size();
+            // 交集，先遍历一轮，对personId计数
+            for (int i = 0; i < algorithmNumber; i++) {
+                if (data.containsKey(String.valueOf(i)) &&
+                        data.getJSONObject(String.valueOf(i)).containsKey("PersonList")) {
+                    JSONArray personList = data.getJSONObject(String.valueOf(i)).getJSONArray("PersonList");
+                    for (Object person : personList) {
+                        JSONObject personObject = (JSONObject) person;
+                        String personId = personObject.getString("PersonID");
+                        if (personIdMap.containsKey(personId)) {
+                            JSONObject personsObject = personIdMap.get(personId);
+                            Integer count = personIdMap.get(personId).getInteger("count");
+                            count += 1;
+                            personsObject.put("count", count);
+                            personsObject.put(String.valueOf(i), personObject);
+                            personIdMap.put(personId, personsObject);
+                        } else {
+                            JSONObject personsObject = new JSONObject();
+                            personsObject.put("count", new Integer(1));
+                            personsObject.put(String.valueOf(i), personObject);
+                            personIdMap.put(personId, personsObject);
+                        }
+                    }
+                }
+            }
+
+            // 以默认算法为基础，如果personId的计数为算法数量，则返回结果
+            JSONArray personList = new JSONArray();
+            if (data.containsKey(String.valueOf(0)) &&
+                    data.getJSONObject(String.valueOf(0)).containsKey("PersonList")) {
+                JSONArray personListBase = data.getJSONObject(String.valueOf(0)).getJSONArray("PersonList");
+                for (Object person : personListBase) {
+                    JSONObject personObject = (JSONObject) person;
+                    String personId = personObject.getString("PersonID");
+                    if (personIdMap.containsKey(personId) && personIdMap.get(personId).getIntValue("count") >= algorithmNumber) {
+                        JSONObject personsObject = personIdMap.get(personId);
+
+                        for (int j = 0; j < algorithmNumber; j++) {
+                            personList.add(personsObject.getJSONObject(String.valueOf(j)));
+                        }
+                    }
+                }
+            }
+
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("PersonList", personList);
+            jsonData.put("TotalRows", personList.size() / algorithmType.size());
+            return jsonData;
+        } else {
+            JSONArray personList = new JSONArray();
+            Integer totalRows = 0;
+            for (int i = 0; i < algorithmType.size(); i++) {
+                personList.addAll(data.getJSONObject(String.valueOf(i)).getJSONArray("PersonList"));
+                if (data.getJSONObject(String.valueOf(i)).getJSONArray("PersonList").size() > totalRows) {
+                    totalRows = data.getJSONObject(String.valueOf(i)).getJSONArray("PersonList").size();
+                }
+            }
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("PersonList", personList);
+            jsonData.put("TotalRows", totalRows);
+            return jsonData;
         }
     }
 

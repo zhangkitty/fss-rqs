@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.hikvision.artemis.sdk.ArtemisHttpUtil;
 import com.znv.fssrqs.constant.CommonConstant;
+import com.znv.fssrqs.dao.mysql.HkPersonRelationMap;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.personnel.management.dto.HKPersonListSearchDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,9 @@ import java.util.stream.Collectors;
 public class VIIDHKSDKService {
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private HkPersonRelationMap hkPersonRelationMap;
 
     public JSONObject queryHkPerson (PersonListSearchParams personListSearchParams) throws Exception{
         log.info("queryHkPerson params:{}", personListSearchParams);
@@ -147,19 +152,21 @@ public class VIIDHKSDKService {
 
         log.info("queryHkPerson res:{}", res);
         if (StringUtils.isEmpty(res)) {
-            throw new RuntimeException("海康库的响应消息无内容！");
+            throw ZnvException.error("HKAccessFailed");
         }
         JSONObject hkResult = JSONObject.parseObject(res);
         if (hkResult == null
                 || !hkResult.containsKey("data")
                 || !hkResult.containsKey("msg")
                 || !hkResult.containsKey("code")) {
-            throw new RuntimeException("海康库的响应消息格式不正确！");
+            log.error("海康库的响应失败！");
+            throw ZnvException.error("HKReturnError");
         }
         if (0 != hkResult.getIntValue("code")) {
-            throw new RuntimeException("海康库的响应失败！错误码："
-                    + hkResult.getIntValue("code")
-                    + "，错误描述：" + hkResult.getString("msg"));
+            log.error("海康库的响应失败！错误码：{}，错误描述：{}.",
+                    hkResult.getIntValue("code"),
+                    hkResult.getString("msg"));
+            throw ZnvException.error("HKReturnError");
         }
 
         JSONArray list = (JSONArray) hkResult.getJSONObject("data").get("list");
@@ -168,7 +175,16 @@ public class VIIDHKSDKService {
             list.stream().forEach(obj -> {
                 JSONObject jsonObj = (JSONObject) obj;
                 JSONObject o = new JSONObject();
-                o.put("PersonID", jsonObj.getString("humanId"));
+
+                o.put("AlgorithmType", 0);
+                String hkPersonId = jsonObj.getString("humanId");
+                o.put("RelatedPersonID", hkPersonId);
+                Map<String, Object> map = hkPersonRelationMap.getByHkPersonId(hkPersonId);
+                if (map != null && !map.isEmpty()) {
+                    // PersonID作为交集使用
+                    o.put("PersonID", (String) map.get("fss_person_id"));
+                }
+
                 o.put("Name", jsonObj.getString("humanName"));
                 o.put("GenderCode", jsonObj.getInteger("sex"));
                 o.put("ImageUrl", jsonObj.getString("facePicUrl"));
