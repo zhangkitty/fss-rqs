@@ -108,7 +108,7 @@ public class HistoryAlarmService {
         List<String> featureValues = new ArrayList<>();
         if (Objects.nonNull(searchRetrieval.getFeatures())) {
             for (String img : searchRetrieval.getFeatures()) {
-                String feature = ImageUtils.getImageFeature(img);
+                String feature = FaceAIUnitUtils.getImageFeature(img);
                 JSONObject featureJson = JSON.parseObject(feature);
                 if (!"success".equalsIgnoreCase(featureJson.getString("result"))) {
                     throw new RuntimeException("访问商汤服务器失败");

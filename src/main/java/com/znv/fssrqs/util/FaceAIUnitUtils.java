@@ -1,6 +1,10 @@
 package com.znv.fssrqs.util;
 
 import com.znv.fssrqs.config.HdfsConfigManager;
+import com.znv.fssrqs.entity.mysql.AnalysisUnitEntity;
+import com.znv.fssrqs.entity.mysql.MBusEntity;
+import com.znv.fssrqs.exception.ZnvException;
+import com.znv.fssrqs.timer.SystemDeviceLoadTask;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -25,7 +29,15 @@ public class FaceAIUnitUtils {
     public static String getImageFeature(String imageData) {
         String result = null;
         CloseableHttpClient client = HttpClientPool.getInstance().getHttpClient();
-        HttpPost httpPost = new HttpPost("http://" + SpringContextUtil.getCtx().getBean(SenseTimeConfig.class).getStaticAiUnits().get(0) + "/verify/feature/gets");
+        AnalysisUnitEntity staticAIUint = SystemDeviceLoadTask.getStaticAIUint();
+        if (staticAIUint == null) {
+            throw ZnvException.error("NoStaticAIUnit");
+        }
+        HttpPost httpPost = new HttpPost("http://"
+                + staticAIUint.getIP()
+                + ":"
+                + staticAIUint.getPort()
+                + "/verify/feature/gets");
         httpPost.setHeader(HttpHeaders.CONNECTION, "close");
         httpPost.setConfig(HttpClientPool.requestConfig());
         String flag = HdfsConfigManager.getString("sensetime.http.auth");
@@ -52,7 +64,15 @@ public class FaceAIUnitUtils {
     public static String getAttribute(String imageData) {
         String result = null;
         CloseableHttpClient client = HttpClientPool.getInstance().getHttpClient();
-        HttpPost httpPost = new HttpPost("http://" + SpringContextUtil.getCtx().getBean(SenseTimeConfig.class).getStaticAiUnits().get(0) + "/verify/attribute/gets");
+        AnalysisUnitEntity staticAIUint = SystemDeviceLoadTask.getStaticAIUint();
+        if (staticAIUint == null) {
+            throw ZnvException.error("NoStaticAIUnit");
+        }
+        HttpPost httpPost = new HttpPost("http://"
+                + staticAIUint.getIP()
+                + ":"
+                + staticAIUint.getPort()
+                + "/verify/attribute/gets");
         httpPost.setHeader(HttpHeaders.CONNECTION, "close");
         httpPost.setConfig(HttpClientPool.requestConfig());
         String flag = HdfsConfigManager.getString("sensetime.http.auth");
