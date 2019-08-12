@@ -36,6 +36,18 @@ spring:
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
+  redis: #redis相关配置
+    host: 10.45.152.100
+    port: 6379
+    #连接超时时间(毫秒)
+    timeout: 100ms
+    #password: redis
+    jedis:
+      pool:
+        max-active: 10
+        max-idle: 10
+        #连接池最大阻塞等待时间(使用负值表示没有限制)
+        max-wait: -1ms
   http:
     encoding:
       charset: UTF-8
@@ -70,11 +82,7 @@ chongqing:
   max-minute-flow: 10
   max-day-flow: 1000
 bigdata:
-  hdfs-url: hdfs://lv202.dct-znv.com:8020/user/fss/V120
-###缓冲服务地址配置
-mbus:
-  ipp:
-  - 10.45.152.100:9008
+  hdfs-url: hdfs://face.dct-znv.com:8020/user/fss/V120
 fdfs:
   trackers:
   - 10.45.157.59:22122
@@ -85,10 +93,6 @@ ms:
 #24201#2060
 ####商汤服务分析引擎配置
 sensetime:
-  static-ai-units:
-  - 10.45.157.115:9001
-  dynamic-ai-units:
-  - 10.45.157.115:80
   feature:
     srcPoints: {-1.0f,0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}
     dstPoints: {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
