@@ -16,11 +16,13 @@ logging:
     org.mybatis: error
     java.sql: debug
     org.springframework.web: trace
-    com.znv.fssrqs.dao.mysql: debug
+    com:
+      looedu:
+        mapper: debug
 spring:
   datasource:
     mysql:
-      jdbc-url: jdbc:mysql://10.45.157.117:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+      jdbc-url: jdbc:mysql://10.45.154.203:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: zxm10
@@ -30,7 +32,7 @@ spring:
       initial-size: 10
     hbase:
       driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
-      jdbc-url: jdbc:phoenix:lv116.dct-znv.com:2181:/hbase
+      jdbc-url: jdbc:phoenix:lv112.dct-znv.com:2181:/hbase
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
@@ -52,7 +54,7 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: lv116.dct-znv.com
+  host: lv112.dct-znv.com
   port: 9200
   clusterName: face.dct-znv.com-es
 #海康SDK
@@ -68,11 +70,11 @@ chongqing:
   max-minute-flow: 10
   max-day-flow: 1000
 bigdata:
-  hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
+  hdfs-url: hdfs://lv112.dct-znv.com:8020/user/fss/V120
 ###缓冲服务地址配置
 mbus:
   ipp:
-  - 10.45.157.117:9008
+  - 10.45.154.203:9008
 fdfs:
   trackers:
   - 10.45.157.59:22122
