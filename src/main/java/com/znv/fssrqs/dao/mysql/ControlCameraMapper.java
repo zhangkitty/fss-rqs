@@ -2,6 +2,7 @@ package com.znv.fssrqs.dao.mysql;
 
 
 import com.znv.fssrqs.entity.mysql.TCfgDevice;
+import com.znv.fssrqs.vo.LibVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +19,6 @@ public interface ControlCameraMapper {
     Integer up_fss_undeploy_camera(List<String> list);
 
     List<String> listDeviceIdInArray(List<String> list);
+
+    List<LibVo> selectByGroupLibId(@Param("libIds") String libIds);
 }

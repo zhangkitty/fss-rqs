@@ -4,15 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
+import com.znv.fssrqs.dao.mysql.ControlCameraMapper;
 import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.dao.mysql.UserLibRelationMapper;
 import com.znv.fssrqs.entity.mysql.PersonLib;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserLibRelation;
+import com.znv.fssrqs.util.DataConvertUtils;
+import com.znv.fssrqs.vo.LibVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +36,8 @@ public class PersonStaticLibService {
     private PersonLibMapper personLibMapper;
     @Autowired
     private UserLibRelationMapper userLibRelationMapper;
+    @Autowired
+    private ControlCameraMapper controlCameraMapper;
 
     /**
      * 获取用户的名单库权限树
@@ -57,8 +63,51 @@ public class PersonStaticLibService {
             if (roleId == 1) {
                 List<PersonLib> personLibs = personLibMapper.query(params);
                 if (personLibs != null) {
-                    for (PersonLib pLib : personLibs) {
-                        parseData(pLib, libArray);
+                    String currentDate = DataConvertUtils.dateToStr(new Date());
+                    StringBuffer sb = new StringBuffer();
+                    if (personLibs != null && personLibs.size() > 0) {
+                        for (PersonLib pLib : personLibs) {
+                            pLib.setControl(false);
+                            Integer personlibType = Integer.parseInt(pLib.getPersonLibType());
+                            if (personlibType == 1) {
+                                sb.append("'" + pLib.getLibID() + "'");
+                                sb.append(",");
+                            }
+                        }
+                    }
+
+                    List<LibVo> libVoList = null;
+                    if (!sb.toString().isEmpty() && sb.length() > 0) {
+                        String condition = sb.toString().substring(0, sb.toString().length() - 1);
+                        libVoList = controlCameraMapper.selectByGroupLibId(condition);
+                    }
+
+                    Map<String, LibVo> libIdMap = new HashMap<>();
+                    if (libVoList != null && libVoList.size() > 0) {
+                        libVoList.forEach(libVo -> libIdMap.put(String.valueOf(libVo.getLibId()), libVo));
+                    }
+
+                    if (personLibs != null && personLibs.size() > 0) {
+                        for (PersonLib pLib : personLibs) {
+                            Integer personlibType = Integer.parseInt(pLib.getPersonLibType());
+                            String libId = String.valueOf(pLib.getLibID());
+                            if (personlibType == 1) {
+                                if (libIdMap.containsKey(libId)) {
+                                    LibVo libVo = libIdMap.get(libId);
+                                    String[] results = libVo.getResult().split(",");
+                                    for (String result : results) {
+                                        String[] times = result.split("#");
+                                        String startTime = times[0];
+                                        String endTime = times[1];
+                                        if (currentDate.compareTo(startTime) >= 0 && currentDate.compareTo(endTime) <= 0) {
+                                            pLib.setControl(true);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            parseData(pLib, libArray);
+                        }
                     }
                 }
             } else {
@@ -66,6 +115,53 @@ public class PersonStaticLibService {
                 List<UserLibRelation> userLibs = userLibRelationMapper.queryUserLib(params);
                 if (userLibs != null) {
                     for (UserLibRelation userLib : userLibs) {
+                        parseData(userLib, libArray);
+                    }
+                }
+
+                String currentDate = DataConvertUtils.dateToStr(new Date());
+                StringBuffer sb = new StringBuffer();
+                if (userLibs != null && userLibs.size() > 0) {
+                    for (UserLibRelation userLib : userLibs) {
+                        userLib.setControl(false);
+                        if (Integer.parseInt(userLib.getPersonLibType()) == 1) {
+                            sb.append(userLib.getPersonLibID());
+                            sb.append(",");
+                        }
+                    }
+                }
+
+                List<LibVo> libVoList = null;
+                String condition = sb.toString();
+                if (!condition.isEmpty() && condition.length() > 0) {
+                    condition = condition.substring(0, condition.length() - 1);
+                    libVoList = controlCameraMapper.selectByGroupLibId(condition);
+                }
+
+                Map<String, LibVo> libIdMap = new HashMap<>();
+                if (libVoList != null && libVoList.size() > 0) {
+                    libVoList.forEach(libVo -> libIdMap.put(String.valueOf(libVo.getLibId()), libVo));
+                }
+
+                if (userLibs != null && userLibs.size() > 0) {
+                    for (UserLibRelation userLib : userLibs) {
+                        Integer personlibType = Integer.parseInt(userLib.getPersonLibType());
+                        String libId = String.valueOf(userLib.getPersonLibID());
+                        if (personlibType == 1) {
+                            if (libIdMap != null && libIdMap.containsKey(libId)) {
+                                LibVo libVo = libIdMap.get(libId);
+                                String[] results = libVo.getResult().split(",");
+                                for (String result : results) {
+                                    String[] times = result.split("#");
+                                    String startTime = times[0];
+                                    String endTime = times[1];
+                                    if (currentDate.compareTo(startTime) >= 0 && currentDate.compareTo(endTime) <= 0) {
+                                        userLib.setControl(true);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                         parseData(userLib, libArray);
                     }
                 }
@@ -161,7 +257,7 @@ public class PersonStaticLibService {
         return personLibMapper.deleteByLibId(libId);
     }
 
-    public List<UserLibRelation> queryUserLibByGoupId(int userGroupId,String personLibType) {
+    public List<UserLibRelation> queryUserLibByGoupId(int userGroupId, String personLibType) {
         UserLibRelation record = new UserLibRelation();
         record.setUserGroupID(userGroupId);
         if (!StringUtils.isEmpty(personLibType)) {

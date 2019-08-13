@@ -133,4 +133,8 @@ public class PersonLib {
     public void setModifyTime(Date modifyTime) {
         ModifyTime = modifyTime;
     }
+
+    public boolean isControl() {
+        return Control;
+    }
 }
