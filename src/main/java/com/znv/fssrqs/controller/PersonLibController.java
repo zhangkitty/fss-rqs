@@ -1,11 +1,8 @@
 package com.znv.fssrqs.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.znv.fssrqs.config.HkSdkConfig;
 import com.znv.fssrqs.constant.CommonConstant;
@@ -25,7 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by dongzelong on  2019/6/1 13:53.
@@ -131,8 +131,13 @@ public class PersonLibController {
         }
     }
 
-    @GetMapping("/{userId}/person/static/lib")
-    public JSONObject getUserLibByUserId(@PathVariable("userId") String userId, @RequestParam Map<String, Object> params) {
+    @GetMapping("/person/static/lib")
+    public JSONObject getUserLibByUserId(@RequestParam Map<String, Object> params) {
+        JSONObject user = LocalUserUtil.getLocalUser();
+        if (user == null || !user.containsKey("UserId")) {
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+        }
+        String userId = LocalUserUtil.getLocalUser().getString("UserId");
         List<Object> list = Lists.newArrayList();
         UserGroup userGroup = userGroupService.queryUserGroupByUserId(userId);
         String personLibType = (String) params.get("PersonLibType");
