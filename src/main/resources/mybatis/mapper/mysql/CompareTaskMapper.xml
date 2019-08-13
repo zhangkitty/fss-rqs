@@ -42,7 +42,7 @@
             and create_user=#{createUser}
         </if>
         <if test="status!=null">
-            and status=#{status,jdbcType=INTEGER}
+            and status=#{status}
         </if>
     </select>
 
