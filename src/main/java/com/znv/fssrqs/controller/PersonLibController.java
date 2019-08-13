@@ -59,7 +59,7 @@ public class PersonLibController {
 //        if (user == null || !user.containsKey("UserId")) {
 //            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
 //        }
-        params.put("UserID","11000000000");
+        params.put("UserID", "11000000000");
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(personLibService.getUserLibTreeByUserId(params)).json(), new PascalNameFilter());
     }
 
@@ -69,7 +69,12 @@ public class PersonLibController {
     @PostMapping("/person/static/lib")
     public String add(@RequestBody String body) {
         PersonLib personLib = JSON.parseObject(body, PersonLib.class);
+        JSONObject user = LocalUserUtil.getLocalUser();
+        if (user == null || !user.containsKey("UserId")) {
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+        }
         personLib.setLibID(-1);
+        personLib.setCreatorID(user.getString("UserId"));
         HashMap<String, Object> result = personLibService.configLib(personLib);
         Long ret = (Long) result.get("ret");
         if (1L == ret) {
