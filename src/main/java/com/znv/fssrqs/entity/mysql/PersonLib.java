@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Date;
+
 /**
  * Created by dongzelong on  2019/6/4 14:12.
  *
@@ -25,6 +27,8 @@ public class PersonLib {
     private String RegionID;
     private Integer CapacityType;
     private String HkLibID;
+    private Date CreateTime;
+    private Date ModifyTime;
 
     @JSONField(name = "Control")
     @JsonProperty("Control")
@@ -112,5 +116,21 @@ public class PersonLib {
 
     public void setControl(boolean control) {
         Control = control;
+    }
+
+    public Date getCreateTime() {
+        return CreateTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        CreateTime = createTime;
+    }
+
+    public Date getModifyTime() {
+        return ModifyTime;
+    }
+
+    public void setModifyTime(Date modifyTime) {
+        ModifyTime = modifyTime;
     }
 }
