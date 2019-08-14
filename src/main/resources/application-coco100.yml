@@ -3,7 +3,7 @@ server:
   servlet: ##servlet默认超时时间30分钟
     session:
       timeout: 30m
-    context-path: /
+    context-path: /fss-rqs
   tomcat:
     accesslog:
       enabled: true
@@ -22,7 +22,7 @@ logging:
 spring:
   datasource:
     mysql:
-      jdbc-url: jdbc:mysql://10.45.152.100:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+      jdbc-url: jdbc:mysql://10.45.152.100:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useAffectedRows=true
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: zxm10

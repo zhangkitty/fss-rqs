@@ -29,7 +29,7 @@ import java.util.List;
 public class PersonLibInfoService {
     @Autowired
     private ElasticSearchClient elasticSearchClient;
-    private final String esurl = "person_list_data_n_project_v1_2/person_list/_search/template";
+    private final String esurl = "person_list_data_n_project*/person_list/_search/template";
     private final String templateName = "template_person_list_group";
 
     public JSONObject requestSearch(PersonListGroupQueryParam queryParams, PersonLibIdParam libID) {
@@ -119,7 +119,7 @@ public class PersonLibInfoService {
     private JSONObject getAgeGroupResult(PersonListGroupQueryParam queryParams, JSONObject resObj) {
         if (queryParams.getAgeGroup()) {
             JSONArray bucketsArray = new JSONArray();
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 JSONObject obj = getTemplateParams(queryParams);
                 JSONObject params = obj.getJSONObject("params");
                 params.put("age_group", true);
@@ -139,7 +139,10 @@ public class PersonLibInfoService {
                     key = "midlife";
                 } else if (i == 3) {
                     params.put("old_end", FormatObject.formatAgeDate(nowDate, 65));
+                    params.put("old_start", FormatObject.formatAgeDate(nowDate, 150));
                     key = "old";
+                }else {
+                    params.put("old_end", FormatObject.formatAgeDate(nowDate, 150));
                 }
                 // 查询结果
                 Result<JSONObject, String> sb = elasticSearchClient.postRequest(esurl, obj);

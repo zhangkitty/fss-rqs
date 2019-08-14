@@ -6,12 +6,14 @@ import com.github.pagehelper.PageHelper;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
 import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
+import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam;
 import com.znv.fssrqs.service.compareservice.CompareService;
 import com.znv.fssrqs.timer.CompareTaskLoader;
 import com.znv.fssrqs.util.MD5Util;
 import com.znv.fssrqs.vo.ResponseVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,7 @@ import java.util.List;
  */
 
 @RestController
+@Slf4j
 public class CompareController {
 
     @Autowired
@@ -98,10 +101,21 @@ public class CompareController {
         map.put("list",list);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data",map);
-        return  ResponseVo.success(jsonObject);
+        return ResponseVo.success(jsonObject);
     }
 
-    @RequestMapping(value = "/site/FSSAPP/pc/nvsm/taskdelete.ds",method = RequestMethod.POST)
+    @RequestMapping(value="/site/FSSAPP/pc/nvsm/allTask.ds",method = RequestMethod.GET)
+    public ResponseVo queryAllTask(){
+        List<CompareTaskEntity> list = compareTaskDao.findAllCompareTask();
+        HashMap map = new HashMap();
+        map.put("total",list.size());
+        map.put("list",list);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data",map);
+        return ResponseVo.success(jsonObject);
+    }
+
+   @RequestMapping(value = "/site/FSSAPP/pc/nvsm/taskdelete.ds",method = RequestMethod.POST)
     public ResponseVo deleteTask(@RequestBody String deleteTaskParams){
         String taskId = (String) JSONObject.parseObject(deleteTaskParams).get("taskId");
         if(compareService.delete(taskId)>0)

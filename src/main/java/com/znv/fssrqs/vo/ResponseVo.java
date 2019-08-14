@@ -45,20 +45,17 @@ public class ResponseVo {
         return this;
     }
 
-    private ResponseVo(Integer code, String message, Object data){
+    public ResponseVo(Integer code, String message, Object data){
         this.Code = code;
         this.Message = message;
         this.Data = data;
     }
 
     public static ResponseVo getInstance(Integer code, String message,Object data){
-        if(ResponseVo.responseVo==null){
-            responseVo = new ResponseVo(code,message,data);
-        }else{
-            responseVo.setCode(code);
-            responseVo.setMessage(message);
-            responseVo.setData(data);
-        }
+        ResponseVo responseVo = new ResponseVo(code,message,data);
+        responseVo.setCode(code);
+        responseVo.setMessage(message);
+        responseVo.setData(data);
         return  responseVo;
     }
 
