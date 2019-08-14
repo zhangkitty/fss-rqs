@@ -1,11 +1,8 @@
 package com.znv.fssrqs.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.znv.fssrqs.config.HkSdkConfig;
 import com.znv.fssrqs.constant.CommonConstant;
@@ -25,7 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by dongzelong on  2019/6/1 13:53.
@@ -56,10 +56,10 @@ public class PersonLibController {
     public String getLibs(@RequestParam Map<String, Object> params)
             throws BusinessException {
         JSONObject user = LocalUserUtil.getLocalUser();
-        if (user == null || !user.containsKey("UserId")) {
-            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
-        }
-        params.put("UserID", user.getString("UserId"));
+//        if (user == null || !user.containsKey("UserId")) {
+//            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+//        }
+        params.put("UserID", "11000000000");
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(personLibService.getUserLibTreeByUserId(params)).json(), new PascalNameFilter());
     }
 
@@ -69,7 +69,12 @@ public class PersonLibController {
     @PostMapping("/person/static/lib")
     public String add(@RequestBody String body) {
         PersonLib personLib = JSON.parseObject(body, PersonLib.class);
+        JSONObject user = LocalUserUtil.getLocalUser();
+        if (user == null || !user.containsKey("UserId")) {
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+        }
         personLib.setLibID(-1);
+        personLib.setCreatorID(user.getString("UserId"));
         HashMap<String, Object> result = personLibService.configLib(personLib);
         Long ret = (Long) result.get("ret");
         if (1L == ret) {
@@ -131,8 +136,13 @@ public class PersonLibController {
         }
     }
 
-    @GetMapping("/{userId}/person/static/lib")
-    public JSONObject getUserLibByUserId(@PathVariable("userId") String userId, @RequestParam Map<String, Object> params) {
+    @GetMapping("/person/static/lib")
+    public JSONObject getUserLibByUserId(@RequestParam Map<String, Object> params) {
+        JSONObject user = LocalUserUtil.getLocalUser();
+        if (user == null || !user.containsKey("UserId")) {
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+        }
+        String userId = LocalUserUtil.getLocalUser().getString("UserId");
         List<Object> list = Lists.newArrayList();
         UserGroup userGroup = userGroupService.queryUserGroupByUserId(userId);
         String personLibType = (String) params.get("PersonLibType");

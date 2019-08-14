@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.znv.fssrqs.dao.mysql.ControlCameraMapper">
+    <resultMap id="BaseResultMap" type="com.znv.fssrqs.vo.LibVo">
+        <result column="result" jdbcType="VARCHAR" property="result"/>
+        <result column="libId" jdbcType="INTEGER" property="libId"/>
+    </resultMap>
+    <select id="count" resultType="java.lang.Integer">
+      select count(1) from t_fss_camera_control;
+    </select>
+
+    <select id="selectByGroupLibId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT GROUP_CONCAT(CONCAT(t.control_start_time,'#',t.control_end_time)) result,t.lib_id libId FROM t_fss_camera_control t LEFT JOIN t_scim_personlib l ON t.lib_id=l.lib_id WHERE t.lib_id IN (${libIds}) AND l.personlib_type=1 GROUP BY t.lib_id;
+    </select>
     <select id="up_fss_deploy_camera" statementType="CALLABLE" resultType="java.util.HashMap">
     {
           call up_fss_deploy_camera(

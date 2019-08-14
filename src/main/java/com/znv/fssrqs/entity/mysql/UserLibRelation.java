@@ -1,7 +1,9 @@
 package com.znv.fssrqs.entity.mysql;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by dongzelong on  2019/6/4 14:42.
@@ -23,6 +25,14 @@ public class UserLibRelation {
     private String CreatorID;
     private String PowerIDs;
     private String HkLibID;
+
+    @JSONField(name = "Control")
+    @JsonProperty("Control")
+    private boolean Control;
+
+    public void setControl(boolean control) {
+        Control = control;
+    }
 
     public Integer getUserGroupID() {
         return UserGroupID;
@@ -102,5 +112,9 @@ public class UserLibRelation {
 
     public void setHkLibID(String hkLibID) {
         HkLibID = hkLibID;
+    }
+
+    public boolean isControl() {
+        return Control;
     }
 }
