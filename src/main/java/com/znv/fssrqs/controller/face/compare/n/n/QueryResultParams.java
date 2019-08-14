@@ -16,4 +16,6 @@ public class QueryResultParams {
     private Integer from;
 
     private Integer size;
+
+    private String remark;
 }

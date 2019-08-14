@@ -32,13 +32,34 @@ public class QueryResultService {
 
     public JSONObject queryResultService(QueryResultParams queryResultParams){
 
-        String url = "http://10.45.152.230:9200/n2m_face_result_n_project_v1.20/n2m_face_result/_search";
+        StringBuffer sb = new StringBuffer();
+        sb
+            .append("http://")
+            .append(elasticSearchClient.getHost())
+            .append(":")
+            .append(elasticSearchClient.getPort())
+            .append("/")
+            .append("n2m_face_result_n_project*")
+            .append("/")
+            .append("n2m_face_result")
+            .append("/")
+            .append("_search");
+
+        String url = sb.toString();
 
         Map<String, String> map = new HashMap<>();
         map.put("taskId", queryResultParams.getTaskId());
         map.put("from", queryResultParams.getFrom().toString());
         map.put("size",queryResultParams.getSize().toString());
-        String content = "{\"query\":{\"bool\":{\"filter\":{\"term\":{\"task_id\":\"${taskId}\"}}}},\"from\":${from},\"size\":${size}}";
+
+
+        String content = "";
+        if(queryResultParams.getRemark()==null){
+             content = "{\"query\":{\"bool\":{\"filter\":{\"term\":{\"task_id\":\"${taskId}\"}}}},\"from\":${from},\"size\":${size}}";
+        }else {
+            map.put("remark",queryResultParams.getRemark());
+            content = "{\"query\":{\"bool\":{\"must\":{\"match\":{\"remark\":\"${remark}\"}},\"filter\":{\"term\":{\"task_id\":\"${taskId}\"}}}},\"from\":${from},\"size\":${size}}";
+        }
 
         content = Template.renderString(content, map);
 
