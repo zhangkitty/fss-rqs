@@ -143,6 +143,7 @@ public class PersonLibInfoService {
                     key = "old";
                 }else {
                     params.put("old_end", FormatObject.formatAgeDate(nowDate, 150));
+                    key = "orthers";
                 }
                 // 查询结果
                 Result<JSONObject, String> sb = elasticSearchClient.postRequest(esurl, obj);
