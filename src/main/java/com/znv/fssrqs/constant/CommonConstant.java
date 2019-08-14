@@ -8,7 +8,7 @@ package com.znv.fssrqs.constant;
  * @Description TODO
  */
 public class CommonConstant {
-    public final static String PACKAGE_PATH_NAME = "com.znv.fssrqs" ;
+    public final static String PACKAGE_PATH_NAME = "com.znv.fssrqs";
 
     public static class HkUri {
         public static final String ARTEMIS_PROTOCAL = "https://";
@@ -122,5 +122,11 @@ public class CommonConstant {
         public static final String RUN_CRIMINAL_CHONGQING = "22";
         public static final String BASE_TERRORIST = "25";
         public static final String MAJOR_TERRORIST = "29";
+    }
+
+    public static class StatusCode {
+        public static final int OK = 10000;
+        public static final int BAD_REQUEST = 20000;
+        public static final int INTERNAL_ERROR = 50000;
     }
 }
