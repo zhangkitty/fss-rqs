@@ -17,6 +17,7 @@ import com.znv.fssrqs.service.personnel.management.dto.OnePersonListDTO;
 import com.znv.fssrqs.service.personnel.management.dto.STPersonListSearchDTO;
 import com.znv.fssrqs.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -31,6 +32,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
+
+import static com.znv.fssrqs.elasticsearch.lopq.LOPQModel.predictCoarseOrder;
 
 /**
  * @author zhangcaochao
@@ -61,27 +64,27 @@ public class PersonListService {
 
         JSONObject paramsWithTempId = new JSONObject();
 
-        STPersonListSearchDTO stPersonListSearchDTO = modelMapper.map(personListSearchParams,STPersonListSearchDTO.class);
-        Integer from = (Integer.valueOf(personListSearchParams.getCurrentPage())-1)*Integer.valueOf(personListSearchParams.getPageSize());
+        STPersonListSearchDTO stPersonListSearchDTO = modelMapper.map(personListSearchParams, STPersonListSearchDTO.class);
+        Integer from = (Integer.valueOf(personListSearchParams.getCurrentPage()) - 1) * Integer.valueOf(personListSearchParams.getPageSize());
         stPersonListSearchDTO.setFrom(from.toString());
 
-        paramsWithTempId.put("params",stPersonListSearchDTO);
-        paramsWithTempId.put("id","template_person_list_search");
+        paramsWithTempId.put("params", stPersonListSearchDTO);
+        paramsWithTempId.put("id", "template_person_list_search");
         HttpEntity httpEntity = new NStringEntity(paramsWithTempId.toJSONString()
-                ,ContentType.APPLICATION_JSON);
+                , ContentType.APPLICATION_JSON);
 
-        Response response = elasticSearchClient.getInstance().getRestClient().performRequest("GET","/_search/template",Collections.emptyMap(),httpEntity);
+        Response response = elasticSearchClient.getInstance().getRestClient().performRequest("GET", "/_search/template", Collections.emptyMap(), httpEntity);
         JSONObject result = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
-        Integer Total = (Integer)result.getJSONObject("hits").get("total");
+        Integer Total = (Integer) result.getJSONObject("hits").get("total");
         JSONObject PersonlibTypes = new JSONObject();
-        JSONObject LibIds  = new JSONObject();
+        JSONObject LibIds = new JSONObject();
         JSONArray PersonList = new JSONArray();
-        result.getJSONObject("aggregations").getJSONObject("personlib_types").getJSONArray("buckets").forEach(v->{
-            ((JSONArray)((JSONObject)((JSONObject)v).get("lib_ids")).get("buckets")).forEach(t->LibIds.put(((JSONObject)t).get("key").toString(),((JSONObject)t).get("doc_count")));
-            PersonlibTypes.put(((JSONObject)v).get("key").toString(),((JSONObject)v).get("doc_count"));
+        result.getJSONObject("aggregations").getJSONObject("personlib_types").getJSONArray("buckets").forEach(v -> {
+            ((JSONArray) ((JSONObject) ((JSONObject) v).get("lib_ids")).get("buckets")).forEach(t -> LibIds.put(((JSONObject) t).get("key").toString(), ((JSONObject) t).get("doc_count")));
+            PersonlibTypes.put(((JSONObject) v).get("key").toString(), ((JSONObject) v).get("doc_count"));
         });
-        result.getJSONObject("hits").getJSONArray("hits").forEach(v->{
-            OnePersonListDTO onePersonListDTO = modelMapper.map(((JSONObject)v).get("_source"),OnePersonListDTO.class);
+        result.getJSONObject("hits").getJSONArray("hits").forEach(v -> {
+            OnePersonListDTO onePersonListDTO = modelMapper.map(((JSONObject) v).get("_source"), OnePersonListDTO.class);
             if (onePersonListDTO.getCreate_time() != null) {
                 onePersonListDTO.setCreate_time(FormatObject.formatTime(onePersonListDTO.getCreate_time()));
             }
@@ -120,42 +123,44 @@ public class PersonListService {
             if (!StringUtils.isEmpty(sim) && !"0.0".equals(sim)) {
                 onePersonListDTO.setSim(("" + Double.parseDouble(sim) * 100).substring(0, 5) + "%");
             }
-
             PersonList.add(JSONObject.parse(JSONObject.toJSONString(onePersonListDTO)));
         });
-
         JSONObject jsonObject = new JSONObject();
         JSONObject Aggregations = new JSONObject();
-
-        jsonObject.put("PersonList",PersonList);
-        jsonObject.put("Total",Total);
-
-        Aggregations.put("PersonlibTypes",PersonlibTypes);
-        Aggregations.put("LibIds",LibIds);
-        jsonObject.put("Aggregations",Aggregations);
-
+        jsonObject.put("PersonList", PersonList);
+        jsonObject.put("Total", Total);
+        Aggregations.put("PersonlibTypes", PersonlibTypes);
+        Aggregations.put("LibIds", LibIds);
+        jsonObject.put("Aggregations", Aggregations);
         return jsonObject;
     }
 
 
     /**
-     * ！！从老模块移植过来，待优化！！
-     * 人员查询（含静态库1：N检索）
+     * 单索引人员查询
+     *
      * @param host
      * @param params
-     * @return
+     * @desc 名单库人员数据:1-粗分类多索引,2-单索引,默认单索引    person.list.multi.index=2
      */
     public JSONObject getPersonList(String host, JSONObject params) {
-        JSONObject ret = new JSONObject();
-        JSONObject queryInfo = new JSONObject();
+        String isMultiIndex = HdfsConfigManager.getString("person.list.multi.index");
+        if (!StringUtils.isEmpty(isMultiIndex) && isMultiIndex.trim().equals("2")) {
+            return getMultiIndexPersonList(host, params);
+        } else {
+            return getSingleIndexPersonList(host, params);
+        }
+    }
 
+    public JSONObject getSingleIndexPersonList(String host, JSONObject params) {
+        JSONObject ret = new JSONObject();
         // 处理图片为特征值 如果有图片把特征值加进去
         String searchFeatures = params.getString("imgData");
         if (!StringUtils.isEmpty(searchFeatures)) {
             // 获取特征值
             String feature = FaceAIUnitUtils.getImageFeature(searchFeatures);
             JSONObject parseObject = JSONObject.parseObject(feature);
-            if (feature == null){
+            if (feature == null) {
                 throw ZnvException.badRequest("ImageNoFeature");
             }
             if (!"success".equals(parseObject.getString("result"))) {
@@ -212,8 +217,7 @@ public class PersonListService {
             }
 
             personInfo.put("AlgorithmType", 0);
-
-            if (! StringUtils.isEmpty(libId)) {
+            if (!StringUtils.isEmpty(libId)) {
                 PersonLib peronLib = personLibMapper.selectByPrimaryKey(Integer.valueOf(libId));
                 if (peronLib != null) {
                     personInfo.put("LibName", peronLib.getLibName());
@@ -224,9 +228,154 @@ public class PersonListService {
                 FeatureCompUtil fc = new FeatureCompUtil();
                 fc.setFeaturePoints(HdfsConfigManager.getPoints());
                 if (score >= 1.0) {
-                    personInfo.put("Sim", "100%" );
+                    personInfo.put("Sim", "100%");
                 } else {
-                    personInfo.put("Sim", ("" + fc.Normalize(score.floatValue()) * 100).substring(0, 5) + "%" );
+                    personInfo.put("Sim", ("" + fc.Normalize(score.floatValue()) * 100).substring(0, 5) + "%");
+                }
+            }
+            data.add(personInfo);
+        }
+        JSONObject aggs = new JSONObject();
+        if (result.value().containsKey("aggregations")) {
+            JSONObject aggregations = result.value().getJSONObject("aggregations");
+            JSONArray types = aggregations.getJSONObject("personlib_types").getJSONArray("buckets");
+            JSONObject typesTotal = new JSONObject();
+            JSONObject libsTotal = new JSONObject();
+            aggs.put("PersonlibTypes", typesTotal);
+            aggs.put("LibIds", libsTotal);
+            for (int m = 0; m < types.size(); m++) {
+                JSONObject type = types.getJSONObject(m);
+                typesTotal.put(type.getString("key"), type.getIntValue("doc_count"));
+                JSONArray libs = type.getJSONObject("lib_ids").getJSONArray("buckets");
+                for (int n = 0; n < libs.size(); n++) {
+                    JSONObject lib = libs.getJSONObject(n);
+                    libsTotal.put(lib.getString("key"), lib.getIntValue("doc_count"));
+                }
+            }
+        }
+
+        ret.put("PersonList", data);
+        ret.put("Aggregations", aggs);
+        ret.put("TotalRows", total);
+        return ret;
+    }
+
+    /**
+     * @param host
+     * @param params
+     * @return
+     */
+    public JSONObject getMultiIndexPersonList(String host, JSONObject params) {
+        JSONObject ret = new JSONObject();
+        // 处理图片为特征值 如果有图片把特征值加进去
+        String searchFeatures = params.getString("imgData");
+        if (!StringUtils.isEmpty(searchFeatures)) {
+            // 获取特征值
+            String feature = FaceAIUnitUtils.getImageFeature(searchFeatures);
+            JSONObject parseObject = JSONObject.parseObject(feature);
+            if (feature == null) {
+                throw ZnvException.badRequest("ImageNoFeature");
+            }
+            if (!"success".equals(parseObject.getString("result"))) {
+                throw ZnvException.badRequest("ImageNoFeature");
+            }
+            params.put("feature_value", parseObject.getString("feature"));
+        }
+        JSONObject obj = new JSONObject();
+        obj.put("id", EsBaseConfig.getInstance().getPersonListTemplateName());
+        obj.put("params", params);
+        if (params.containsKey("imgData")) {
+            params.remove("imgData");
+        }
+        long beginTime = System.currentTimeMillis();
+        /*=======================================================================*/
+        StringBuffer indexName = new StringBuffer();
+        if (!StringUtils.isEmpty(params.getString("feature_value"))) {
+            FeatureCompUtil fc = new FeatureCompUtil();
+            fc.setFeaturePoints(HdfsConfigManager.getPoints());
+            //获取跨类搜索的跨类个数,因为要全库搜索,所以默认是36
+            int coarseCodeNum = 3;
+            if (params.getIntValue("CoarseNum") > 0) {
+                coarseCodeNum = params.getIntValue("CoarseNum");
+            }
+            //计算粗分类的标签coarse_id
+            int[][] coarseCodeOrder;
+            String indexNamePrefix = EsBaseConfig.getInstance().getIndexPersonListName();
+            String featureValue = params.getString("feature_value");
+            try {
+                //featureValue.get(0):因为featureValue是一个list，查询索引的先后顺序默认按第一个featureValue的coarse_id顺序
+                coarseCodeOrder = predictCoarseOrder(fc.getFloatArray(new Base64().decode(featureValue)), coarseCodeNum);
+            } catch (Exception e) {
+                throw ZnvException.error(CommonConstant.StatusCode.INTERNAL_ERROR, "");
+            }
+            //按计算出的coarse_id的顺序分别按索引进行查询，并将结果写到es中，全部写完之后，返回一个error_code:100000
+            for (int j = 0; j < coarseCodeOrder.length; j++) {
+                if (j > 0) {
+                    indexName.append(',');
+                }
+                indexName.append(indexNamePrefix).append('-').append(coarseCodeOrder[j][0]);
+            }
+        } else {
+            indexName.append(EsBaseConfig.getInstance().getIndexPersonListName()).append("-*");
+        }
+        /*=======================================================================*/
+        String esUrl = indexName.toString() + "/" + EsBaseConfig.getInstance().getIndexPersonListType() + "/_search/template";
+        Result<JSONObject, String> result = elasticSearchClient.postRequest(esUrl, obj);
+        if (result.isErr()) {
+            throw ZnvException.error("EsAccessFailed", result.error());
+        }
+        long endTime = System.currentTimeMillis();
+        log.info("getPersonList elasticSearchClient elapsed {}ms.", endTime - beginTime);
+        JSONObject esResult = result.value().getJSONObject("hits");
+
+        String remoteIp = host.split(":")[0]; // 内外网映射，在设置ImageUrl时会使用，先预留着
+        JSONArray data = new JSONArray();
+        int total = esResult.getInteger("total");
+        JSONArray list = esResult.getJSONArray("hits");
+        for (int k = 0; k < list.size(); k++) {
+            JSONObject jsonObject = list.getJSONObject(k).getJSONObject("_source");
+            String personId = jsonObject.getString("person_id");
+            String libId = jsonObject.getString("lib_id");
+            JSONObject personInfo = null;
+
+            if (StringUtils.isNotEmpty(personId)
+                    && personId.length() == SpringContextUtil.getCtx().getBean(PersonConfig.class).getPersonIdLength()) {
+                personInfo = buildFssPersonData(remoteIp, jsonObject, personId, true);
+            } else {
+                // 静态库1:N检索，需要获取用户信息
+                if (params.containsKey("feature_value")) {
+                    personInfo = getChongqingPersonInfo(libId, personId);
+                } else {
+                    personInfo = new JSONObject();
+                    personInfo.put("PersonLibIdParam", libId);
+                    personInfo.put("PersonID", personId);
+                }
+                if (personInfo != null) {
+                    personInfo.put("ImageUrl", getChongqingPersonImgUrl(libId, personId));
+                }
+            }
+
+            if (personInfo == null) {
+                log.error("get personInfo failed. peronId {}, libId {}.", personId, libId);
+                continue;
+            }
+
+            personInfo.put("AlgorithmType", 0);
+
+            if (!StringUtils.isEmpty(libId)) {
+                PersonLib peronLib = personLibMapper.selectByPrimaryKey(Integer.valueOf(libId));
+                if (peronLib != null) {
+                    personInfo.put("LibName", peronLib.getLibName());
+                }
+            }
+            if (params.containsKey("feature_value")) {
+                Double score = list.getJSONObject(k).getDoubleValue("_score");
+                FeatureCompUtil fc = new FeatureCompUtil();
+                fc.setFeaturePoints(HdfsConfigManager.getPoints());
+                if (score >= 1.0) {
+                    personInfo.put("Sim", "100%");
+                } else {
+                    personInfo.put("Sim", ("" + fc.Normalize(score.floatValue()) * 100).substring(0, 5) + "%");
                 }
             }
             data.add(personInfo);
@@ -258,12 +407,13 @@ public class PersonListService {
 
     /**
      * 单个人员查询
+     *
      * @param host
      * @param libId
      * @param personId
      * @return
      */
-    public JSONObject getPerson(String host, String libId, String personId){
+    public JSONObject getPerson(String host, String libId, String personId) {
         JSONArray arrayList = new JSONArray();
         JSONObject requestdata = new JSONObject();
         requestdata.put("lib_id", libId);
@@ -457,12 +607,13 @@ public class PersonListService {
         }
         personObject.put("InfoKind", 0);
 
-        return  personObject;
+        return personObject;
     }
 
 
     /**
      * 重庆N项目，人员信息在公安网品高湖，根据personId去获取
+     *
      * @param libId
      * @param personId
      * @return
@@ -520,6 +671,7 @@ public class PersonListService {
 
     /**
      * 重庆N项目，人员的照片在公安网品高湖，根据personId去获取
+     *
      * @param libId
      * @param personId
      * @return
