@@ -3,7 +3,7 @@ server:
   servlet: ##servlet默认超时时间30分钟
     session:
       timeout: 30m
-    context-path: /fss-rqs
+    context-path: /
   tomcat:
     accesslog:
       enabled: true
