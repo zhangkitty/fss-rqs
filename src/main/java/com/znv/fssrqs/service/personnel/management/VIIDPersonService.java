@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.config.HkSdkConfig;
 import com.znv.fssrqs.constant.CommonConstant;
+import com.znv.fssrqs.dao.hbase.PersonDao;
 import com.znv.fssrqs.dao.mysql.HkPersonRelationMap;
 import com.znv.fssrqs.dao.mysql.LibRelationMapper;
 import com.znv.fssrqs.service.hbase.PhoenixService;
+import com.znv.fssrqs.service.kafka.KafkaService;
 import com.znv.fssrqs.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -25,21 +27,22 @@ import java.util.*;
 public class VIIDPersonService {
     @Autowired
     private VIIDHKSDKService hkSDKService;
-
     @Autowired
     private HkSdkConfig hkSdkConfig;
-
     @Autowired
     private LibRelationMapper libRelationMapper;
-
     @Autowired
     private HkPersonRelationMap hkPersonRelationMap;
-
     @Autowired
     private PhoenixService phoenixService;
+    @Autowired
+    private PersonDao personDao;
+    @Autowired
+    private KafkaService kafkaService;
 
     /**
      * 单个新增人员
+     *
      * @param personObject
      * @return
      */
@@ -64,7 +67,7 @@ public class VIIDPersonService {
         String imageData = jsonImageArray.getJSONObject(0).getString("Data");
         String feature = FaceAIUnitUtils.getImageFeature(imageData);
         JSONObject parseObject = JSONObject.parseObject(feature);
-        if (feature == null){
+        if (feature == null) {
             ret.put("StatusString", "未获取到图片特征值！");
             return ret;
         }
@@ -151,7 +154,7 @@ public class VIIDPersonService {
                     && 0 == hkResult.getIntValue("code")) {
                 Map<String, Object> mapDbParams = new HashMap<>();
                 mapDbParams.put("fssPersonId", fssPersonId);
-                mapDbParams.put("hkPersonId", ((JSONObject)hkResult.get("data")).get("humanId"));
+                mapDbParams.put("hkPersonId", ((JSONObject) hkResult.get("data")).get("humanId"));
                 hkPersonRelationMap.insert(mapDbParams);
             } else {
                 String statusString = "部分成功，海康库新增失败!";
@@ -173,6 +176,7 @@ public class VIIDPersonService {
 
     /**
      * 单个修改人员
+     *
      * @param personObject
      * @return
      */
@@ -195,7 +199,7 @@ public class VIIDPersonService {
             String imageData = jsonImageArray.getJSONObject(0).getString("Data");
             String feature = FaceAIUnitUtils.getImageFeature(imageData);
             JSONObject parseObject = JSONObject.parseObject(feature);
-            if (feature == null){
+            if (feature == null) {
                 ret.put("StatusString", "未获取到图片特征值!");
                 return ret;
             }
@@ -343,6 +347,7 @@ public class VIIDPersonService {
 
     /**
      * 删除人员
+     *
      * @param libID
      * @param personID
      * @return
@@ -357,7 +362,7 @@ public class VIIDPersonService {
         JSONObject personData = new JSONObject();
         deleteData.put("id", CommonConstant.PhoenixProtocolId.QUERY_PERSON_LIST);
         String tableName = HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME);
-        data.put("person_id",personID);
+        data.put("person_id", personID);
         personData.put("data", data);
         personData.put("lib_id", libID);
         deleteData.put("data", personData);
@@ -393,5 +398,35 @@ public class VIIDPersonService {
             }
         }
         return ret;
+    }
+
+    /**
+     * 重点人员需要发送通知到kafka
+     *
+     * @param persons
+     * @return
+     */
+    public List<JSONObject> batchDeletePersons(List<JSONObject> persons) {
+        List<JSONObject> resultList = new ArrayList<>();
+        persons.forEach(person -> {
+            int libId = person.getInteger("LibID");
+            String personId = person.getString("PersonID");
+            try {
+                //标记为已删除
+                boolean isSuccess = personDao.upsert(libId, personId, "1");
+                if (isSuccess) {
+                    //检查是否为重点人员
+                    int personLibType = personDao.select(libId, personId);
+                    if (personLibType == 1) {
+                        //发送通知kafka
+                        kafkaService.sendToKafka(libId, personId);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("delete person failed:lidId=" + libId + ",personId=" + personId, e);
+                resultList.add(person);
+            }
+        });
+        return resultList;
     }
 }

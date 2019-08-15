@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.ChongQingConfig;
 import com.znv.fssrqs.config.HdfsConfigManager;
+import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.param.personnel.management.PersonListSearchParams;
 import com.znv.fssrqs.service.hbase.PhoenixService;
@@ -13,11 +14,14 @@ import com.znv.fssrqs.service.personnel.management.VIIDHKSDKService;
 import com.znv.fssrqs.service.personnel.management.VIIDPersonService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.FeatureCompUtil;
+import com.znv.fssrqs.util.I18nUtils;
 import com.znv.fssrqs.util.TimingCounter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -531,5 +535,22 @@ public class PersonController {
         retObject.put("Message", "ok");
         retObject.put("ResponseStatusList", responseStatusList);
         return retObject;
+    }
+
+    /**
+     * 批量删除人员
+     */
+    @PostMapping("/batch/delete/persons")
+    @Transactional(transactionManager = "transactionManager")
+    public JSONObject deletePersons(@RequestBody String body, HttpServletRequest request) {
+        List<JSONObject> persons = JSON.parseArray(body, JSONObject.class);
+        if (persons.size() == 0) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "PersonListEmpty");
+        }
+        List<JSONObject> result = personService.batchDeletePersons(persons);
+        if (result.size() > 0) {
+            return FastJsonUtils.JsonBuilder.error(CommonConstant.StatusCode.INTERNAL_ERROR, I18nUtils.i18n(request.getLocale(), "PartPersonDeleteSuccess")).json();
+        }
+        return FastJsonUtils.JsonBuilder.ok().json();
     }
 }
