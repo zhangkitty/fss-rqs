@@ -8,6 +8,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 /**
@@ -41,8 +42,8 @@ public abstract class AbstractXlsOutput {
     public final void render(String fileName, Map<String, Object> map, Workbook workbook) {
         this.build(workbook, map);
         response.setContentType(CONTENT_TYPE);
-        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
         try {
+            response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF8"));
             ServletOutputStream out = response.getOutputStream();
             workbook.write(out);
             out.flush();
