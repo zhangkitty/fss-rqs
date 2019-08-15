@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
@@ -23,6 +24,11 @@ public class MysqlDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.datasource.mysql")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate(@Qualifier(value = "mysqlDataSource") DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 
     @Bean(name = "mysqlSqlSessionFactory")

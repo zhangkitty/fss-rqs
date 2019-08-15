@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
@@ -22,6 +23,11 @@ public class HbaseDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.datasource.hbase")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
+    }
+
+    @Bean
+    public JdbcTemplate hbaseJdbcTemplate(@Qualifier(value = "hbaseDataSource") DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 
     @Bean(name = "hbaseSqlSessionFactory")
