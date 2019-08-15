@@ -1,11 +1,10 @@
-package com.znv.fssrqs.controller.user;
+package com.znv.fssrqs.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.service.UserService;
 import com.znv.fssrqs.util.DataConvertUtils;
-import com.znv.fssrqs.util.LocalUserUtil;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +14,16 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by dongzelong on  2019/8/15 10:00.
+ *
+ * @author dongzelong
+ * @version 1.0
+ * @Description TODO
+ */
 @RestController
 @RequestMapping(value="/user", produces = { "application/json;charset=UTF-8" })
-public class UserController {
-
+public class LoginController {
     @Autowired
     private UserService userService;
 
