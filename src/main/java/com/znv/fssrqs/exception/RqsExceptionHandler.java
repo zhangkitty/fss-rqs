@@ -2,10 +2,12 @@ package com.znv.fssrqs.exception;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.util.I18nUtils;
 import com.znv.fssrqs.vo.ResponseVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -38,7 +40,11 @@ public class RqsExceptionHandler {
             return JSONObject.toJSONString(ResponseVo.returnBusinessException((BusinessException) e), new PascalNameFilter());
         } else if (e instanceof BindingResult) {
             return JSONObject.toJSONString(ResponseVo.getInstance(ErrorCodeEnum.PARAM_ILLEGAL.getCode(), ((WebExchangeBindException) e).getFieldError().getDefaultMessage(), null), new PascalNameFilter());
-        } else if (e instanceof ZnvException) {
+        }
+        else if (e instanceof HttpMessageNotReadableException){
+            return JSONObject.toJSONString(ResponseVo.getInstance(ErrorCodeEnum.PARAM_ILLEGAL.getCode(), ErrorCodeEnum.PARAM_ILLEGAL.getMessage(),null));
+        }
+        else if (e instanceof ZnvException) {
             return ((ZnvException) e).json(locale).toString();
         } else if (e instanceof IllegalArgumentException) {
             String message;

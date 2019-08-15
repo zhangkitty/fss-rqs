@@ -2,7 +2,7 @@
 <configuration>
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>%d %p (%file:%line\)- %m%n</pattern>
+                <pattern>%d %p %t (%file:%line\)- %m%n</pattern>
         </layout>
     </appender>
 
