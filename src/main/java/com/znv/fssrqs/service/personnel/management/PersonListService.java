@@ -145,10 +145,10 @@ public class PersonListService {
      */
     public JSONObject getPersonList(String host, JSONObject params) {
         String isMultiIndex = HdfsConfigManager.getString("person.list.multi.index");
-        if (!StringUtils.isEmpty(isMultiIndex) && isMultiIndex.trim().equals("2")) {
-            return getMultiIndexPersonList(host, params);
-        } else {
+        if (StringUtils.isEmpty(isMultiIndex) || isMultiIndex.trim().equals("2")) {
             return getSingleIndexPersonList(host, params);
+        } else {
+            return getMultiIndexPersonList(host, params);
         }
     }
 
