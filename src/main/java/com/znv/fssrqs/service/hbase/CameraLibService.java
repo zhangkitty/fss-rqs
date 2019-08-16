@@ -38,9 +38,9 @@ public class CameraLibService extends PhoenixSqlClient {
     private static ProducerBase producer = new ProducerBase();
     private static final String ORIGINALCAMERA = "original_camera_id";
 
-    static {
-        init();
-    }
+//    static {
+//        init();
+//    }
 
     /**
      * 删除布控信息

@@ -54,11 +54,11 @@ public class PhoenixService {
         connectionPool.createPool();
         //初始化kafka
         Properties props = HdfsConfigManager.getKafkaProducerProps();
-        producer.initWithConfig(props);
-        producer.setMsgTypeParam(HdfsConfigManager.getString(CommonConstant.NotifyKafka.NOTIFY_TOPIC_MSGTYPE),
-                HdfsConfigManager.getString(CommonConstant.NotifyKafka.ZOOKEEPER_ADDR),
-                HdfsConfigManager.getInt(CommonConstant.NotifyKafka.NOTIFY_PARTITION_NUM),
-                HdfsConfigManager.getInt(CommonConstant.NotifyKafka.NOTIFY_REPLICATION_NUM));
+//        producer.initWithConfig(props);
+//        producer.setMsgTypeParam(HdfsConfigManager.getString(CommonConstant.NotifyKafka.NOTIFY_TOPIC_MSGTYPE),
+//                HdfsConfigManager.getString(CommonConstant.NotifyKafka.ZOOKEEPER_ADDR),
+//                HdfsConfigManager.getInt(CommonConstant.NotifyKafka.NOTIFY_PARTITION_NUM),
+//                HdfsConfigManager.getInt(CommonConstant.NotifyKafka.NOTIFY_REPLICATION_NUM));
         Properties pop = HdfsConfigManager.getProperties();
         points = PropertiesUtil.getFeaturePoints(pop);
     }
