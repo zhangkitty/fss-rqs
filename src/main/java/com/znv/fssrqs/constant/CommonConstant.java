@@ -72,6 +72,25 @@ public class CommonConstant {
     }
 
     /**
+     * ZK配置信息
+     */
+    public static class Zookeeper {
+        public static final String ZOOKEEPER_QUORUM = "zookeeper.quorum";
+        public static final String ZOOKEEPER_CLIENTPORT = "zookeeper.clientPort";
+    }
+
+    /**
+     * Hbase配置信息
+     */
+    public static class HBase {
+        public static final String HBASE_ZNODE_PARENT = "hbase.zookeeper.znode.parent";
+        public static final String HBASE_CLIENT_RETRIES_NUMBER = "hbase.client.retries.number";
+        public static final String HBASE_RPC_TIMEOUT = "hbase.rpc.timeout";
+        public static final String HBASE_CLIENT_OPERATION_TIMEOUT = "hbase.client.operation.timeout";
+        public static final String HBASE_CLIENT_SCANNER_TIMEOUT = "hbase.client.scanner.timeout.period";
+    }
+
+    /**
      * 商汤服务器配置
      */
     public static class SenseTime {
