@@ -18,4 +18,6 @@ public class QueryResultParams {
     private Integer size;
 
     private String remark;
+
+    private String sim;
 }

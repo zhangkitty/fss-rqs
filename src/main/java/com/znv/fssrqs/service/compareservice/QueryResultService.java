@@ -51,14 +51,68 @@ public class QueryResultService {
         map.put("taskId", queryResultParams.getTaskId());
         map.put("from", queryResultParams.getFrom().toString());
         map.put("size",queryResultParams.getSize().toString());
+        map.put("sim",queryResultParams.getSim()).toString();
 
 
         String content = "";
         if(queryResultParams.getRemark()==null){
-             content = "{\"query\":{\"bool\":{\"filter\":{\"term\":{\"task_id\":\"${taskId}\"}}}},\"from\":${from},\"size\":${size}}";
+             content ="{\n" +
+                     "  \"query\":{\n" +
+                     "      \"bool\":{\n" +
+                     "          \"must\": [\n" +
+                     "            {\n" +
+                     "              \"term\": {\n" +
+                     "                \"task_id\": {\n" +
+                     "                  \"value\": ${taskId}\n" +
+                     "                }\n" +
+                     "              }\n" +
+                     "            },\n" +
+                     "            {\n" +
+                     "              \"range\": {\n" +
+                     "                \"compare_sim\": {\n" +
+                     "                  \"gte\": ${sim}\n" +
+                     "                }\n" +
+                     "              }\n" +
+                     "            }\n" +
+                     "          ]\n" +
+                     "      }\n" +
+                     "  },\n" +
+                     "  \"from\":${from},\n" +
+                     "  \"size\":${size}\n" +
+                     "}";
         }else {
             map.put("remark",queryResultParams.getRemark());
-            content = "{\"query\":{\"bool\":{\"must\":{\"match\":{\"remark\":\"${remark}\"}},\"filter\":{\"term\":{\"task_id\":\"${taskId}\"}}}},\"from\":${from},\"size\":${size}}";
+            content = "{\n" +
+                    "  \"query\":{\n" +
+                    "      \"bool\":{\n" +
+                    "          \"must\": [\n" +
+                    "            {\n" +
+                    "              \"term\": {\n" +
+                    "                \"task_id\": {\n" +
+                    "                  \"value\": ${taskId}\n" +
+                    "                }\n" +
+                    "              }\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "              \"term\": {\n" +
+                    "                \"remark\": {\n" +
+                    "                  \"value\": ${remark}\n" +
+                    "                }\n" +
+                    "              }\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "              \"range\": {\n" +
+                    "                \"compare_sim\": {\n" +
+                    "                  \"gte\": ${sim}\n" +
+                    "                }\n" +
+                    "              }\n" +
+                    "            }\n" +
+                    "          ]\n" +
+                    "      }\n" +
+                    "  },\n" +
+                    "  \"from\":${from},\n" +
+                    "  \"size\":${size}\n" +
+                    "}";
         }
 
         content = Template.renderString(content, map);
