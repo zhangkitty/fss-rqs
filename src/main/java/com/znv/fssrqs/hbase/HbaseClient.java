@@ -12,6 +12,7 @@ import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
 import org.apache.hadoop.hbase.client.coprocessor.DoubleColumnInterpreter;
 import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +31,7 @@ import static com.znv.fssrqs.constant.CommonConstant.Zookeeper.ZOOKEEPER_QUORUM;
  */
 @Slf4j
 @Component
+@DependsOn(value ="hdfsConfigManager")
 public class HbaseClient {
     private static Connection connection;
     private static AggregationClient aggregationClient;
