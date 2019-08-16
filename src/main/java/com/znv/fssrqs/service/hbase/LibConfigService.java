@@ -6,6 +6,7 @@ import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.kafka.ProducerBase;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -22,6 +23,7 @@ import java.util.Properties;
  */
 @Service
 @Slf4j
+@DependsOn(value ="hdfsConfigManager")
 public class LibConfigService extends PhoenixSqlClient {
     private static ProducerBase producer = new ProducerBase();
     private String tableName = HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.LIB_CONFIG_TABLE_NAME);
@@ -29,9 +31,9 @@ public class LibConfigService extends PhoenixSqlClient {
     private static final String LIBNAME = "lib_name";
 
 
-    static {
-        init();
-    }
+//    static {
+//        init();
+//    }
 
     /**
      * @param phoenixConn

@@ -105,8 +105,8 @@ public class CompareTaskLoader {
 
             @Override
             public void run() {
-                waitQueue.add(o);
                 o.setStatus(Status.WAITING.getCode());
+                waitQueue.add(o);
                 notifyObserver(o);
 
             }
