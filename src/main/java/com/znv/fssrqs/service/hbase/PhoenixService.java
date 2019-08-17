@@ -50,15 +50,8 @@ public class PhoenixService {
      * 构造方法
      */
     public PhoenixService(@Autowired HdfsConfigManager hdfsConfigManager, @Autowired HbaseConfig hbaseConfig) throws Exception {
-        connectionPool = new PhoenixConnectionPool(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PHOENIX_DRIVER), hbaseConfig.getJdbcUrl(), "", "");
-        connectionPool.createPool();
-        //初始化kafka
-        Properties props = HdfsConfigManager.getKafkaProducerProps();
-//        producer.initWithConfig(props);
-//        producer.setMsgTypeParam(HdfsConfigManager.getString(CommonConstant.NotifyKafka.NOTIFY_TOPIC_MSGTYPE),
-//                HdfsConfigManager.getString(CommonConstant.NotifyKafka.ZOOKEEPER_ADDR),
-//                HdfsConfigManager.getInt(CommonConstant.NotifyKafka.NOTIFY_PARTITION_NUM),
-//                HdfsConfigManager.getInt(CommonConstant.NotifyKafka.NOTIFY_REPLICATION_NUM));
+//        connectionPool = new PhoenixConnectionPool(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PHOENIX_DRIVER), hbaseConfig.getJdbcUrl(), "", "");
+//        connectionPool.createPool();
         Properties pop = HdfsConfigManager.getProperties();
         points = PropertiesUtil.getFeaturePoints(pop);
     }
