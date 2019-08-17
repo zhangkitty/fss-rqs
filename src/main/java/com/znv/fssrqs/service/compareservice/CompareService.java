@@ -105,7 +105,7 @@ public class CompareService {
    }
 
 
-    private Integer getPersonCount(Integer libID){
+    public Integer getPersonCount(Integer libID){
 
         StringBuffer str = new StringBuffer();
 
