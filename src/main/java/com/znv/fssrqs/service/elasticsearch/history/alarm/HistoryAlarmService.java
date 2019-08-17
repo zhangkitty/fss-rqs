@@ -43,7 +43,8 @@ public class HistoryAlarmService {
         JSONObject searchResult = getSearchResult(searchRetrieval);
         JSONArray jsonArray = searchResult.getJSONArray("Hits");
         int length = jsonArray.size();
-        String remoteIp = host.split(":")[0];
+        //String remoteIp = host.split(":")[0];
+        String remoteIp = "10.45.157.117";
         for (int i = 0; i < length; i++) {
             JSONObject data = (JSONObject) jsonArray.get(i);
             String personId = data.getString("PersonID");
