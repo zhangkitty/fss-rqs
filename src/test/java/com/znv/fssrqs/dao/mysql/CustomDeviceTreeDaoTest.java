@@ -68,4 +68,10 @@ public class CustomDeviceTreeDaoTest {
         }).collect(Collectors.toList());
         System.out.println(customDeviceTreeDao.insertBatch(list1));
     }
+
+    @Test
+    public void deleteCustomerGroup(){
+        Integer result = customDeviceTreeDao.deleteCustomUserGroup(60);
+        System.out.println(result);
+    }
 }

@@ -18,12 +18,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.ws.rs.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,10 +60,22 @@ public class CustomDeviceTreeController {
     public ResponseVo saveCustomGroup(@RequestBody CustomUserGroupEntity customUserGroupEntity){
         Integer count = customDeviceTreeDao.saveCustomUserGroup(customUserGroupEntity);
         if(count>0){
-            return ResponseVo.success(null);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("treeId",customUserGroupEntity.getTreeId());
+            return ResponseVo.success(jsonObject);
         }
         else {
             return ResponseVo.error("新增用户组失败");
+        }
+    }
+
+    @RequestMapping(value = "/site/FSSAPP/pc/customtree/deleteCustomGroup/{treeId}")
+    public ResponseVo deleteCustomGroup(@PathVariable("treeId") Integer treeId){
+        Integer result = customDeviceTreeDao.deleteCustomUserGroup(treeId);
+        if(result>0){
+            return ResponseVo.success("删除成功");
+        }else {
+            return ResponseVo.error("删除失败");
         }
     }
 

@@ -23,7 +23,7 @@
         </foreach>
     </update>
 
-    <insert id="insertBatch" parameterType="java.util.List">
+    <insert id="insertBatch" parameterType="java.util.List" >
         insert into usmsc.t_fss_customtree_node (node_id, node_name, node_kind, up_node_id, tree_id) values
         <foreach collection="list" item="item"  separator=",">
             (
@@ -36,9 +36,14 @@
         </foreach>
     </insert>
 
-    <insert id="saveCustomUserGroup" parameterType="com.znv.fssrqs.entity.mysql.CustomUserGroupEntity">
+    <insert id="saveCustomUserGroup" parameterType="com.znv.fssrqs.entity.mysql.CustomUserGroupEntity" keyProperty="treeId" useGeneratedKeys="true">
         insert into usmsc.t_fss_customtree (tree_name,tree_desc,default_tree,system_tree)
         values (#{treeName},#{treeDesc},#{defaultTree},#{systemTree})
 
     </insert>
+
+    <delete id ="deleteCustomUserGroup" parameterType="Integer">
+        delete from usmsc.t_fss_customtree where usmsc.t_fss_customtree.tree_id=#{treeId}
+
+    </delete>
 </mapper>
