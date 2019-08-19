@@ -87,7 +87,7 @@ public class PersonLibController {
             }
             return FastJsonUtils.JsonBuilder.ok().property("LibID", libId).json().toJSONString();
         } else {
-            return FastJsonUtils.JsonBuilder.badRequest(400).message("静态库名称重复").json().toJSONString();
+            return FastJsonUtils.JsonBuilder.badRequest(CommonConstant.StatusCode.BAD_REQUEST).message("静态库名称重复").json().toJSONString();
         }
     }
 
