@@ -3,9 +3,9 @@ package com.znv.fssrqs.service.elasticsearch.history.alarm;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.config.HdfsConfigManager;
-import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.util.*;
 import com.znv.fssrqs.vo.SearchRetrieval;
@@ -34,7 +34,7 @@ public class HistoryAlarmService {
      * @param searchRetrieval
      * @return
      */
-    public JSONArray getAllByCondition(String host, SearchRetrieval searchRetrieval) {
+    public String getAllByCondition(String host, SearchRetrieval searchRetrieval) {
         //检查参数是否合法
         Result<String, String> checkResult = checkParam(searchRetrieval);
         if (checkResult.isErr()) {
@@ -68,7 +68,8 @@ public class HistoryAlarmService {
                 data.put("BigPicture", "");
             }
         }
-        return jsonArray;
+        return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(jsonArray).property("Total", searchResult.getIntValue("Total"))
+                .property("Size", searchResult.getJSONArray("Hits").size()).json(), new PascalNameFilter());
     }
 
     public JSONObject getSearchResult(SearchRetrieval searchRetrieval) {
