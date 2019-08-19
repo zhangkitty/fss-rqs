@@ -35,7 +35,7 @@
         <result column="create_time" jdbcType="VARCHAR" property="CreateTime"/>
     </resultMap>
 
-    <select id="getUser"  parameterType="java.util.Map" resultMap="BaseResultMap">
+    <select id="getUser" parameterType="java.util.Map" resultMap="BaseResultMap">
         select *
         from t_cfg_user u
         where 1=1
@@ -46,45 +46,56 @@
 
 
     <select id="upCfgUserLogin" statementType="CALLABLE" parameterType="java.util.Map" resultType="java.util.HashMap">
-    {
-          call up_cfg_userlogin(
-          #{userName,jdbcType=VARCHAR},
-          #{userPwd,jdbcType=VARCHAR},
-          #{sessionId,jdbcType=VARCHAR},
-          #{serverId,jdbcType=VARCHAR},
-          #{loginTime,jdbcType=VARCHAR},
-          #{clientIp,jdbcType=VARCHAR},
-          #{loginClientType,jdbcType=INTEGER})
-    }
+        {
+        call up_cfg_userlogin(
+        #{userName,jdbcType=VARCHAR},
+        #{userPwd,jdbcType=VARCHAR},
+        #{sessionId,jdbcType=VARCHAR},
+        #{serverId,jdbcType=VARCHAR},
+        #{loginTime,jdbcType=VARCHAR},
+        #{clientIp,jdbcType=VARCHAR},
+        #{loginClientType,jdbcType=INTEGER})
+        }
     </select>
 
     <select id="upCfgUserLogout" statementType="CALLABLE" parameterType="java.util.Map">
-    {
-          call up_cfg_userlogout(
-          #{sessionId,jdbcType=VARCHAR},
-          #{serverId,jdbcType=VARCHAR},
-          #{logoutTime,jdbcType=VARCHAR},
-          #{clientIp,jdbcType=VARCHAR},
-          #{description,jdbcType=VARCHAR},
-          #{detailStyle,jdbcType=INTEGER},
-          #{userId,jdbcType=VARCHAR})
-    }
+        {
+        call up_cfg_userlogout(
+        #{sessionId,jdbcType=VARCHAR},
+        #{serverId,jdbcType=VARCHAR},
+        #{logoutTime,jdbcType=VARCHAR},
+        #{clientIp,jdbcType=VARCHAR},
+        #{description,jdbcType=VARCHAR},
+        #{detailStyle,jdbcType=INTEGER},
+        #{userId,jdbcType=VARCHAR})
+        }
     </select>
 
     <select id="upCfgSaveSystemLog" statementType="CALLABLE" parameterType="java.util.Map" resultType="int">
-    {
-          call up_cfg_savesystemlog(
-          #{userId,jdbcType=VARCHAR},
-          #{deviceId,jdbcType=VARCHAR},
-          #{accessStyle,jdbcType=INTEGER},
-          #{accessTime,jdbcType=VARCHAR},
-          #{accessDescription,jdbcType=VARCHAR},
-          #{remoteHost,jdbcType=VARCHAR},
-          #{detailStyle,jdbcType=INTEGER},
-          #{loginClientType,jdbcType=INTEGER},
-          #{logState,jdbcType=INTEGER},
-          #{logParam,jdbcType=VARCHAR},
-          #{deviceName,jdbcType=VARCHAR})
-    }
+        {
+        call up_cfg_savesystemlog(
+        #{userId,jdbcType=VARCHAR},
+        #{deviceId,jdbcType=VARCHAR},
+        #{accessStyle,jdbcType=INTEGER},
+        #{accessTime,jdbcType=VARCHAR},
+        #{accessDescription,jdbcType=VARCHAR},
+        #{remoteHost,jdbcType=VARCHAR},
+        #{detailStyle,jdbcType=INTEGER},
+        #{loginClientType,jdbcType=INTEGER},
+        #{logState,jdbcType=INTEGER},
+        #{logParam,jdbcType=VARCHAR},
+        #{deviceName,jdbcType=VARCHAR})
+        }
+    </select>
+    <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        a.user_id, fss_role_id, fss_usergroup_id,user_name,user_type,fss_role_id,fss_usergroup_id,
+        a.fax,a.employee_id,a.mobile_telephone,a.true_name,a.user_pwd,ug.user_group_name
+        from t_cfg_user a left join t_fss_user b on a.user_id=b.user_id
+        left join t_fss_usergroup ug on b.fss_usergroup_id=ug.user_group_id
+        where 1=1
+        <if test="userId != null">
+            and a.user_id = #{userId,jdbcType=VARCHAR}
+        </if>
     </select>
 </mapper>
