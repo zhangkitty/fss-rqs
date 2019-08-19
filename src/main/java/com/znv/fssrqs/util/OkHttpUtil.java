@@ -4,10 +4,14 @@ import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.exception.ZnvException;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -20,6 +24,7 @@ import java.util.Map;
  */
 @Slf4j
 public class OkHttpUtil {
+    private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
     private static OkHttpClient singleton;
 
     private OkHttpUtil() {
@@ -93,7 +98,7 @@ public class OkHttpUtil {
     }
 
 
-    public static FormBody.Builder addParamToBuilder(String requestBody, Map<String, Object> map) {
+    private static FormBody.Builder addParamToBuilder(String requestBody, Map<String, Object> map) {
         FormBody.Builder builder = new FormBody.Builder();
         if (!StringUtils.isEmpty(requestBody)) {
             if (requestBody.startsWith("?")) {
@@ -118,7 +123,7 @@ public class OkHttpUtil {
         return builder;
     }
 
-    public static String execute(Request request) {
+    private static String execute(Request request) {
         final OkHttpClient okHttpClient = getInstance();
         final Call call = okHttpClient.newCall(request);
         try {
@@ -134,5 +139,50 @@ public class OkHttpUtil {
             log.error("send request failed:", e);
             throw ZnvException.error(CommonConstant.StatusCode.INTERNAL_ERROR, "SendRequestFailed", e.getMessage());
         }
+    }
+
+
+    /**
+     * @param url  请求地址
+     * @param key  请求文件key
+     * @param file 请求文件
+     */
+    public static String postImage(String url, String key, File file) {
+        RequestBody fileBody = RequestBody.create(MEDIA_TYPE_PNG, file);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(key, file.getName(), fileBody)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        return execute(request);
+    }
+
+    public static void downloadImage(String url, String pathname) {
+        OkHttpClient okHttpClient = getInstance();
+        Request request = new Request.Builder()
+                .get()
+                .url(url)
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                InputStream inputStream = response.body().byteStream();
+                File file = new File(pathname);
+                file.createNewFile();
+                FileOutputStream out = new FileOutputStream(file);
+                FileUtils.copyInputStreamToFile(inputStream, file);
+                out.flush();
+                out.close();
+            }
+        });
     }
 }
