@@ -48,10 +48,10 @@ public class QueryResultService {
         String url = sb.toString();
 
         Map<String, String> map = new HashMap<>();
-        map.put("taskId", queryResultParams.getTaskId());
+        map.put("taskId", queryResultParams.getTaskId().toString());
         map.put("from", queryResultParams.getFrom().toString());
         map.put("size",queryResultParams.getSize().toString());
-        map.put("sim",queryResultParams.getSim()).toString();
+        map.put("sim",queryResultParams.getSim().toString());
 
 
         String content = "";
@@ -63,7 +63,7 @@ public class QueryResultService {
                      "            {\n" +
                      "              \"term\": {\n" +
                      "                \"task_id\": {\n" +
-                     "                  \"value\": ${taskId}\n" +
+                     "                  \"value\": \"${taskId}\"\n" +
                      "                }\n" +
                      "              }\n" +
                      "            },\n" +
@@ -89,7 +89,7 @@ public class QueryResultService {
                     "            {\n" +
                     "              \"term\": {\n" +
                     "                \"task_id\": {\n" +
-                    "                  \"value\": ${taskId}\n" +
+                    "                  \"value\": \"${taskId}\"\n" +
                     "                }\n" +
                     "              }\n" +
                     "            },\n" +

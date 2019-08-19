@@ -27,4 +27,6 @@ public interface CustomDeviceTreeDao {
 
 
     Integer saveCustomUserGroup(CustomUserGroupEntity customUserGroupEntity);
+
+    Integer deleteCustomUserGroup(Integer treeId);
 }

@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +59,7 @@ public class QueryResultController {
      */
 
     @RequestMapping(value = "/site/FSSAPP/pc/nvsm/pairsearch.ds",method = RequestMethod.POST)
-    public ResponseVo queryResult(@RequestBody QueryResultParams queryResultParams){
+    public ResponseVo queryResult(@RequestBody @Validated  QueryResultParams queryResultParams){
 
         return  ResponseVo.success(queryResultService.queryResultService(queryResultParams));
 
