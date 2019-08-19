@@ -3,7 +3,8 @@ package com.znv.fssrqs.timer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.dao.mysql.MDeviceDao;
-import com.znv.fssrqs.entity.mysql.*;
+import com.znv.fssrqs.entity.mysql.AnalysisUnitEntity;
+import com.znv.fssrqs.entity.mysql.MBusEntity;
 import com.znv.fssrqs.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.ParseException;
@@ -12,8 +13,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
@@ -37,7 +40,7 @@ public class SystemDeviceLoadTask {
     private static boolean firstLoad = true;
 
     @Scheduled(fixedRateString = "${conf.encoderState.reportInterval:30000}")
-    public void loadOrCheckSystemDevices(){
+    public void loadOrCheckSystemDevices() {
         if (firstLoad) {
             firstLoad = false;
             loadMBus();
@@ -86,7 +89,7 @@ public class SystemDeviceLoadTask {
         Iterator<MBusEntity> iterator = mBusOnlineList.iterator();
         while (iterator.hasNext()) {
             MBusEntity mbus = iterator.next();
-            if (! checkMbusOnline(mbus)) {
+            if (!checkMbusOnline(mbus)) {
                 mBusOfflineList.add(mbus);
                 mBusOnlineList.remove(mbus);
             }
@@ -104,7 +107,7 @@ public class SystemDeviceLoadTask {
         Iterator<MBusEntity> iterator = mBusOnlineList.iterator();
         while (iterator.hasNext()) {
             MBusEntity mbus = iterator.next();
-            if (! checkMbusOnline(mbus)) {
+            if (!checkMbusOnline(mbus)) {
                 // 设备从在线变成离线
                 newOfflineList.add(mbus);
                 mBusOnlineList.remove(mbus);
@@ -125,7 +128,7 @@ public class SystemDeviceLoadTask {
         }
 
         // 将新离线的设备加入离线列表
-        if (! newOfflineList.isEmpty()) {
+        if (!newOfflineList.isEmpty()) {
             mBusOfflineList.addAll(newOfflineList);
         }
 
@@ -165,7 +168,7 @@ public class SystemDeviceLoadTask {
         Iterator<AnalysisUnitEntity> iterator = staticAIUnitOnlineList.iterator();
         while (iterator.hasNext()) {
             AnalysisUnitEntity staticAIUnit = iterator.next();
-            if (! checkAIUnitOnline(staticAIUnit)) {
+            if (!checkAIUnitOnline(staticAIUnit)) {
                 staticAIUnitOfflineList.add(staticAIUnit);
                 staticAIUnitOnlineList.remove(staticAIUnit);
             }
@@ -182,7 +185,7 @@ public class SystemDeviceLoadTask {
         Iterator<AnalysisUnitEntity> iterator = staticAIUnitOnlineList.iterator();
         while (iterator.hasNext()) {
             AnalysisUnitEntity analysisUnit = iterator.next();
-            if (! checkAIUnitOnline(analysisUnit)) {
+            if (!checkAIUnitOnline(analysisUnit)) {
                 // 设备从在线变成离线
                 newOfflineList.add(analysisUnit);
                 staticAIUnitOnlineList.remove(analysisUnit);
@@ -203,7 +206,7 @@ public class SystemDeviceLoadTask {
         }
 
         // 将新离线的设备加入离线列表
-        if (! newOfflineList.isEmpty()) {
+        if (!newOfflineList.isEmpty()) {
             staticAIUnitOfflineList.addAll(newOfflineList);
         }
 
@@ -229,7 +232,7 @@ public class SystemDeviceLoadTask {
                     analysisUnit.getIP(), analysisUnit.getPort(), "verify/detail"));
             JSONObject obj = JSON.parseObject(data);
             String result = obj.getString("result");
-            if (! "success".equals(result)) {
+            if (!"success".equals(result)) {
                 return false;
             }
         } catch (Exception e) {
@@ -256,5 +259,9 @@ public class SystemDeviceLoadTask {
         Random r = new Random(System.currentTimeMillis());
         int i = r.nextInt(staticAIUnitOnlineList.size());
         return staticAIUnitOnlineList.get(i);
+    }
+
+    public List<MBusEntity> getMBusOnlineList(){
+        return mBusOnlineList;
     }
 }
