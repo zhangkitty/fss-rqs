@@ -56,6 +56,11 @@ public class CompareController {
 
     @RequestMapping(value="/site/FSSAPP/pc/nvsm/tasksave.ds",method = RequestMethod.POST)
     public ResponseVo save(@RequestBody NToNCompareTaskParam nToNCompareTaskParam){
+        if(compareService.getPersonCount((Integer)nToNCompareTaskParam.getLib1())==0||compareService.getPersonCount((Integer)nToNCompareTaskParam.getLib2())==0){
+            return ResponseVo.error("参与比较的库中没有人");
+        }
+
+
         personLibMapper.findAll().stream().forEach(value->{
             if(nToNCompareTaskParam.getLib1()==value.getLibID()){
                 nToNCompareTaskParam.setLib1Name(value.getLibName());

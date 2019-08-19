@@ -94,8 +94,8 @@ public class PersonLibInfoService {
         JSONObject buckets = new JSONObject();
         buckets.put("key", "其它");
         buckets.put("doc_count", 0);
-        if (resObj.get("total") != null && (Integer) resObj.get("total") >= total) {
-            buckets.put("doc_count", ((Integer) resObj.get("total") - total));
+        if (resObj.get("Total")!=null&&resObj.getIntValue("Total")>total) {
+            buckets.put("doc_count", (resObj.getIntValue("Total") - total));
         } else {
             log.warn("addrGroup count exceeds totalCount: " + resObj.get("total") + ", addrGroup count: " + total);
         }

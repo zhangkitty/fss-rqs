@@ -43,8 +43,11 @@ public class HistoryAlarmService {
         JSONObject searchResult = getSearchResult(searchRetrieval);
         JSONArray jsonArray = searchResult.getJSONArray("Hits");
         int length = jsonArray.size();
-        String remoteIp = host.split(":")[0];
-        for (int i = 0; i < length; i++) {
+
+        //这个没有用了
+        String remoteIp = "";
+
+     for (int i = 0; i < length; i++) {
             JSONObject data = (JSONObject) jsonArray.get(i);
             String personId = data.getString("PersonID");
             int libId = data.getInteger("LibID");
