@@ -2,9 +2,11 @@ package com.znv.fssrqs.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.DownloadFileByUrl;
+import com.znv.fssrqs.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,7 +47,7 @@ public class FaceController {
             } else {
                 data = DownloadFileByUrl.getBase64ImgByUrl(url, x, y, width, height, srcWidth, srcHeight);
             }
-            return data;
+            return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().property("image", data).json().toJSONString(), new PascalNameFilter());
         } catch (Exception e) {
             log.error("get image failed:", e);
             throw ZnvException.error(CommonConstant.StatusCode.INTERNAL_ERROR, "GetBase64ImageFailed", e.getMessage());
