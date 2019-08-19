@@ -1,9 +1,14 @@
 package com.znv.fssrqs.util;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by dongzelong on  2019/8/16 9:48.
@@ -124,7 +129,68 @@ public class DateTimeUtils {
         return Clock.systemUTC();
     }
 
-    public static void main(String[] args) {
-        System.out.println(fromDateTime(fromDateTimeString("2019-08-12 12:12:12")));
+    //使用ThreadLocal来限制SimpleDateFromat只能在线程内共享,避免了多线程导致的线程安全问题
+    private static ThreadLocal<DateFormat> threadLocal = new ThreadLocal<DateFormat>() {
+        @Override
+        protected DateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+    };
+
+    public static String format(Date date) {
+        return threadLocal.get().format(date);
+    }
+
+
+    /**
+     * 锁对象
+     */
+    private static final Object lockObj = new Object();
+
+    /**
+     * 存放不同的日期模板格式的sdf的Map
+     */
+    private static Map<String, ThreadLocal<SimpleDateFormat>> sdfMap = new HashMap<String, ThreadLocal<SimpleDateFormat>>();
+
+
+    /**
+     * 返回一个ThreadLocal的sdf,每个线程只会new一次sdf
+     *
+     * @param pattern
+     * @return
+     */
+    private static SimpleDateFormat getSdf(final String pattern) {
+        ThreadLocal<SimpleDateFormat> tl = sdfMap.get(pattern);
+        if (tl == null) {
+            synchronized (lockObj) {
+                tl = sdfMap.get(pattern);
+                if (tl == null) {
+                    tl = new ThreadLocal<SimpleDateFormat>() {
+                        @Override
+                        protected SimpleDateFormat initialValue() {
+                            return new SimpleDateFormat(pattern);
+                        }
+                    };
+                    sdfMap.put(pattern, tl);
+                }
+            }
+        }
+        return tl.get();
+    }
+
+    /**
+     * 使用ThreadLocal<SimpleDateFormat>来获取SimpleDateFormat,这样每个线程只会有一个SimpleDateFormat
+     * 如果新的线程中没有SimpleDateFormat，才会new一个
+     *
+     * @param date
+     * @param pattern
+     * @return
+     */
+    public static String format(Date date, String pattern) {
+        return getSdf(pattern).format(date);
+    }
+
+    public static Date parse(String dateStr, String pattern) throws ParseException {
+        return getSdf(pattern).parse(dateStr);
     }
 }
