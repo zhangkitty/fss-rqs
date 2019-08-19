@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.controller.face.compare.n.n.QueryResultParams;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
+import com.znv.fssrqs.util.Base64Util;
+import com.znv.fssrqs.util.ImageUtils;
 import com.znv.fssrqs.util.Result;
 import com.znv.fssrqs.util.Template;
 import lombok.extern.slf4j.Slf4j;
@@ -130,6 +132,9 @@ public class QueryResultService {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject = t.getJSONObject("_source");
                     jsonObject.put("id",t.getString("_id"));
+                    String str = t.getJSONObject("_source").getString("person_id1")+"&"+t.getJSONObject("_source").getString("lib_id1");
+                    String pic= ImageUtils.getImgUrl("","get_fss_personimage",Base64Util.encodeString(str));
+                    jsonObject.put("url",pic);
                     return jsonObject;
                 })
                 .collect(ArrayList::new,(list1,value)->list1.add(value),(list1,list2)->list1.addAll(list2));
@@ -143,5 +148,11 @@ public class QueryResultService {
 
         return jsonObject;
 
+    }
+
+
+    private String generatPersonImgUrl(String remoteIp, String libId, String personId) {
+        String str = personId + "&" + libId;
+        return ImageUtils.getImgUrl(remoteIp, "get_fss_personimage", Base64Util.encodeString(str));
     }
 }
