@@ -46,4 +46,53 @@
         delete from usmsc.t_fss_customtree where usmsc.t_fss_customtree.tree_id=#{treeId}
 
     </delete>
+
+    <update id="batchUpdateCrumbList" parameterType="java.util.List">
+      <foreach collection="list" item="item" index="index" open="" separator=";" close="">
+          update t_fss_crumb_customtree
+          <set>
+              <if test="item.nodeName != null">
+                  parent_id=#{item.parentId},
+              </if>
+              <if test="item.crumb != null">
+                  crumb=#{item.crumb},
+              </if>
+              <if test="item.nodeId != null">
+                  node_id=#{item.nodeId},
+              </if>
+              <if test="item.nodeName != null">
+                  node_name=#{item.nodeName},
+              </if>
+              <if test="item.nodeDesc != null">
+                  node_desc=#{item.nodeDesc},
+              </if>
+              <if test="item.isLeaf != null">
+                  is_leaf=#{item.isLeaf},
+              </if>
+              <if test="item.isDel != null">
+                  is_del=#{item.isDel},
+              </if>
+          </set>
+          where id=#{item.id}
+      </foreach>
+    </update>
+
+    <insert id="batchInsertCrumbList" parameterType="java.util.List">
+      insert into t_fss_crumb_customtree (parent_id,crumb,node_id,node_name,node_desc,is_leaf,is_del)
+      values
+      <foreach collection="list" item="item" separator=",">
+          (
+          #{item.parentId},
+          #{item.crumb},
+          #{item.nodeId},
+          #{item.upNodeId},
+          #{item.nodeName},
+          #{item.nodeDesc}
+          #{item.isLeaf},
+          #{item.isDel}
+          )
+      </foreach>
+
+    </insert>
+
 </mapper>

@@ -1,11 +1,13 @@
 package com.znv.fssrqs.dao.mysql;
 
+import com.znv.fssrqs.entity.mysql.CrumbCustomTreeEntity;
 import com.znv.fssrqs.entity.mysql.CustomDeviceEntity;
 import com.znv.fssrqs.entity.mysql.CustomUserGroupEntity;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,4 +31,11 @@ public interface CustomDeviceTreeDao {
     Integer saveCustomUserGroup(CustomUserGroupEntity customUserGroupEntity);
 
     Integer deleteCustomUserGroup(Integer treeId);
+
+    @Select("SELECT * FROM t_fss_crumb_customtree t where t.is_del is null or t.is_del != 1")
+    List<CrumbCustomTreeEntity> getAllCrumbList();
+
+    Integer batchUpdateCrumbList(List<CrumbCustomTreeEntity> list);
+
+    Integer batchInsertCrumbList(List<CrumbCustomTreeEntity> list);
 }

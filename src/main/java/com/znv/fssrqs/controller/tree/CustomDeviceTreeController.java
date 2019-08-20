@@ -1,13 +1,11 @@
 package com.znv.fssrqs.controller.tree;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.dao.mysql.CustomDeviceTreeDao;
 import com.znv.fssrqs.dao.mysql.DeviceTreeDao;
 import com.znv.fssrqs.dao.mysql.FaceTaskDao;
-import com.znv.fssrqs.entity.mysql.CustomDeviceEntity;
-import com.znv.fssrqs.entity.mysql.CustomUserGroupEntity;
-import com.znv.fssrqs.entity.mysql.FaceTaskEntity;
-import com.znv.fssrqs.entity.mysql.TCfgDevice;
+import com.znv.fssrqs.entity.mysql.*;
 import com.znv.fssrqs.service.RedisTemplateService;
 import com.znv.fssrqs.service.redis.AccessDeviceService;
 import com.znv.fssrqs.vo.ResponseVo;
@@ -24,6 +22,7 @@ import javax.annotation.Resource;
 import javax.ws.rs.Path;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author zhangcaochao
@@ -121,5 +120,85 @@ public class CustomDeviceTreeController {
             );
         }
         return  ResponseVo.success(null);
+    }
+
+    @RequestMapping(value="/getAllCustomTree",method = RequestMethod.GET)
+    public ResponseVo getAllCustomTree(){
+        List<CrumbCustomTreeEntity> list = customDeviceTreeDao.getAllCrumbList();
+        ArrayList<JSONObject> arrayList = new ArrayList<>();
+        ArrayList<CrumbCustomTreeEntity> list1  = new ArrayList<CrumbCustomTreeEntity>();
+        list.stream().sorted((v1,v2)->v1.getCrumb().split(",").length-v2.getCrumb().split(" ").length).forEach(v->{
+            add(arrayList,v);
+        });
+
+        return ResponseVo.success(arrayList);
+
+    };
+
+
+    @RequestMapping(value="/saveAllCustomTree",method = RequestMethod.POST)
+    public ResponseVo saveAllCustomTree(@RequestBody ArrayList<Map> arrayList){
+
+        ArrayList<CrumbCustomTreeEntity> list = new ArrayList<CrumbCustomTreeEntity>();
+        expand(arrayList,list);
+        List<CrumbCustomTreeEntity> allList = customDeviceTreeDao.getAllCrumbList();
+
+        List<Integer> allListIds = allList.stream().map(v->v.getId()).collect(Collectors.toList());
+
+        List<CrumbCustomTreeEntity> insertList = list.stream().filter(v->!allListIds.contains(v.getId())).collect(Collectors.toList());
+
+        List<CrumbCustomTreeEntity> updateList = list.stream().filter(v->allListIds.contains(v.getId())).collect(Collectors.toList());
+
+        if(insertList.size()>0){
+            customDeviceTreeDao.batchInsertCrumbList(insertList);
+        }
+        if(updateList.size()>0){
+            customDeviceTreeDao.batchUpdateCrumbList(updateList);
+        }
+
+        return ResponseVo.success("成功");
+
+    }
+
+
+
+    private void add(ArrayList<JSONObject> arrayList,CrumbCustomTreeEntity crumbCustomTreeEntity){
+        if(arrayList.stream().filter(v->v.getJSONObject("crumbCustomTreeEntity").getIntValue("id")==crumbCustomTreeEntity.getParentId()).count()==0){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("children",new ArrayList<JSONObject>());
+            jsonObject.put("crumbCustomTreeEntity",crumbCustomTreeEntity);
+            arrayList.add(jsonObject);
+        }else {
+            arrayList.stream().forEach(v->{
+                if(v.getJSONObject("crumbCustomTreeEntity").getIntValue("id")==crumbCustomTreeEntity.getParentId()){
+                    add((ArrayList<JSONObject>) v.get("children"),crumbCustomTreeEntity);
+                }
+            });
+        }
+    }
+
+
+
+    private void expand(ArrayList<Map> arrayList,ArrayList<CrumbCustomTreeEntity> list){
+
+        arrayList.stream().forEach(v->{
+            CrumbCustomTreeEntity crumbCustomTreeEntity = new CrumbCustomTreeEntity();
+
+            LinkedHashMap linkedHashMap = (LinkedHashMap) v.get("crumbCustomTreeEntity");
+            crumbCustomTreeEntity.setId((Integer) linkedHashMap.get("id"));
+            crumbCustomTreeEntity.setCrumb((String)linkedHashMap.get("crumb"));
+            crumbCustomTreeEntity.setParentId((Integer)linkedHashMap.get("parentId"));
+            crumbCustomTreeEntity.setNodeId((String) linkedHashMap.get("nodeId"));
+            crumbCustomTreeEntity.setNodeName((String)linkedHashMap.get("nodeName"));
+            crumbCustomTreeEntity.setNodeDesc((String)linkedHashMap.get("nodeDesc"));
+            crumbCustomTreeEntity.setIsLeaf((Boolean) linkedHashMap.get("isLeaf"));
+            crumbCustomTreeEntity.setIsDel((Boolean)linkedHashMap.get("idDel"));
+
+            list.add(crumbCustomTreeEntity);
+            if(((ArrayList)v.get("children")).size()>0){
+                expand((ArrayList)v.get("children"),list);
+            }
+        });
+
     }
 }
