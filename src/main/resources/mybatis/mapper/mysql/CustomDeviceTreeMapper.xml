@@ -54,19 +54,22 @@
               <if test="item.nodeName != null">
                   parent_id=#{item.parentId},
               </if>
-              <if test="item.nodeName != null">
+              <if test="item.crumb != null">
                   crumb=#{item.crumb},
               </if>
-              <if test="item.nodeName != null">
+              <if test="item.nodeId != null">
                   node_id=#{item.nodeId},
               </if>
               <if test="item.nodeName != null">
                   node_name=#{item.nodeName},
               </if>
-              <if test="item.nodeName != null">
+              <if test="item.nodeDesc != null">
+                  node_desc=#{item.nodeDesc},
+              </if>
+              <if test="item.isLeaf != null">
                   is_leaf=#{item.isLeaf},
               </if>
-              <if test="item.nodeName != null">
+              <if test="item.isDel != null">
                   is_del=#{item.isDel},
               </if>
           </set>
@@ -75,7 +78,7 @@
     </update>
 
     <insert id="batchInsertCrumbList" parameterType="java.util.List">
-      insert into t_fss_crumb_customtree (parent_id,crumb,node_id,node_name,is_leaf,is_del)
+      insert into t_fss_crumb_customtree (parent_id,crumb,node_id,node_name,node_desc,is_leaf,is_del)
       values
       <foreach collection="list" item="item" separator=",">
           (
@@ -84,6 +87,7 @@
           #{item.nodeId},
           #{item.upNodeId},
           #{item.nodeName},
+          #{item.nodeDesc}
           #{item.isLeaf},
           #{item.isDel}
           )
