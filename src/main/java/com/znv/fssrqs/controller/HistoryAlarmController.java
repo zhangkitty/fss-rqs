@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.config.HdfsConfigManager;
+import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.service.elasticsearch.history.alarm.HistoryAlarmService;
 import com.znv.fssrqs.service.hbase.PhoenixService;
 import com.znv.fssrqs.util.Base64Util;
@@ -13,7 +14,11 @@ import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.ImageUtils;
 import com.znv.fssrqs.vo.SearchRetrieval;
 import com.znv.fssrqs.vo.TrackSearch;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,15 +45,18 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Slf4j
 public class HistoryAlarmController {
     private HttpServletResponse response;
     private HttpSession session;
     private HttpServletRequest request;
-
+    private static String policeTypesStr = "{\"0\":\"图侦\",\"1\":\"刑侦\",\"2\":\"治安\",\"3\":\"国保\",\"4\":\"户籍\",\"5\":\"网警\",\"6\":\"经侦\",\"7\":\"派出所\",\"8\":\"缉毒\",\"9\":\"反恐\",\"10\":\"技侦\",\"11\":\"缉私\"}";
+    private static JSONObject allPoliceTypes = JSON.parseObject(policeTypesStr);
     @Autowired
     private HistoryAlarmService historyAlarmService;
     @Autowired
     private PhoenixService phoenixService;
+    private PersonLibMapper personLibMapper;
 
     @ModelAttribute
     public void bindModel(HttpServletRequest request, HttpServletResponse response) {
@@ -57,8 +71,7 @@ public class HistoryAlarmController {
     @PostMapping("/alarm/result/statistics")
     public String getHistoryAlarm(@RequestHeader("Host") String host, @RequestBody String body) {
         SearchRetrieval searchRetrieval = JSON.parseObject(body, SearchRetrieval.class);
-        JSONArray jsonArray = historyAlarmService.getAllByCondition(host, searchRetrieval);
-        return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(jsonArray).json(), new PascalNameFilter());
+        return historyAlarmService.getAllByCondition(host, searchRetrieval);
     }
 
     /**
@@ -266,7 +279,7 @@ public class HistoryAlarmController {
                     case "between":
                         String[] split = queryValue.split(",");
                         if (split.length == 2) {
-                            queryRange.put("start_time",split[0]);
+                            queryRange.put("start_time", split[0]);
                             queryRange.put("end_time", split[1]);
                         }
                         break;
