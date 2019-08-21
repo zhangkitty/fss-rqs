@@ -10,10 +10,7 @@ import com.znv.fssrqs.timer.SystemDeviceLoadTask;
 import com.znv.fssrqs.util.FastJsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +44,7 @@ public class SystemController {
     /**
      * 修改系统信息
      */
-    @PostMapping("/system/info")
+    @PutMapping("/system/info")
     @Transactional(transactionManager = "transactionManager")
     public JSONObject modifySystemInfo(HttpServletRequest request, @RequestBody String body) throws IOException {
         final SystemInfo systemInfo = JSON.parseObject(body, SystemInfo.class);
