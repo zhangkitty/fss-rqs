@@ -135,6 +135,12 @@ public class CustomDeviceTreeController {
 
     };
 
+    @RequestMapping(value = "/getAllCustomList",method = RequestMethod.GET)
+    public ResponseVo getAllCustomList(){
+        List<CrumbCustomTreeEntity> list = customDeviceTreeDao.getAllCrumbList();
+        return ResponseVo.success(list);
+    }
+
 
     @RequestMapping(value="/saveAllCustomTree",method = RequestMethod.POST)
     public ResponseVo saveAllCustomTree(@RequestBody ArrayList<Map> arrayList){
@@ -158,6 +164,22 @@ public class CustomDeviceTreeController {
 
         return ResponseVo.success("成功");
 
+    }
+
+    @RequestMapping(value = "/saveAllCustomList",method = RequestMethod.POST)
+    public ResponseVo saveAllCustomList(@RequestBody ArrayList<CrumbCustomTreeEntity> arrayList){
+
+        List<CrumbCustomTreeEntity> allList = customDeviceTreeDao.getAllCrumbList();
+        List<Integer> allListIds = allList.stream().map(v->v.getId()).collect(Collectors.toList());
+        List<CrumbCustomTreeEntity> insertList = arrayList.stream().filter(v->!allListIds.contains(v.getId())).collect(Collectors.toList());
+        List<CrumbCustomTreeEntity> updateList = arrayList.stream().filter(v->allListIds.contains(v.getId())).collect(Collectors.toList());
+        if(insertList.size()>0){
+            customDeviceTreeDao.batchInsertCrumbList(insertList);
+        }
+        if(updateList.size()>0){
+            customDeviceTreeDao.batchUpdateCrumbList(updateList);
+        }
+        return ResponseVo.success("成功");
     }
 
 
