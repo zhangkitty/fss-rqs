@@ -179,7 +179,8 @@ public class CustomDeviceTreeController {
         if(updateList.size()>0){
             customDeviceTreeDao.batchUpdateCrumbList(updateList);
         }
-        return ResponseVo.success("成功");
+        List<CrumbCustomTreeEntity> allList1 = customDeviceTreeDao.getAllCrumbList();
+        return ResponseVo.success(allList1);
     }
 
 
