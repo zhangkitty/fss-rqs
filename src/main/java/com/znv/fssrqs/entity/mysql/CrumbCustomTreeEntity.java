@@ -28,4 +28,6 @@ public class CrumbCustomTreeEntity {
 
     private Boolean isDel;
 
+    private Boolean isDefault;
+
 }
