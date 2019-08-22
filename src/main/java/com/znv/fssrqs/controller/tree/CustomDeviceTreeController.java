@@ -200,7 +200,7 @@ public class CustomDeviceTreeController {
 
     private void add(ArrayList<JSONObject> arrayList,CrumbCustomTreeEntity crumbCustomTreeEntity){
         if(
-            arrayList.size()==0
+            arrayList.size()==0||crumbCustomTreeEntity.getCrumb().trim().length()==1
         ){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("children",new ArrayList<JSONObject>());
