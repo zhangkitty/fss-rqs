@@ -68,8 +68,8 @@ public class CellDesc {
                     }
                     cell.setCellValue(camera_name);
                     break;
-                case "RtImageData":
-                    String rt_image_data = jsonObject.getString("RtImageData");
+                case "SmallPictureUrl":
+                    String rt_image_data = jsonObject.getString("SmallPictureUrl");
                     String flag = jsonObject.getString("AlarmType");
                     if (!flag.equals("2")) {
                         cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);
@@ -79,8 +79,8 @@ public class CellDesc {
                         cell.setCellValue("--");
                     }
                     break;
-                case "BigPicture":
-                    String big_img = jsonObject.getString("BigPicture");
+                case "BigPictureUrl":
+                    String big_img = jsonObject.getString("BigPictureUrl");
                     String formula3 = "";
                     if (!("").equals(big_img) && big_img != null) {
                         cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);
