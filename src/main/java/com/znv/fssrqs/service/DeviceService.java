@@ -57,10 +57,11 @@ public class DeviceService {
             //用户组设备权限
             List<UserGroupDeviceRelation> userGroupDevices = null;
             //授权摄像机个数
-            int count = LicenseUtil.instance.getTaskCount();
-            if (count == 0) {
-                return retCameras;
-            }
+            //int count = LicenseUtil.instance.getTaskCount();
+            int count=1000;
+//            if (count == 0) {
+//                return retCameras;
+//            }
             if (roleId == 1) {
                 userGroupDevices = userGroupDeviceService.queryAdminUserDevice();
             } else {
