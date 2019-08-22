@@ -183,6 +183,14 @@ public class CustomDeviceTreeController {
         return ResponseVo.success(allList1);
     }
 
+    private Boolean check(ArrayList<CrumbCustomTreeEntity> arrayList){
+
+
+
+        return false;
+
+    }
+
 
 
     private void add(ArrayList<JSONObject> arrayList,CrumbCustomTreeEntity crumbCustomTreeEntity){
