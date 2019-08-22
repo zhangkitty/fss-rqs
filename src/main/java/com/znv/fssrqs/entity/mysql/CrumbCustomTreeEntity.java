@@ -18,7 +18,7 @@ public class CrumbCustomTreeEntity {
 
     private String crumb="";
 
-    private String nodeId;
+    private String nodeId="";
 
     private String nodeName="";
 
