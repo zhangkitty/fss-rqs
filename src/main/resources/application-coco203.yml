@@ -35,17 +35,17 @@ spring:
       data-username: ""
       data-password: ""
   redis: #redis相关配置
-      host: 10.45.154.203
-      port: 6379
-      #连接超时时间(毫秒)
-      timeout: 100ms
-      #password: redis
-      jedis:
-        pool:
-          max-active: 10
-          max-idle: 10
-          #连接池最大阻塞等待时间(使用负值表示没有限制)
-          max-wait: -1ms
+    host: 10.45.154.203
+    port: 6379
+    #连接超时时间(毫秒)
+    timeout: 100ms
+    #password: redis
+    jedis:
+      pool:
+        max-active: 10
+        max-idle: 10
+        #连接池最大阻塞等待时间(使用负值表示没有限制)
+        max-wait: -1ms
   http:
     encoding:
       charset: UTF-8
@@ -99,16 +99,16 @@ person:
 conf:
   ##配置defaultUserId后，所有接口不登录
   defaultUserId: "11000000000"
-
 #pagehelper.
 pagehelper:
   autoDialect: true
   closeConn: true
   offset-as-page-num: false
-
 echarts:
   add: 南京,北京
 spark:
   shellscript: cd /home/fss/v1.50/fssDeployUtil &&  ./fss_service.sh execNNCompare
-
+ssh: #大数据机器ssh登录密码
+  username: 'root'
+  password: '@znv_2014'
 

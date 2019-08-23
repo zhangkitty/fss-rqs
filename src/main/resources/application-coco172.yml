@@ -99,16 +99,16 @@ person:
 conf:
   ##配置defaultUserId后，所有接口不登录
   defaultUserId: "11000000000"
-
 #pagehelper.
 pagehelper:
   autoDialect: true
   closeConn: true
   offset-as-page-num: false
-
 echarts:
   add: 南京,北京
 spark:
   shellscript: cd /home/fss/v1.32/fssDeployUtil &&  ./fss_service.sh execNNCompare
-
+ssh: #大数据机器ssh登录密码
+  username: 'root'
+  password: '@znv_2014'
 
