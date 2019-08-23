@@ -15,7 +15,6 @@ import com.znv.fssrqs.service.UserGroupDeviceService;
 import com.znv.fssrqs.service.UserGroupService;
 import com.znv.fssrqs.service.redis.AccessDeviceService;
 import com.znv.fssrqs.util.FastJsonUtils;
-import com.znv.fssrqs.util.LicenseUtil;
 import com.znv.fssrqs.util.LocalUserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +63,7 @@ public class CameraController {
         if (userGroup != null) {
             int roleId = userGroup.getRoleID();
             List<UserGroupDeviceRelation> userGroupDevices;
-            int count = LicenseUtil.instance.getTaskCount();
+            //int count = LicenseUtil.instance.getTaskCount();
             if (roleId == 1) {
                 userGroupDevices = userGroupDeviceService.queryAdminUserDevice();
             } else {
@@ -72,9 +71,10 @@ public class CameraController {
             }
 
             if (userGroupDevices != null && userGroupDevices.size() > 0) {
-                if (userGroupDevices.size() > count) {
-                    userGroupDevices = userGroupDevices.subList(0, count);
-                }
+//                if (userGroupDevices.size() > count) {
+//                    userGroupDevices = userGroupDevices.subList(0, count);
+//                }
+                userGroupDevices.subList(0, 1000);
                 for (UserGroupDeviceRelation userGroupDevice : userGroupDevices) {
                     jsonArray.add(userGroupDevice);
                 }
