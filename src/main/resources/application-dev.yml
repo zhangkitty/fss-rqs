@@ -3,7 +3,7 @@ server:
   servlet: ##servlet默认超时时间30分钟
     session:
       timeout: 30m
-    context-path: /fss-rqs
+    context-path: /
   tomcat:
     accesslog:
       enabled: true
@@ -82,7 +82,7 @@ bigdata:
   hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
 fdfs:
   trackers:
-    - 10.45.157.59:22122
+  - 10.45.157.59:22122
 ####管理服务相关配置
 ms:
   image-store-type: 0
@@ -98,17 +98,15 @@ person:
 conf:
   ##配置defaultUserId后，所有接口不登录
   defaultUserId: "11000000000"
-
 #pagehelper.
 pagehelper:
   autoDialect: true
   closeConn: true
   offset-as-page-num: false
-
 echarts:
   add: 南京,北京
-
 spark:
-  shellscript: cd /home/fss/v1.30/fssDeployUtil &&  ./fss_service.sh execNNCompare
-
-
+  shellscript: cd /home/fss/v1.50/fssDeployUtil &&  ./fss_service.sh execNNCompare
+ssh: #大数据机器ssh登录密码
+  username: 'root'
+  password: '@znv_2014'
