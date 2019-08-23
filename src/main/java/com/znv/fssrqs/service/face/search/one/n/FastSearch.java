@@ -54,6 +54,9 @@ public class FastSearch {
 
         commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
 
+        if (commonSearchParams.getDeviceIDs() == null || commonSearchParams.getDeviceIDs().length <= 0) {
+            commonSearchParams.setIsCamera(false);
+        }
         String[] arr = new String[commonSearchParams.getFeatureValue().length];
         for(int i = 0 ;i<commonSearchParams.getFeatureValue().length;i++){
             arr[i] = (String) JSONObject.parseObject(FaceAIUnitUtils.getImageFeature(commonSearchParams.getFeatureValue()[i])).get("feature");
@@ -64,8 +67,6 @@ public class FastSearch {
         paramsWithTempId.put("params",commonSearchParams);
 
         String url = calculateIndex(params,commonSearchParams);
-
-        System.out.println(url);
 
         HttpEntity httpEntity = new NStringEntity(paramsWithTempId.toJSONString()
                 ,ContentType.APPLICATION_JSON);
