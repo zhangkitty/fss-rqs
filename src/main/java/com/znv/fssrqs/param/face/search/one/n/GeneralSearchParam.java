@@ -42,7 +42,7 @@ public class GeneralSearchParam {
     private String[] FeatureValue;
 
     //排序字段
-    private String SortFeild;
+    private String SortField;
 
     //排序方式asc-升序,desc-降序
     private String SortOrder;
