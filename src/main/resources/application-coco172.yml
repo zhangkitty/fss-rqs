@@ -77,8 +77,8 @@ hksdk:
 chongqing:
   eds-url: http://50.1.64.130:10002/pingaoEds
   image-url: http://50.1.64.130:10002/getImage
-  max-minute-flow: 10
-  max-day-flow: 1000
+  max-minute-flow: 10000
+  max-day-flow: 10000000
 bigdata:
   hdfs-url: hdfs://lv230.dct-znv.com:8020/user/fss/V120
 fdfs:
