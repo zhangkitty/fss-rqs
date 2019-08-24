@@ -83,4 +83,5 @@ public class GeneralSearchParam {
     //性别，0：未知的性别  1：男，2： 女， 9：未说明的性别
     private Integer GenderType;
 
+    private String UUID;
 }
