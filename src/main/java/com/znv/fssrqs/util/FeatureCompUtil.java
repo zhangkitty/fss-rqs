@@ -2,7 +2,10 @@ package com.znv.fssrqs.util;
 
 import com.znv.fssrqs.constant.CommonConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.util.BytesRef;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -174,6 +177,30 @@ public class FeatureCompUtil {
         return Normalize(Dot(f1, f2, offset));
     }
 
+    public float Dot(float[] f1, float[] f2, int offset) {
+
+        if (f1.length != f2.length) {
+            // throw new Exception("feature length unmatch");
+            log.debug("feature length unmatch");
+            return 0f;
+        }
+
+        if (f1.length < offset) {
+            // throw new Exception("feature length is too short");
+            log.debug("feature length is too short");
+            return 0f;
+        }
+
+        int dimCnt = (f1.length - offset);
+
+        float dist = 0.0f;
+        for (int i = offset; i < dimCnt; i++) {
+            dist += f1[i] * f2[i];
+        }
+
+        return dist;
+    }
+
     public float Dot(byte[] f1, byte[] f2, int offset) {
 
         if (f1.length != f2.length) {
@@ -203,7 +230,65 @@ public class FeatureCompUtil {
         return dist;
     }
 
-    public float Dot(float[] f1, float[] f2, int offset) {
+    public float cosDistance(double[] f1, double[] f2, int offset) {
+
+        if (f1.length != f2.length) {
+            // throw new Exception("feature length unmatch");
+            log.debug("feature length unmatch");
+            return 0f;
+        }
+
+        if (f1.length < offset) {
+            // throw new Exception("feature length is too short");
+            log.debug("feature length is too short");
+            return 0f;
+        }
+
+        int dimCnt = (f1.length - offset);
+
+        float dist = 0.0f;
+        float d1 = 0.0f;
+        float d2 = 0.0f;
+        for (int i = 0; i < dimCnt; i++) {
+            dist += f1[i] * f2[i];
+            d1 += f1[i] * f1[i];
+            d2 += f2[i] * f2[i];
+        }
+        float d = (float) Math.sqrt(d1 * d2);
+
+        return dist / d;
+    }
+
+    public float cosDistance(float[] f1, float[] f2, int offset) {
+
+        if (f1.length != f2.length) {
+            // throw new Exception("feature length unmatch");
+            log.debug("feature length unmatch");
+            return 0f;
+        }
+
+        if (f1.length < offset) {
+            // throw new Exception("feature length is too short");
+            log.debug("feature length is too short");
+            return 0f;
+        }
+
+        int dimCnt = (f1.length - offset);
+
+        float dist = 0.0f;
+        float d1 = 0.0f;
+        float d2 = 0.0f;
+        for (int i = 0; i < dimCnt; i++) {
+            dist += f1[i] * f2[i];
+            d1 += f1[i] * f1[i];
+            d2 += f2[i] * f2[i];
+        }
+        float d = (float) Math.sqrt(d1 * d2);
+
+        return dist / d;
+    }
+
+    public float Dot(double[] f1, double[] f2, int offset) {
 
         if (f1.length != f2.length) {
             // throw new Exception("feature length unmatch");
@@ -225,6 +310,136 @@ public class FeatureCompUtil {
         }
 
         return dist;
+    }
+
+    public float Dot(List<Double> f1, List<Double> f2) {
+
+        if (f1.size() != f2.size()) {
+            // throw new Exception("feature length unmatch");
+            log.debug("feature length unmatch");
+            return 0f;
+        }
+
+        int dimCnt = f1.size();
+
+        float dist = 0.0f;
+        for (int i = 0; i < dimCnt; i++) {
+            dist += f1.get(i) * f2.get(i);
+        }
+
+        return dist;
+    }
+
+    public float cosDistance(List<Double> f1, List<Double> f2) {
+
+        if (f1.size() != f2.size()) {
+            // throw new Exception("feature length unmatch");
+            log.debug("feature length unmatch");
+            return 0f;
+        }
+
+        int dimCnt = f1.size();
+
+        float dist = 0.0f;
+        float d1 = 0.0f;
+        float d2 = 0.0f;
+        for (int i = 0; i < dimCnt; i++) {
+            dist += f1.get(i) * f2.get(i);
+            d1 += f1.get(i) * f1.get(i);
+            d2 += f2.get(i) * f2.get(i);
+        }
+        float d = (float) Math.sqrt(d1 * d2);
+
+        return dist / d;
+    }
+
+    public float DotAsDouble(List<Double> f1, BytesRef feature, int offset) {
+        int f2rawlength = feature.length - offset;// 12 bytes head (support 253 model)
+        if (0 != f2rawlength % 4) {
+            // throw new Exception("feature dimension is incompeleted");
+            log.debug("feature dimension is incompeleted");
+            return 0f;
+        }
+
+        int dimCnt = f2rawlength / 4;
+        // logger.info("f1 length = "+ f1.size() + ", f2 length= "+feature.length+ ", dimCnt="+dimCnt);//hy test
+        if (f1.size() != dimCnt) {
+            log.debug("feature length unmatch");
+            return 0f;
+        }
+
+        float dist = 0.0f;
+        byte[] f2 = feature.bytes;
+        for (int i = 0; i < dimCnt; i++) {
+            dist += f1.get(i).floatValue() * Float.intBitsToFloat(GetInt(f2, offset));
+            offset += 4;
+        }
+
+        return dist;
+    }
+
+    public float Dot(List<Float> f1, BytesRef feature, int offset) {
+        int f2rawlength = feature.length - offset;// 12 bytes head (support 253 model)
+        if (0 != f2rawlength % 4) {
+            // throw new Exception("feature dimension is incompeleted");
+            log.debug("feature dimension is incompeleted");
+            return 0f;
+        }
+
+        int dimCnt = f2rawlength / 4;
+        // logger.info("f1 length = "+ f1.size() + ", f2 length= "+feature.length+ ", dimCnt="+dimCnt);//hy test
+        if (f1.size() != dimCnt) {
+            log.debug("feature length unmatch");
+            return 0f;
+        }
+
+        float dist = 0.0f;
+        byte[] f2 = feature.bytes;
+        for (int i = 0; i < dimCnt; i++) {
+            dist += f1.get(i) * Float.intBitsToFloat(GetInt(f2, offset));
+            offset += 4;
+        }
+
+        return dist;
+    }
+
+    public float cosDistance(List<Double> f1, BytesRef feature) {
+        int offset = 0;
+        int f2rawlength = feature.length;
+        if (0 != f2rawlength % 4) {
+            // throw new Exception("feature dimension is incompeleted");
+            log.debug("feature dimension is incompeleted");
+            return 0f;
+        }
+
+        int dimCnt = f2rawlength / 4;
+        // logger.info("f1 length = "+ f1.size() + ", f2 length= "+feature.length+ ", dimCnt="+dimCnt);//hy test
+        if (f1.size() != dimCnt) {
+            log.debug("feature length unmatch");
+            return 0f;
+        }
+
+        float dist = 0.0f;
+        float d1 = 0.0f;
+        float d2 = 0.0f;
+        byte[] f2 = feature.bytes;
+        for (int i = 0; i < dimCnt; i++) {
+            float ftemp = Float.intBitsToFloat(GetInt(f2, offset));
+            dist += f1.get(i).floatValue() * ftemp;
+            d1 += f1.get(i) * f1.get(i);
+            d2 += ftemp * ftemp;
+            offset += 4;
+        }
+        float d = (float) Math.sqrt(d1 * d2);
+
+        return dist / d;
+    }
+
+    public int GetInt(byte[] bytes, int offset) {
+        // return (0xff & bytes[offset]) | (0xff00 & (bytes[offset + 1] << 8)) | (0xff0000 & (bytes[offset + 2] << 16))
+        // | (0xff000000 & (bytes[offset + 3] << 24));
+        return (0xff & bytes[offset]) | ((0xff & bytes[offset + 1]) << 8) | ((0xff & bytes[offset + 2]) << 16)
+                | ((0xff & bytes[offset + 3]) << 24);
     }
 
     /**
@@ -256,11 +471,76 @@ public class FeatureCompUtil {
         return feature;
     }
 
-    public int GetInt(byte[] bytes, int offset) {
-        // return (0xff & bytes[offset]) | (0xff00 & (bytes[offset + 1] << 8)) | (0xff0000 & (bytes[offset + 2] << 16))
-        // | (0xff000000 & (bytes[offset + 3] << 24));
-        return (0xff & bytes[offset]) | ((0xff & bytes[offset + 1]) << 8) | ((0xff & bytes[offset + 2]) << 16)
-                | ((0xff & bytes[offset + 3]) << 24);
+    /**
+     * Convert feature bytes to double array with no head
+     *
+     * @param bytes binary feature with 12 bytes head
+     * @return double feature array
+     */
+    public double[] getDoubleArray(byte[] bytes, int offset) {
+        if (0 != (bytes.length - offset) % 4) {
+            // throw new Exception("feature dimension is incompeleted");
+            log.debug("feature dimension is incompeleted");
+            return new double[1];
+        }
+
+        if (bytes.length < offset) {
+            // throw new Exception("feature length is too short");
+            log.debug("feature length is too short");
+            return new double[1];
+        }
+
+        int len = (bytes.length - offset) / 4;
+        double feature[] = new double[len];
+        for (int i = 0; i < len; i++) {
+            feature[i] = Float.intBitsToFloat(GetInt(bytes, offset));
+            offset += 4;
+        }
+        return feature;
+    }
+
+    public List<Double> getDoubleList(byte[] bytes, int offset) {
+        if (0 != (bytes.length - offset) % 4) {
+            // throw new Exception("feature dimension is incompeleted");
+            log.debug("feature dimension is incompeleted");
+            return new ArrayList<Double>(1);
+        }
+
+        if (bytes.length < offset) {
+            // throw new Exception("feature length is too short");
+            log.debug("feature length is too short");
+            return new ArrayList<Double>(1);
+        }
+
+        int len = (bytes.length - offset) / 4;
+        List<Double> feature = new ArrayList<>(len);
+        for (int i = 0; i < len; i++) {
+            feature.add((double) Float.intBitsToFloat(GetInt(bytes, offset)));
+            offset += 4;
+        }
+        return feature;
+    }
+
+    public List<Float> getFloatList(byte[] bytes, int offset) {
+        if (0 != (bytes.length - offset) % 4) {
+            // throw new Exception("feature dimension is incompeleted");
+            log.debug("feature dimension is incompeleted");
+            return new ArrayList<Float>(1);
+        }
+
+        if (bytes.length < offset) {
+            // throw new Exception("feature length is too short");
+            log.debug("feature length is too short");
+            return new ArrayList<Float>(1);
+        }
+
+        int len = (bytes.length - offset) / 4;
+        List<Float> feature = new ArrayList<>(len);
+        for (int i = 0; i < len; i++) {
+            feature.add(Float.intBitsToFloat(GetInt(bytes, offset)));
+            offset += 4;
+        }
+        return feature;
     }
 
     public float Normalize(float score) {
@@ -312,7 +592,7 @@ public class FeatureCompUtil {
     }
 
     private java.util.Base64.Decoder base64decoder = java.util.Base64.getDecoder();
-    //private float[] src_points = { 0.0f, 0.128612995148f, 0.236073002219f, 0.316282004118f, 0.382878988981f, 0.441266000271f, 0.490464001894f, 1.0f };
+    // private float[] src_points = { 0.0f, 0.128612995148f, 0.236073002219f, 0.316282004118f, 0.382878988981f, 0.441266000271f, 0.490464001894f, 1.0f };
     // private float[] dst_points = { 0.0f, 0.40000000596f, 0.5f, 0.600000023842f, 0.699999988079f, 0.800000011921f, 0.899999976158f, 1.0f };
     private static float[] src_points;
     private static float[] dst_points;
