@@ -80,9 +80,10 @@ public class SSHContext {
      */
     public Vector<String> execute(String cmd) {
         Vector<String> stdout = new Vector<String>();
+        Channel channel = null;
         try {
             if (login()) {
-                Channel channel = session.openChannel("exec");
+                channel = session.openChannel("exec");
                 ((ChannelExec) channel).setCommand(cmd);
                 BufferedReader input = new BufferedReader(new InputStreamReader(channel.getInputStream()));
                 channel.connect();
@@ -100,13 +101,21 @@ public class SSHContext {
             }
         } catch (Exception e) {
             log.error("do shell script failed", e);
+        } finally {
+            if (channel != null && channel.isConnected()) {
+                channel.disconnect();
+            }
+            if (session.isConnected()) {
+                session.disconnect();
+            }
         }
         return stdout;
     }
 
     public void getRealIp(String cmd) {
+        Channel channel = null;
         try {
-            Channel channel = session.openChannel("exec");
+            channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(cmd);
             BufferedReader input = new BufferedReader(new InputStreamReader(channel.getInputStream()));
             channel.connect();
@@ -132,6 +141,10 @@ public class SSHContext {
             channel.disconnect();
         } catch (Exception e) {
             log.error("", e);
+        } finally {
+            if (channel != null && channel.isConnected()) {
+                channel.disconnect();
+            }
         }
     }
 
