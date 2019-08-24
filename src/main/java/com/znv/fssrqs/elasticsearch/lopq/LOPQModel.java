@@ -4,7 +4,7 @@ package com.znv.fssrqs.elasticsearch.lopq;
 
 import com.znv.fssrqs.elasticsearch.generated.LOPQModelParameters;
 import com.znv.fssrqs.elasticsearch.index.mapper.image.FeatureFieldMapper;
-import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
+import com.znv.fssrqs.util.FeatureCompUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

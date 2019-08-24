@@ -2,11 +2,7 @@ package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
-import com.znv.fssrqs.util.FaceAIUnitUtils;
-import com.znv.fssrqs.util.HttpUtils;
-import com.znv.fssrqs.util.ImageUtils;
-import com.znv.fssrqs.util.MD5Util;
+import com.znv.fssrqs.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;

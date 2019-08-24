@@ -2,11 +2,11 @@ package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
-import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchResultDTO;
 import com.znv.fssrqs.util.FaceAIUnitUtils;
+import com.znv.fssrqs.util.FeatureCompUtil;
 import com.znv.fssrqs.util.FormatObject;
 import com.znv.fssrqs.util.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
