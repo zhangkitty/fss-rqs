@@ -105,23 +105,10 @@ public class ExactSearch {
                 ,ContentType.APPLICATION_JSON);
 
         int coarseCodeNum = 36;
-        //计算粗分类的标签coarse_id
-        int[][] coarseCodeOrder;
-        String indexName = "";
         StringBuilder indexNamePrepix = new StringBuilder(EsBaseConfig.getInstance().getEsIndexHistoryPrefix());
-        FeatureCompUtil fc = new FeatureCompUtil();
         try {
-            // 因为featureValue是一个list，查询索引的先后顺序默认按第一个featureValue的coarse_id顺序
-            coarseCodeOrder = predictCoarseOrder(fc.getFloatArray(new Base64().decode(arr[0])), coarseCodeNum);
-        } catch (Exception e) {
-            log.error("Get Coarse Code Error: {}", e);
-            throw ZnvException.badRequest("CoarseFailed");
-        }
-
-        try {
-            for (int j = 0; j < coarseCodeOrder.length; j++) {
-                indexName = indexNamePrepix + "-" + coarseCodeOrder[j][0];
-
+            for (int j = 0; j < coarseCodeNum; j++) {
+                String indexName = indexNamePrepix + "-" + j;
                 String url = indexName + "/" + EsBaseConfig.getInstance().getEsIndexHistoryType() + "/_search/template";
 
                 Response response = elasticSearchClient.getInstance().getRestClient().performRequest("get",url,Collections.emptyMap(),httpEntity);
@@ -130,7 +117,7 @@ public class ExactSearch {
 
                 JSONArray esHits = result.getJSONObject("hits").getJSONArray("hits");
                 if (esHits.size() > 0) {
-                    log.info("ExactSearch indexName {}， result {}", indexName, esHits.size());
+                    log.info("ExactSearch indexName {}， result {}", j, esHits.size());
                     this.bulkWriteToEs(EsBaseConfig.getInstance().getEsExactSearchResult(), EsBaseConfig.getInstance().getEsIndexHistoryType(), esHits, params.getUUID(), j, indexName);
                 }
             }
@@ -222,8 +209,8 @@ public class ExactSearch {
         int size = pageSize;
         String ip = elasticSearchClient.getHost();
         Integer port = elasticSearchClient.getPort();
-        String index = "history_exact_search_result_n_project";
-        String url = String.format("%s:%s/%s/%s/%s", "http://"+ip, port, index, "history_data", "_search");
+        String index = EsBaseConfig.getInstance().getEsExactSearchResult();
+        String url = String.format("%s:%s/%s/%s/%s", "http://"+ip, port, index, EsBaseConfig.getInstance().getEsIndexHistoryType(), "_search");
         String remoteIp = host.split(":")[0];
         JSONObject params = new JSONObject();
         JSONObject bool = new JSONObject();
