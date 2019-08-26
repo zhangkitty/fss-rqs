@@ -212,9 +212,8 @@ public class CustomDeviceTreeController {
                             .equals(crumbCustomTreeEntity.getCrumb().trim())){
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("children",new ArrayList<JSONObject>());
-                        if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel")){
-                            crumbCustomTreeEntity.setIsDel(true);
-                        }
+                        crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
+                        crumbCustomTreeEntity.setIsDefault(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault"));
                         jsonObject.put("crumbCustomTreeEntity",crumbCustomTreeEntity);
                         JSONArray jsonArray = v.getJSONArray("children");
                         jsonArray.add(jsonObject);
