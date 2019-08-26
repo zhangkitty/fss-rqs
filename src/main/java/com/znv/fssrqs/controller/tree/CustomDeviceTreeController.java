@@ -182,8 +182,6 @@ public class CustomDeviceTreeController {
         }catch (Exception e){
             return ResponseVo.error("入参错误");
         }
-
-
         List<CrumbCustomTreeEntity> allList = customDeviceTreeDao.getAllCrumbList();
         List<Integer> allListIds = allList.stream().map(v->v.getId()).collect(Collectors.toList());
         List<CrumbCustomTreeEntity> insertList = arrayList.stream().filter(v->!allListIds.contains(v.getId())).collect(Collectors.toList());
@@ -210,7 +208,8 @@ public class CustomDeviceTreeController {
         }else {
             arrayList.stream().forEach(v->{
                 if(crumbCustomTreeEntity.getCrumb().contains(v.getJSONObject("crumbCustomTreeEntity").getString("crumb"))){
-                    if(v.getJSONObject("crumbCustomTreeEntity").getString("crumb").equals(crumbCustomTreeEntity.getCrumb().trim().substring(0,crumbCustomTreeEntity.getCrumb().trim().length()-2))){
+                    if((v.getJSONObject("crumbCustomTreeEntity").getString("crumb")+","+v.getJSONObject("crumbCustomTreeEntity").getString("id"))
+                            .equals(crumbCustomTreeEntity.getCrumb().trim())){
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("children",new ArrayList<JSONObject>());
                         if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel")){
@@ -220,14 +219,12 @@ public class CustomDeviceTreeController {
                         JSONArray jsonArray = v.getJSONArray("children");
                         jsonArray.add(jsonObject);
                         v.put("children",jsonArray);
-                        System.out.println(v.toJSONString());
-                    }else {
-                        if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel")){
-                            crumbCustomTreeEntity.setIsDel(true);
-                            add((ArrayList<JSONObject>) v.get("children"),crumbCustomTreeEntity);
-                        }else {
-                            add((ArrayList<JSONObject>) v.get("children"),crumbCustomTreeEntity);
-                        }
+                        return;
+                    }
+                    if(crumbCustomTreeEntity.getCrumb().contains(v.getJSONObject("crumbCustomTreeEntity").getString("crumb")+","+v.getJSONObject("crumbCustomTreeEntity").getString("id"))){
+                        crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
+                        crumbCustomTreeEntity.setIsDefault(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault"));
+                        add((ArrayList<JSONObject>) v.get("children"),crumbCustomTreeEntity);
                     }
                 }else {
                     JSONObject jsonObject = new JSONObject();
