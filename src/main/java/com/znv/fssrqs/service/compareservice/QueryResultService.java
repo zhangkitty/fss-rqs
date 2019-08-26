@@ -57,7 +57,7 @@ public class QueryResultService {
 
 
         String content = "";
-        if(queryResultParams.getRemark()==null){
+        if(queryResultParams.getRemark()==null||queryResultParams.getRemark().equals("")){
              content ="{\n" +
                      "  \"query\":{\n" +
                      "      \"bool\":{\n" +
