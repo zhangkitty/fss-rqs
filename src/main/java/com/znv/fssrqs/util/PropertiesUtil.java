@@ -108,8 +108,8 @@ public class PropertiesUtil {
         return value;
     }
 
-    //    sencetime.feature.srcPoints = {-1.0f, 0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}
-//    sencetime.feature.dstPoints = {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
+    // sencetime.feature.srcPoints = {-1.0f, 0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}
+    // sencetime.feature.dstPoints = {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
     public static Map<String, float[]> getFeaturePoints(Properties properties) throws Exception {
         Map<String, float[]> featurePoints = new ConcurrentHashMap<String, float[]>(2);
         String srcStr = get(properties, CommonConstant.SenseTime.SENSETIME_FEATURE_SRC);
