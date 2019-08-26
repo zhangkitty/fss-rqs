@@ -79,5 +79,8 @@ public class CommonSearchParams {
     private String[] excludes = new String[]{"rt_feature"};
 
     private Boolean is_excludes = true;
+
+    @JSONField(name = "is_camera")
+    private Boolean isCamera = true;
 }
 

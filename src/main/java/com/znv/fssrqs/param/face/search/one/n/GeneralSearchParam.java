@@ -42,7 +42,7 @@ public class GeneralSearchParam {
     private String[] FeatureValue;
 
     //排序字段
-    private String SortFeild;
+    private String SortField;
 
     //排序方式asc-升序,desc-降序
     private String SortOrder;
@@ -83,4 +83,5 @@ public class GeneralSearchParam {
     //性别，0：未知的性别  1：男，2： 女， 9：未说明的性别
     private Integer GenderType;
 
+    private String UUID;
 }

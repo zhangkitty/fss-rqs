@@ -16,16 +16,18 @@ public class CrumbCustomTreeEntity {
 
     private Integer parentId;
 
-    private String crumb;
+    private String crumb="";
 
-    private String nodeId;
+    private String nodeId="";
 
-    private String nodeName;
+    private String nodeName="";
 
-    private String nodeDesc;
+    private String nodeDesc="";
 
-    private Boolean isLeaf;
+    private Boolean isLeaf=false;
 
-    private Boolean isDel;
+    private Boolean isDel=false;
+
+    private Boolean isDefault=false;
 
 }

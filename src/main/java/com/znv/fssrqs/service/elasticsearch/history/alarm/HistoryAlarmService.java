@@ -47,7 +47,7 @@ public class HistoryAlarmService {
         //这个没有用了
         String remoteIp = "";
 
-     for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             JSONObject data = (JSONObject) jsonArray.get(i);
             String personId = data.getString("PersonID");
             int libId = data.getInteger("LibID");
@@ -63,9 +63,9 @@ public class HistoryAlarmService {
             // 大图
             String bigPictureUuid = data.getString("BigPictureUuid");
             if (!("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid))) {
-                data.put("BigPicture", ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
+                data.put("BigPictureUrl", ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
             } else {
-                data.put("BigPicture", "");
+                data.put("BigPictureUrl", "");
             }
         }
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(jsonArray).property("Total", searchResult.getIntValue("Total"))

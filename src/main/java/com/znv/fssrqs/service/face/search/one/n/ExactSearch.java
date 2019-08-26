@@ -2,11 +2,10 @@ package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
-import com.znv.fssrqs.util.FaceAIUnitUtils;
-import com.znv.fssrqs.util.HttpUtils;
-import com.znv.fssrqs.util.ImageUtils;
-import com.znv.fssrqs.util.MD5Util;
+import com.znv.fssrqs.config.EsBaseConfig;
+import com.znv.fssrqs.exception.ZnvException;
+import com.znv.fssrqs.util.*;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -33,11 +32,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.znv.fssrqs.elasticsearch.lopq.LOPQModel.predictCoarseOrder;
 import static com.znv.fssrqs.util.FormatObject.formatTime;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
@@ -60,45 +61,43 @@ public class ExactSearch {
     // 定义全局变量 标志查询线程状态 0：未执行 1：已执行
     private static Map<String, Integer> concurrentHashMap = new ConcurrentHashMap<String, Integer>();
 
-    public JSONObject startSearch(GeneralSearchParam params) throws IOException {
-
-        String paramsHashCode =MD5Util.encode(params.toString());
-        concurrentHashMap.put("eventId", 0);
-        log.error(concurrentHashMap.get("eventId").toString(),"添加");
+    public JSONObject startSearch(GeneralSearchParam params) throws ZnvException {
+        concurrentHashMap.put(params.getUUID(), 0);
         ExecutorService pool = Executors.newFixedThreadPool(1);
         pool.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    doSearch(params);
-                    concurrentHashMap.put("eventId", 1);
-                    log.error(concurrentHashMap.get("eventId").toString(),"跑完以后运行");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                doSearch(params);
+                concurrentHashMap.put(params.getUUID(), 1);
+                log.error(params.getUUID() + " put 1");
             }
         });
 
         JSONObject ret = new JSONObject();
-        ret.put("EventID",paramsHashCode);
+        ret.put("EventID", params.getUUID());
         return  ret;
-
     }
 
     /**
      * 查询36个搜索的结果并把结果写到"history_exact_search_result_n_project"这个索引中
      * @param params
      */
-    private void doSearch(GeneralSearchParam params) throws IOException {
+    private void doSearch(GeneralSearchParam params) throws ZnvException {
 
         CommonSearchParams commonSearchParams = modelMapper.map(params,CommonSearchParams.class);
         commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
 
         String[] arr = new String[commonSearchParams.getFeatureValue().length];
-        for(int i = 0 ;i<commonSearchParams.getFeatureValue().length;i++){
+        for (int i = 0 ;i<commonSearchParams.getFeatureValue().length;i++){
             arr[i] = (String) JSONObject.parseObject(FaceAIUnitUtils.getImageFeature(commonSearchParams.getFeatureValue()[i])).get("feature");
         }
         commonSearchParams.setFeatureValue(arr);
+
+        commonSearchParams.setIsCalcSim(true);
+        if (commonSearchParams.getDeviceIDs() == null || commonSearchParams.getDeviceIDs().length <= 0) {
+            commonSearchParams.setIsCamera(false);
+        }
+
         JSONObject paramsWithTempId = new JSONObject();
         paramsWithTempId.put("id","template_fss_arbitrarysearch");
         paramsWithTempId.put("params",commonSearchParams);
@@ -106,23 +105,25 @@ public class ExactSearch {
                 ,ContentType.APPLICATION_JSON);
 
         int coarseCodeNum = 36;
-        String url = "";
+        StringBuilder indexNamePrepix = new StringBuilder(EsBaseConfig.getInstance().getEsIndexHistoryPrefix());
+        try {
+            for (int j = 0; j < coarseCodeNum; j++) {
+                String indexName = indexNamePrepix + "-" + j;
+                String url = indexName + "/" + EsBaseConfig.getInstance().getEsIndexHistoryType() + "/_search/template";
 
+                Response response = elasticSearchClient.getInstance().getRestClient().performRequest("get",url,Collections.emptyMap(),httpEntity);
 
-        for (int i = 0; i < coarseCodeNum; i++) {
-            StringBuilder indexNamePrepix = new StringBuilder("history_fss_data_n_project_v1_2");
-            final String indexName = indexNamePrepix.append("-").append(i).toString();
-            url = indexName+"/history_data/_search/template";
+                JSONObject result = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
 
-            Response response = elasticSearchClient.getInstance().getRestClient().performRequest("get",url,Collections.emptyMap(),httpEntity);
-
-            JSONObject result = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
-
-            JSONArray esHits = result.getJSONObject("hits").getJSONArray("hits");
-            if (esHits.size() > 0) {
-                this.bulkWriteToEs("history_exact_search_result_n_project", "history_data", esHits, MD5Util.encode(params.toString()), i, indexName);
+                JSONArray esHits = result.getJSONObject("hits").getJSONArray("hits");
+                if (esHits.size() > 0) {
+                    log.info("ExactSearch indexName {}， result {}", j, esHits.size());
+                    this.bulkWriteToEs(EsBaseConfig.getInstance().getEsExactSearchResult(), EsBaseConfig.getInstance().getEsIndexHistoryType(), esHits, params.getUUID(), j, indexName);
+                }
             }
-
+        } catch (Exception e) {
+            log.error("ExactSearch Error: {}", e);
+            throw ZnvException.badRequest("EsAccessFailed", "ExactSearch Exception");
         }
     }
 
@@ -208,8 +209,8 @@ public class ExactSearch {
         int size = pageSize;
         String ip = elasticSearchClient.getHost();
         Integer port = elasticSearchClient.getPort();
-        String index = "history_exact_search_result_n_project";
-        String url = String.format("%s:%s/%s/%s/%s", "http://"+ip, port, index, "history_data", "_search");
+        String index = EsBaseConfig.getInstance().getEsExactSearchResult();
+        String url = String.format("%s:%s/%s/%s/%s", "http://"+ip, port, index, EsBaseConfig.getInstance().getEsIndexHistoryType(), "_search");
         String remoteIp = host.split(":")[0];
         JSONObject params = new JSONObject();
         JSONObject bool = new JSONObject();
@@ -277,7 +278,7 @@ public class ExactSearch {
             JSONObject data = new JSONObject();
             data.put("List", hitsArray);
             data.put("TotalSize", resultJson.getIntValue("total"));
-            data.put("QueryStatus", concurrentHashMap.get("eventId"));
+            data.put("QueryStatus", concurrentHashMap.containsKey(eventId)? concurrentHashMap.get(eventId) : 1);
             return data;
         } catch (Exception e) {
             throw e;

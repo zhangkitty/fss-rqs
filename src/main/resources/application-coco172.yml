@@ -87,28 +87,21 @@ fdfs:
 ####管理服务相关配置
 ms:
   image-store-type: 0
-#人脸特征值
-#24201#2060
-####商汤服务分析引擎配置
-sensetime:
-  feature:
-    srcPoints: {-1.0f,0.4f, 0.42f, 0.44f, 0.48f, 0.53f, 0.58f, 1.0f}
-    dstPoints: {0.0f, 0.4f, 0.5f, 0.6f, 0.7f, 0.85f, 0.95f, 1.0f}
 person:
   person-id-length: 16
 conf:
   ##配置defaultUserId后，所有接口不登录
   defaultUserId: "11000000000"
-
 #pagehelper.
 pagehelper:
   autoDialect: true
   closeConn: true
   offset-as-page-num: false
-
 echarts:
   add: 南京,北京
 spark:
-  shellscript: cd /home/fss/v1.32/fssDeployUtil &&  ./fss_service.sh execNNCompare
-
+  shellscript: cd /home/fss/v1.60/fssDeployUtil &&  ./fss_service.sh execNNCompare
+ssh: #大数据机器ssh登录密码
+  username: 'root'
+  password: '@znv_2014'
 

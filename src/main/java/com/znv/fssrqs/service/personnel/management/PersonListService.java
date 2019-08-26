@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static com.znv.fssrqs.elasticsearch.lopq.LOPQModel.predictCoarseOrder;
@@ -604,6 +605,14 @@ public class PersonListService {
         }
         if (jsonObject.containsKey("description")) {
             personObject.put("Description", jsonObject.getString("description"));
+        }
+
+        //查询静态库
+        final PersonLib personLib = personLibMapper.selectByPrimaryKey(Integer.parseInt(libId));
+        if (personLib != null) {
+            personObject.put("LibName", personLib.getLibName());
+        } else {
+            personObject.put("LibName", "");
         }
         personObject.put("InfoKind", 0);
 

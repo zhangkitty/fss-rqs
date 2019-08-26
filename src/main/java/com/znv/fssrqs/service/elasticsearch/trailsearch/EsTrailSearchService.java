@@ -1,9 +1,7 @@
 package com.znv.fssrqs.service.elasticsearch.trailsearch;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
@@ -12,16 +10,12 @@ import com.znv.fssrqs.util.FeatureCompUtil;
 import com.znv.fssrqs.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
-import org.apache.http.util.EntityUtils;
-import org.elasticsearch.client.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.naming.directory.SearchResult;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static com.znv.fssrqs.elasticsearch.lopq.LOPQModel.predictCoarseOrder;
 import static com.znv.fssrqs.util.Result.err;

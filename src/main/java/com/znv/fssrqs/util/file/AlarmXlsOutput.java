@@ -29,8 +29,8 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
     private static final CellDesc[] ALARM_CELLS = new CellDesc[]{
             make("姓名", 0, "PersonName", false),
             make("摄像头名称", 1, "CameraName", true),
-            make("抓拍小图", 2, "RtImageData", true),
-            make("抓拍大图", 3, "BigPicture", true),
+            make("抓拍小图", 2, "SmallPictureUrl", true),
+            make("抓拍大图", 3, "BigPictureUrl", true),
             make("相似度", 4, "Similarity/Score", true),
             make("名单库图片", 5, "PersonImg", true),
             make("告警类型", 6, "AlarmType", true),
@@ -40,7 +40,7 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
             make("布控单位", 10, "ControlCommunityId", false),
             make("布控警钟", 11, "ControlPoliceCategory", true),
             make("布控人姓名", 12, "ControlPersonName", true),
-            make("布控时间", 13, "ControlStart_time/ControlEndTime", true),
+            make("布控时间", 13, "ControlStartTime/ControlEndTime", true),
             make("说明", 14, "Comment", true)
     };
 

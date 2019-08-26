@@ -6,11 +6,15 @@ import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.dao.mysql.SystemInfoMapper;
 import com.znv.fssrqs.entity.mysql.MBusEntity;
 import com.znv.fssrqs.entity.mysql.SystemInfo;
+import com.znv.fssrqs.service.DiskSpaceService;
 import com.znv.fssrqs.timer.SystemDeviceLoadTask;
 import com.znv.fssrqs.util.FastJsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +35,8 @@ public class SystemController {
     private SystemDeviceLoadTask systemDeviceLoadTask;
     @Resource
     private SystemInfoMapper systemInfoMapper;
+    @Autowired
+    private DiskSpaceService diskSpaceService;
 
     /**
      * 获取系统信息
@@ -56,5 +62,15 @@ public class SystemController {
     public String getMbusIpps(HttpServletRequest request) {
         final List<MBusEntity> mBusOnlineList = systemDeviceLoadTask.getMBusOnlineList();
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(mBusOnlineList).json(), new PascalNameFilter());
+    }
+
+    /**
+     * 获取大数据磁盘信息
+     */
+    @GetMapping("/linux/disks")
+    public JSONObject getDiskInfo() {
+        final JSONObject diskCountMap = diskSpaceService.getDiskCountMap();
+        final Object totalObject = diskCountMap.get("Total");
+        return FastJsonUtils.JsonBuilder.ok().property("Total", totalObject).list((List<?>) diskCountMap.get("List")).json();
     }
 }

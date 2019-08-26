@@ -33,8 +33,10 @@ public class SSHCommandExecutor {
         JSch jsch = new JSch();
         //MyUserInfo userInfo = new MyUserInfo();
         BufferedReader input = null;
+        Session session = null;
+        Channel channel = null;
         try {
-            Session session = jsch.getSession(username, ipAddress, DEFAULT_SSH_PORT);
+            session = jsch.getSession(username, ipAddress, DEFAULT_SSH_PORT);
             session.setPassword(password);
             //1.思路1 ssh版本升级问题解决,添加加密算法支持，未解决
 //            Properties properties = new Properties();
@@ -48,7 +50,7 @@ public class SSHCommandExecutor {
             session.connect();
 
             // Create and connect channel.
-            Channel channel = session.openChannel("exec");
+            channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
 
             // channel.setInputStream(null);
@@ -82,6 +84,14 @@ public class SSHCommandExecutor {
                 }
             } catch (IOException e) {
                 log.error("", e);
+            }
+
+            if (channel != null && channel.isConnected()) {
+                channel.disconnect();
+            }
+
+            if (session != null && session.isConnected()) {
+                session.disconnect();
             }
         }
         return returnCode;

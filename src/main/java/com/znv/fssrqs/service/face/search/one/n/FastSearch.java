@@ -1,12 +1,13 @@
 package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
-import com.znv.fssrqs.elasticsearch.util.FeatureCompUtil;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchResultDTO;
 import com.znv.fssrqs.util.FaceAIUnitUtils;
+import com.znv.fssrqs.util.FeatureCompUtil;
 import com.znv.fssrqs.util.FormatObject;
 import com.znv.fssrqs.util.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +53,9 @@ public class FastSearch {
 
         commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
 
+        if (commonSearchParams.getDeviceIDs() == null || commonSearchParams.getDeviceIDs().length <= 0) {
+            commonSearchParams.setIsCamera(false);
+        }
         String[] arr = new String[commonSearchParams.getFeatureValue().length];
         for(int i = 0 ;i<commonSearchParams.getFeatureValue().length;i++){
             arr[i] = (String) JSONObject.parseObject(FaceAIUnitUtils.getImageFeature(commonSearchParams.getFeatureValue()[i])).get("feature");
@@ -64,8 +66,6 @@ public class FastSearch {
         paramsWithTempId.put("params",commonSearchParams);
 
         String url = calculateIndex(params,commonSearchParams);
-
-        System.out.println(url);
 
         HttpEntity httpEntity = new NStringEntity(paramsWithTempId.toJSONString()
                 ,ContentType.APPLICATION_JSON);
@@ -113,7 +113,7 @@ public class FastSearch {
     private String calculateIndex(GeneralSearchParam params,CommonSearchParams commonSearchParams){
         FeatureCompUtil fc = new FeatureCompUtil();
         String indexName="";
-        String indexNamePrepix = "history_fss_data_n_project_v1_2";
+        String indexNamePrepix = EsBaseConfig.getInstance().getEsIndexHistoryPrefix();
         int coarseCentersNum = 3;
 
 

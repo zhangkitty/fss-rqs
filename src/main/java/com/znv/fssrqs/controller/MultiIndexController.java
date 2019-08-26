@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
+import com.znv.fssrqs.elasticsearch.behavior.track.BehaviorTrackService;
 import com.znv.fssrqs.entity.mysql.MapTrackSearch;
 import com.znv.fssrqs.service.elasticsearch.trailsearch.EsTrailSearchService;
 import com.znv.fssrqs.service.elasticsearch.trailsearch.SearchByTrailParam;
@@ -35,6 +36,8 @@ public class MultiIndexController {
     private final Integer DEFAULT_COARSE_CODE_NUM = 3;
     @Autowired
     private EsTrailSearchService esTrailSearchService;
+    @Autowired
+    private BehaviorTrackService behaviorTrackService;
 
     /**
      * 人员地图轨迹查询
@@ -114,5 +117,13 @@ public class MultiIndexController {
             }
         }
         return ret.toJSONString();
+    }
+
+    /**
+     * 行为轨迹
+     */
+    @PostMapping("/behavior/track")
+    public JSONObject queryPromptSearchFace(@RequestHeader("Host") String host, @RequestBody String content) {
+        return behaviorTrackService.selectBehaviorTrack(host, content);
     }
 }

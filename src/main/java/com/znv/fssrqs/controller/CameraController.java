@@ -15,14 +15,12 @@ import com.znv.fssrqs.service.UserGroupDeviceService;
 import com.znv.fssrqs.service.UserGroupService;
 import com.znv.fssrqs.service.redis.AccessDeviceService;
 import com.znv.fssrqs.util.FastJsonUtils;
-import com.znv.fssrqs.util.LicenseUtil;
 import com.znv.fssrqs.util.LocalUserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,17 +52,20 @@ public class CameraController {
 
     /**
      * 查询用户下设备列表
-     *
-     * @param userId 用户ID
      */
-    @GetMapping("/VIID/APEs/{userId}")
-    public String getCameras(@PathVariable(value = "userId") String userId) {
+    @GetMapping("/VIID/APEs")
+    public String getCameras() {
         JSONArray jsonArray = new JSONArray();
+        JSONObject user = LocalUserUtil.getLocalUser();
+        if (user == null || !user.containsKey("UserId")) {
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
+        }
+        String userId = user.getString("UserId");
         UserGroup userGroup = userGroupService.queryUserGroupByUserId(userId);
         if (userGroup != null) {
             int roleId = userGroup.getRoleID();
             List<UserGroupDeviceRelation> userGroupDevices;
-            int count = LicenseUtil.instance.getTaskCount();
+            //int count = LicenseUtil.instance.getTaskCount();
             if (roleId == 1) {
                 userGroupDevices = userGroupDeviceService.queryAdminUserDevice();
             } else {
@@ -72,9 +73,10 @@ public class CameraController {
             }
 
             if (userGroupDevices != null && userGroupDevices.size() > 0) {
-                if (userGroupDevices.size() > count) {
-                    userGroupDevices = userGroupDevices.subList(0, count);
-                }
+//                if (userGroupDevices.size() > count) {
+//                    userGroupDevices = userGroupDevices.subList(0, count);
+//                }
+                userGroupDevices.subList(0, 1000);
                 for (UserGroupDeviceRelation userGroupDevice : userGroupDevices) {
                     jsonArray.add(userGroupDevice);
                 }
@@ -99,7 +101,7 @@ public class CameraController {
         if (user == null || !user.containsKey("UserId")) {
             throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
         }
-        String cameras = getCameras(user.getString("UserId"));
+        String cameras = getCameras();
         JSONObject jsonObject = JSON.parseObject(cameras, JSONObject.class);
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(jsonObject.getJSONArray("APEList")).json(), new PascalNameFilter());
     }
