@@ -9,6 +9,7 @@ import com.znv.fssrqs.vo.ResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
@@ -36,6 +37,9 @@ public class RqsExceptionHandler {
 //        }
         log.error(e.getMessage(), e);
         Locale locale = request.getLocale();
+        if(e instanceof MethodArgumentNotValidException){
+            return JSONObject.toJSONString(ResponseVo.getInstance(ErrorCodeEnum.PARAM_ILLEGAL.getCode(),((MethodArgumentNotValidException) e).getBindingResult().getFieldError().getDefaultMessage(),null));
+        }
         if (e instanceof BusinessException) {
             return JSONObject.toJSONString(ResponseVo.returnBusinessException((BusinessException) e), new PascalNameFilter());
         } else if (e instanceof BindingResult) {
