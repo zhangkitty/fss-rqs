@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.EventDao;
+import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +36,10 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
             make("名单库图片", 5, "PersonImg", true),
             make("告警类型", 6, "AlarmType", true),
             make("告警比对时间", 7, "OpTime", false),
-            make("案事件类型", 8, "ControlEventID", true),
+            make("所属静态库", 8, "ControlEventID", true),
             make("抓拍时间", 9, "EnterTime", false),
             make("布控单位", 10, "ControlCommunityId", false),
-            make("布控警钟", 11, "ControlPoliceCategory", true),
+            make("布控警种", 11, "ControlPoliceCategory", true),
             make("布控人姓名", 12, "ControlPersonName", true),
             make("布控时间", 13, "ControlStartTime/ControlEndTime", true),
             make("说明", 14, "Comment", true)
@@ -117,8 +118,9 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
             final JSONArray features = paramObject.getJSONArray("Features");
             JSONArray alarmDataList = dataObject.getJSONArray("List");
             final int size = alarmDataList.size();
-            EventDao eventDao = SpringContextUtil.getCtx().getBean(EventDao.class);
-            Map<String, Map<String, Object>> eventMap = eventDao.selectAllMap();
+            //EventDao eventDao = SpringContextUtil.getCtx().getBean(EventDao.class);
+            final LibDao libDao = SpringContextUtil.getCtx().getBean(LibDao.class);
+            Map<String, Map<String, Object>> eventMap = libDao.selectAllMap();
             for (int index = 0; index < size; index++) {
                 outputRow(sheet, startRow[0], alarmDataList.getJSONObject(index), ALARM_CELLS, features, eventMap);
                 ++startRow[0];

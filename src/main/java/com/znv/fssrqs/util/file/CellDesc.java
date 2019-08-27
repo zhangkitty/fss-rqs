@@ -135,11 +135,11 @@ public class CellDesc {
                     cell.setCellValue(op_time);
                     break;
                 case "ControlEventID":
-                    String event_id = jsonObject.getString("ControlEventID");
-                    if (!StringUtils.isEmpty(event_id)) {
-                        Map<String, Object> curEvent = eventMap.getOrDefault(event_id, null);
+                    String lib_name = jsonObject.getString("ControlEventID");
+                    if (!StringUtils.isEmpty(lib_name)) {
+                        Map<String, Object> curEvent = eventMap.getOrDefault(lib_name, null);
                         if (Objects.nonNull(curEvent)) {
-                            cell.setCellValue((String) curEvent.getOrDefault("EventName", ""));
+                            cell.setCellValue((String) curEvent.getOrDefault("LibName", ""));
                         } else {
                             cell.setCellValue("");
                         }
