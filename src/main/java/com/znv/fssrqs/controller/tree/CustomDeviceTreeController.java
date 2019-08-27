@@ -213,8 +213,12 @@ public class CustomDeviceTreeController {
                             .equals(crumbCustomTreeEntity.getCrumb().trim())){
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("children",new ArrayList<JSONObject>());
-                        crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
-                        crumbCustomTreeEntity.setIsDefault(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault"));
+                        if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel")==true){
+                            crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
+                        }
+                        if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault")==true){
+                            crumbCustomTreeEntity.setIsDefault(true);
+                        }
                         jsonObject.put("crumbCustomTreeEntity",crumbCustomTreeEntity);
                         JSONArray jsonArray = v.getJSONArray("children");
                         jsonArray.add(jsonObject);
@@ -222,8 +226,12 @@ public class CustomDeviceTreeController {
                         return;
                     }
                     if(crumbCustomTreeEntity.getCrumb().contains(v.getJSONObject("crumbCustomTreeEntity").getString("crumb")+","+v.getJSONObject("crumbCustomTreeEntity").getString("id"))){
-                        crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
-                        crumbCustomTreeEntity.setIsDefault(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault"));
+                        if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel")==true){
+                            crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
+                        }
+                        if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault")==true){
+                            crumbCustomTreeEntity.setIsDefault(true);
+                        }
                         List<JSONObject> jsonObjectArrayList = JSONObject.parseArray(v.getJSONArray("children").toJSONString(),JSONObject.class);
                         add(jsonObjectArrayList,crumbCustomTreeEntity);
                         v.put("children",jsonObjectArrayList);
