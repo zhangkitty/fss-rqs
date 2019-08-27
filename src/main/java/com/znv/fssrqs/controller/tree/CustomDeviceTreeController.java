@@ -226,6 +226,7 @@ public class CustomDeviceTreeController {
                         crumbCustomTreeEntity.setIsDefault(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault"));
                         List<JSONObject> jsonObjectArrayList = JSONObject.parseArray(v.getJSONArray("children").toJSONString(),JSONObject.class);
                         add(jsonObjectArrayList,crumbCustomTreeEntity);
+                        v.put("children",jsonObjectArrayList);
                     }
                 }else {
                     JSONObject jsonObject = new JSONObject();
