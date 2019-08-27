@@ -100,7 +100,7 @@ pagehelper:
 echarts:
   add: 南京,北京
 spark:
-  shellscript: cd /home/fss/v1.50/fssDeployUtil &&  ./fss_service.sh execNNCompare
+  shellscript: cd /home/fss/v1.60/fssDeployUtil &&  ./fss_service.sh execNNCompare
 ssh: #大数据机器ssh登录密码
   username: 'root'
   password: '@znv_2014'

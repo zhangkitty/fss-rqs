@@ -57,7 +57,7 @@ public class QueryResultService {
 
 
         String content = "";
-        if(queryResultParams.getRemark()==null){
+        if(queryResultParams.getRemark()==null||queryResultParams.getRemark().equals("")){
              content ="{\n" +
                      "  \"query\":{\n" +
                      "      \"bool\":{\n" +
@@ -98,7 +98,7 @@ public class QueryResultService {
                     "            {\n" +
                     "              \"term\": {\n" +
                     "                \"remark\": {\n" +
-                    "                  \"value\": ${remark}\n" +
+                    "                  \"value\": \"${remark}\"\n" +
                     "                }\n" +
                     "              }\n" +
                     "            },\n" +
@@ -132,9 +132,12 @@ public class QueryResultService {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject = t.getJSONObject("_source");
                     jsonObject.put("id",t.getString("_id"));
-                    String str = t.getJSONObject("_source").getString("person_id1")+"&"+t.getJSONObject("_source").getString("lib_id1");
-                    String pic= ImageUtils.getImgUrl("","get_fss_personimage",Base64Util.encodeString(str));
-                    jsonObject.put("url",pic);
+                    String str1 = t.getJSONObject("_source").getString("person_id1")+"&"+t.getJSONObject("_source").getString("lib_id1");
+                    String str2 = t.getJSONObject("_source").getString("person_id2")+"&"+t.getJSONObject("_source").getString("lib_id2");
+                    String pic1= ImageUtils.getImgUrl("","get_fss_personimage",Base64Util.encodeString(str1));
+                    String pic2= ImageUtils.getImgUrl("","get_fss_personimage",Base64Util.encodeString(str2));
+                    jsonObject.put("url1",pic1);
+                    jsonObject.put("url2",pic1);
                     return jsonObject;
                 })
                 .collect(ArrayList::new,(list1,value)->list1.add(value),(list1,list2)->list1.addAll(list2));
