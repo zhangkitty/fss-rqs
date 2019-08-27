@@ -13,6 +13,7 @@ import com.znv.fssrqs.vo.ResponseVo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,7 +198,7 @@ public class CustomDeviceTreeController {
     }
 
 
-    private void add(ArrayList<JSONObject> arrayList,CrumbCustomTreeEntity crumbCustomTreeEntity){
+    private void add(List<JSONObject> arrayList,CrumbCustomTreeEntity crumbCustomTreeEntity){
         if(
             arrayList.size()==0||crumbCustomTreeEntity.getCrumb().trim().length()==1
         ){
@@ -223,7 +224,8 @@ public class CustomDeviceTreeController {
                     if(crumbCustomTreeEntity.getCrumb().contains(v.getJSONObject("crumbCustomTreeEntity").getString("crumb")+","+v.getJSONObject("crumbCustomTreeEntity").getString("id"))){
                         crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
                         crumbCustomTreeEntity.setIsDefault(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault"));
-                        add((ArrayList<JSONObject>) v.get("children"),crumbCustomTreeEntity);
+                        List<JSONObject> jsonObjectArrayList = JSONObject.parseArray(v.getJSONArray("children").toJSONString(),JSONObject.class);
+                        add(jsonObjectArrayList,crumbCustomTreeEntity);
                     }
                 }else {
                     JSONObject jsonObject = new JSONObject();
@@ -234,6 +236,26 @@ public class CustomDeviceTreeController {
             });
 
         }
+    }
+
+    public static <T> List<T> convertJSONArrayToTypeList(JSONArray jsonArray,Class<T> clz){
+        if (CollectionUtils.isEmpty(jsonArray)){
+            return new ArrayList<T>();
+        }
+        List<T> result = new ArrayList<T>(jsonArray.size());
+        jsonArray.forEach(element->{
+            // 基础类型不可以转化为JSONObject，需要特殊处理
+            if (element instanceof String
+                    || element instanceof Number
+                    || element instanceof Boolean
+                    ){
+                result.add((T)element);
+            }else {
+                T t = JSONObject.toJavaObject((JSONObject)element, clz);
+                result.add(t);
+            }
+        });
+        return result;
     }
 
 
