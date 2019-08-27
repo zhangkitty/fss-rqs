@@ -216,9 +216,7 @@ public class CustomDeviceTreeController {
                         if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel")==true){
                             crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
                         }
-                        if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault")==true){
-                            crumbCustomTreeEntity.setIsDefault(true);
-                        }
+                        crumbCustomTreeEntity.setIsDefault(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault"));
                         jsonObject.put("crumbCustomTreeEntity",crumbCustomTreeEntity);
                         JSONArray jsonArray = v.getJSONArray("children");
                         jsonArray.add(jsonObject);
@@ -229,9 +227,7 @@ public class CustomDeviceTreeController {
                         if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel")==true){
                             crumbCustomTreeEntity.setIsDel(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDel"));
                         }
-                        if(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault")==true){
-                            crumbCustomTreeEntity.setIsDefault(true);
-                        }
+                        crumbCustomTreeEntity.setIsDefault(v.getJSONObject("crumbCustomTreeEntity").getBoolean("isDefault"));
                         List<JSONObject> jsonObjectArrayList = JSONObject.parseArray(v.getJSONArray("children").toJSONString(),JSONObject.class);
                         add(jsonObjectArrayList,crumbCustomTreeEntity);
                         v.put("children",jsonObjectArrayList);
