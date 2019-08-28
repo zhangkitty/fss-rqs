@@ -59,7 +59,7 @@ public class HistoryAlarmService {
             // 获取告警图片
             String smallUuid = data.getString("ImgUrl");
             String imgUrl = ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
-            data.put("RtImageData", imgUrl);
+            data.put("SmallPictureUrl", imgUrl);
             // 大图
             String bigPictureUuid = data.getString("BigPictureUuid");
             if (!("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid))) {

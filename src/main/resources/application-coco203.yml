@@ -30,7 +30,7 @@ spring:
       initial-size: 10
     hbase:
       driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
-      jdbc-url: jdbc:phoenix:lv112.dct-znv.com:2181:/hbase
+      jdbc-url: jdbc:phoenix:lv201.dct-znv.com:2181:/hbase
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
@@ -64,7 +64,7 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: lv112.dct-znv.com
+  host: lv201.dct-znv.com
   port: 9200
   clusterName: face.dct-znv.com-es
 #海康SDK
@@ -80,7 +80,7 @@ chongqing:
   max-minute-flow: 10000
   max-day-flow: 1000000
 bigdata:
-  hdfs-url: hdfs://lv112.dct-znv.com:8020/user/fss/V120
+  hdfs-url: hdfs://lv201.dct-znv.com:8020/user/fss/V120
 fdfs:
   trackers:
   - 10.45.157.59:22122
