@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
 import com.znv.fssrqs.service.redis.AccessPrecintService;
-import com.znv.fssrqs.util.LicenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
