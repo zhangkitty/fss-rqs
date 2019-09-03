@@ -57,7 +57,7 @@ public class DeviceService {
             List<UserGroupDeviceRelation> userGroupDevices = null;
             //授权摄像机个数
             //int count = LicenseUtil.instance.getTaskCount();
-            int count=1000;
+            int count = 1000;
 //            if (count == 0) {
 //                return retCameras;
 //            }
@@ -135,7 +135,10 @@ public class DeviceService {
         userGroupDeviceObject.put("IconSkin", "icon-camera-fss");
         retCameras.add(userGroupDeviceObject);
         //区域
-        JSONObject precinct = precintMap.get(precinctId);
+        JSONObject precinct = precintMap.get(precinctId.trim());
+        if (precinct == null) {
+            precinct = (JSONObject) globalPrecincts.get(precinctId).clone();
+        }
         String upPrecintId = precinct.getString("UpPrecinctId");
         //统计每个区域的设备数量
         int total = precinct.getInteger("Total") == null ? 0 : precinct.getInteger("Total");
