@@ -20,4 +20,6 @@ public interface MUserDao {
     int upCfgSaveSystemLog(Map<String, Object> params);
 
     MUserEntity selectById(@Param("userId") String userId);
+
+    Integer updateUserInfo(@Param("userId") String userId,@Param("password") String password);
 }
