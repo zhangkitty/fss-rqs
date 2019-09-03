@@ -138,6 +138,7 @@ public class DeviceService {
         JSONObject precinct = precintMap.get(precinctId.trim());
         if (precinct == null) {
             precinct = (JSONObject) globalPrecincts.get(precinctId).clone();
+            precinctMap.put(precinctId, precinct);
         }
         String upPrecintId = precinct.getString("UpPrecinctId");
         //统计每个区域的设备数量
