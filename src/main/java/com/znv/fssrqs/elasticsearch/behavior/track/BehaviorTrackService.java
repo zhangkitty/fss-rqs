@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 import static com.znv.fssrqs.elasticsearch.lopq.LOPQModel.predictCoarseOrder;
@@ -97,6 +99,9 @@ public class BehaviorTrackService {
         searchParams.put("sortField", fastSearchParam.getSortField());
         searchParams.put("sortOrder", fastSearchParam.getSortOrder());
         int from = ParamUtils.getPageOffset(fastSearchParam.getCurrentPage(), fastSearchParam.getPageSize());
+        if (from + fastSearchParam.getPageSize() >= 10000) {
+            throw ZnvException.badRequest("EsDefaultSplitPageError");
+        }
         searchParams.put("from", from);
         searchParams.put("size", fastSearchParam.getPageSize());
         //排除字段
@@ -134,13 +139,14 @@ public class BehaviorTrackService {
 
         StringBuffer sb = new StringBuffer();
         sb.append(indexNameSb).append('/').append(EsBaseConfig.getInstance().getEsIndexHistoryType()).append("/_search/template");
-        Result<JSONObject, String> result = null;
+        Map<String, Result> map = new HashMap<>();
         try {
             CountDownLatch latch = new CountDownLatch(1);
-            executorService.execute(new Runnable() {
+            executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    elasticSearchClient.postRequest(sb.toString(), queryParams);
+                    Result<JSONObject, String> result = elasticSearchClient.postRequest(sb.toString(), queryParams);
+                    map.put("result", result);
                     latch.countDown();
                 }
             });
@@ -151,6 +157,8 @@ public class BehaviorTrackService {
         } catch (InterruptedException e) {
             log.error("thread is interrupted:", e);
         }
+
+        Result<JSONObject, String> result = map.get("result");
         if (result.isErr()) {
             String value = result.error();
             throw ZnvException.error(CommonConstant.StatusCode.INTERNAL_ERROR, value);
@@ -210,14 +218,14 @@ public class BehaviorTrackService {
             outHit.put("CoarseID", source.getInteger("coarse_id"));
             String smallUuid = source.getString("img_url");
             if ("null".equals(smallUuid) || StringUtils.isEmpty(smallUuid)) {
-                outHit.put("imgUrl", "");
+                outHit.put("SmallPictureUrl", "");
             } else {
-                outHit.put("imgUrl", ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid));
+                outHit.put("SmallPictureUrl", ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid));
             }
 
             String bigPictureUuid = source.getString("big_picture_uuid");
             if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)) {
-                outHit.put("bigPictureUrl", "");
+                outHit.put("BigPictureUrl", "");
             } else {
                 outHit.put("BigPictureUrl", ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
             }

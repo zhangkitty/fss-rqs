@@ -2,7 +2,6 @@ package com.znv.fssrqs.exception;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.util.I18nUtils;
 import com.znv.fssrqs.vo.ResponseVo;
@@ -63,7 +62,7 @@ public class RqsExceptionHandler {
         } else if (e instanceof NullPointerException) {
             return error("空指针异常").json().toString();
         } else {
-            return JSONObject.toJSONString(ResponseVo.returnUndefindedException());
+            return error(e.getClass().getName() + ":" + e.getMessage()).json().toString();
         }
     }
 }

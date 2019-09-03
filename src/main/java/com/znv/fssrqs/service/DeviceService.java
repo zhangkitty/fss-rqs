@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
 import com.znv.fssrqs.service.redis.AccessPrecintService;
-import com.znv.fssrqs.util.LicenseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class DeviceService {
     public JSONArray getUserDeviceTree(String userId) {
         JSONArray retCameras = new JSONArray();
         //区域
-        Map<String, JSONObject> precinctMap = new HashMap<>();
+        Map<String, JSONObject> showPrecinctMap = new HashMap<>();
         JSONObject rootJson = new JSONObject();
         //用户组
         UserGroup userGroup = userGroupService.queryUserGroupByUserId(userId);
@@ -58,7 +57,7 @@ public class DeviceService {
             List<UserGroupDeviceRelation> userGroupDevices = null;
             //授权摄像机个数
             //int count = LicenseUtil.instance.getTaskCount();
-            int count=1000;
+            int count = 1000;
 //            if (count == 0) {
 //                return retCameras;
 //            }
@@ -75,6 +74,7 @@ public class DeviceService {
                 rootJson.put("Name", userGroup.getUserGroupName() + "(" + userGroupDevices.size() + ")");
                 //用户所属分组ID
                 Integer userGroupId = userGroup.getUserGroupID();
+                //区域ID
                 Map<String, JSONObject> precintMap = accessPrecintService.getAllPrecint();
                 precintMap.forEach(new BiConsumer<String, JSONObject>() {
                     @Override
@@ -94,10 +94,10 @@ public class DeviceService {
                         continue;
                     }
                     //拼接设备树
-                    this.splitJointDeviceTree(userGroupDeviceObject, retCameras, precinctMap, userGroupId, precintMap, globalPrecincts);
+                    this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
                 }
 
-                for (Map.Entry<String, JSONObject> entry : precinctMap.entrySet()) {
+                for (Map.Entry<String, JSONObject> entry : showPrecinctMap.entrySet()) {
                     String precinctId = entry.getKey();
                     if (precintMap.containsKey(precinctId)) {
                         JSONObject precint = precintMap.get(precinctId);
@@ -111,9 +111,11 @@ public class DeviceService {
                 }
             }
 
-            retCameras.addAll(precinctMap.values());
+            //剔除监控中心
+            showPrecinctMap.remove("010100000");
+            retCameras.addAll(showPrecinctMap.values());
         }
-        precinctMap.clear();
+        showPrecinctMap.clear();
         return retCameras;
     }
 
@@ -121,10 +123,12 @@ public class DeviceService {
     /**
      * @param userGroupDeviceObject 用户组和设备关系
      * @param retCameras            返回摄像机
-     * @param precinctMap
+     * @param showPrecinctMap
      * @param userGroupId
      */
-    private void splitJointDeviceTree(JSONObject userGroupDeviceObject, JSONArray retCameras, Map<String, JSONObject> precinctMap, int userGroupId, Map<String, JSONObject> precintMap, Map<String, JSONObject> globalPrecincts) {
+    private void splitJointDeviceTree(JSONObject userGroupDeviceObject, JSONArray retCameras,
+                                      Map<String, JSONObject> showPrecinctMap, int userGroupId,
+                                      Map<String, JSONObject> precintMap, Map<String, JSONObject> globalPrecincts) {
         //区域ID
         String precinctId = userGroupDeviceObject.getString("PrecinctID");
         userGroupDeviceObject.put("PID", precinctId);
@@ -135,7 +139,7 @@ public class DeviceService {
         //图标皮肤
         userGroupDeviceObject.put("IconSkin", "icon-camera-fss");
         retCameras.add(userGroupDeviceObject);
-        //区域
+        //所有需要统计的区域Map
         JSONObject precinct = precintMap.get(precinctId);
         String upPrecintId = precinct.getString("UpPrecinctId");
         //统计每个区域的设备数量
@@ -143,16 +147,17 @@ public class DeviceService {
         precinct.put("Total", total + 1);
         //保存最新数据
         this.updateParentsTotal(upPrecintId, precintMap);
-        if ("010100000".equals(userGroupDeviceObject.getString("PrecinctId"))) {
+        //监控中心区域ID,替换为用户组ID
+        if ("010100000".equals(precinctId.trim())) {
             userGroupDeviceObject.put("PID", userGroupId);
             return;
         }
 
-        //区域区域ID
-        if (precinctMap.containsKey(precinct.getString("PrecinctId"))) {
+        //区域ID
+        if (showPrecinctMap.containsKey(precinct.getString("PrecinctId"))) {
             precinct.put("Name", precinct.get("PrecinctName"));
         } else {
-            findPrecinct(precinctMap, userGroupDeviceObject.getString("PID"), userGroupId, globalPrecincts);
+            findPrecinct(showPrecinctMap, userGroupDeviceObject.getString("PID"), userGroupId, globalPrecincts);
         }
     }
 

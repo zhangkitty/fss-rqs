@@ -28,7 +28,7 @@ public class AccessPrecintService {
         final Set<String> keys = redisTemplateService.getSet(TABLE_NAME);
         final List<String> list = redisTemplateService.multiGet(keys);
         Map<String, JSONObject> map = Maps.newHashMap();
-        list.parallelStream().forEach(object -> {
+        list.stream().forEach(object -> {
             final JSONObject precinct = JSON.toJavaObject(JSON.parseObject(object), JSONObject.class);
             JSONObject jsonObject = new JSONObject();
             for (Map.Entry<String, Object> entry : precinct.entrySet()) {

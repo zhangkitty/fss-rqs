@@ -125,6 +125,7 @@ public class CommonConstant {
         public static final String INDEX_ALARM_TYPE = "fss.es.index.alarm.type";
         public static final String ES_SEARCH_TEMPLATE_ALARM_SEARCH_ID = "fss.es.search.template.alarmsearch.id";
         public static final String ES_SEARCH_TEMPLATE_PERSONLIST_GROUP_ID = "fss.es.search.template.personlist.group.id";
+        public static final String ES_SEARCH_TEMPLATE_HISTORY_CAMEMA_TAKE_COUNT = "template_history_camera_takeph_count";
         public static final String INDEX_LOG_NAME = "fss.es.index.log.name";
         public static final String INDEX_LOG_TYPE = "fss.es.index.log.type";
     }
