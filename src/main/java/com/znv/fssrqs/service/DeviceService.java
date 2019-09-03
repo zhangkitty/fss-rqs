@@ -142,7 +142,8 @@ public class DeviceService {
         precinct.put("Total", total + 1);
         //保存最新数据
         this.updateParentsTotal(upPrecintId, precintMap);
-        if ("010100000".equals(userGroupDeviceObject.getString("PrecinctID"))) {
+        //监控中心区域ID,替换为用户组ID
+        if ("010100000".equals(precinctId)) {
             userGroupDeviceObject.put("PID", userGroupId);
             return;
         }
