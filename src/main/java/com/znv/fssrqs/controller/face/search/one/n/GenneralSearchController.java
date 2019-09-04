@@ -65,6 +65,36 @@ public class GenneralSearchController {
                     fc.reversalNormalize(generalSearchParam.getSimilarityDegree().floatValue() * 0.01f));
         }
         JSONObject jsonObject = new JSONObject();
+        if("-1".equals(generalSearchParam.getAgeLowerLimit())){
+            generalSearchParam.setAgeLowerLimit("0");
+        }
+        if("-1".equals(generalSearchParam.getAgeUpLimit())){
+            generalSearchParam.setAgeUpLimit(null);
+        }
+        if("-1".equals(generalSearchParam.getGlass())){
+            generalSearchParam.setGlass(null);
+        }
+        if("-1".equals(generalSearchParam.getRespirator())){
+            generalSearchParam.setRespirator(null);
+        }
+        if("-1".equals(generalSearchParam.getSkinColor())){
+            generalSearchParam.setSkinColor(null);
+        }
+        if("-1".equals(generalSearchParam.getMustache())){
+            generalSearchParam.setMustache(null);
+        }
+        if("-1".equals(generalSearchParam.getEmotion())){
+            generalSearchParam.setEmotion(null);
+        }
+        if("-1".equals(generalSearchParam.getEyeOpen())){
+            generalSearchParam.setEyeOpen(null);
+        }
+        if("-1".equals(generalSearchParam.getMouthOpen())){
+            generalSearchParam.setMouthOpen(null);
+        }
+        if("-1".equals(generalSearchParam.getGenderType())){
+            generalSearchParam.setGenderType(null);
+        }
         switch (generalSearchParam.getQueryType()) {
             case 1:
                 jsonObject = fastSearch.fastSearch(host,generalSearchParam);
@@ -76,37 +106,6 @@ public class GenneralSearchController {
                 }
                 if (generalSearchParam.getSimilarityDegree() == null) {
                     throw ZnvException.badRequest("RequestException", "SimilarityDegree");
-                }
-
-                if("-1".equals(generalSearchParam.getAgeLowerLimit())){
-                    generalSearchParam.setAgeLowerLimit("0");
-                }
-                if("-1".equals(generalSearchParam.getAgeUpLimit())){
-                    generalSearchParam.setAgeUpLimit(null);
-                }
-                if("-1".equals(generalSearchParam.getGlass())){
-                    generalSearchParam.setGlass(null);
-                }
-                if("-1".equals(generalSearchParam.getRespirator())){
-                    generalSearchParam.setRespirator(null);
-                }
-                if("-1".equals(generalSearchParam.getSkinColor())){
-                    generalSearchParam.setSkinColor(null);
-                }
-                if("-1".equals(generalSearchParam.getMustache())){
-                    generalSearchParam.setMustache(null);
-                }
-                if("-1".equals(generalSearchParam.getEmotion())){
-                    generalSearchParam.setEmotion(null);
-                }
-                if("-1".equals(generalSearchParam.getEyeOpen())){
-                    generalSearchParam.setEyeOpen(null);
-                }
-                if("-1".equals(generalSearchParam.getMouthOpen())){
-                    generalSearchParam.setMouthOpen(null);
-                }
-                if("-1".equals(generalSearchParam.getGenderType())){
-                    generalSearchParam.setGenderType(null);
                 }
                 generalSearchParam.setUUID(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 generalSearchParam.setUUID(MD5Util.encode(generalSearchParam.toString()));
