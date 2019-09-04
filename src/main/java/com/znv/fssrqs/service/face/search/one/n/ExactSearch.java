@@ -235,6 +235,9 @@ public class ExactSearch {
             // ret.put("queryStatus", concurrentHashMap.get(eventId));
             JSONArray hitsJsonarray = resultJson.getJSONArray("hits");
             JSONArray hitsArray = new JSONArray();
+
+            JSONObject data = new JSONObject();
+            data.put("QueryStatus", concurrentHashMap.containsKey(eventId)? concurrentHashMap.get(eventId) : 1);
             for (Object object : hitsJsonarray) {
                 JSONObject retJson = (JSONObject) object;
                 JSONObject o = retJson.getJSONObject("_source");
@@ -275,10 +278,10 @@ public class ExactSearch {
 
                 hitsArray.add(resObj);
             }
-            JSONObject data = new JSONObject();
+
             data.put("List", hitsArray);
             data.put("TotalSize", resultJson.getIntValue("total"));
-            data.put("QueryStatus", concurrentHashMap.containsKey(eventId)? concurrentHashMap.get(eventId) : 1);
+
             return data;
         } catch (Exception e) {
             throw e;
