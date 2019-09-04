@@ -10,6 +10,7 @@ import com.znv.fssrqs.elasticsearch.homepage.AlarmTopLibCountService;
 import com.znv.fssrqs.elasticsearch.homepage.DeviceCaptureService;
 import com.znv.fssrqs.elasticsearch.homepage.HistoryAlarmDataService;
 import com.znv.fssrqs.elasticsearch.homepage.TopTenDeviceAlarmService;
+import com.znv.fssrqs.service.DeviceService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,8 @@ public class HomeController {
     private LibDao libDao;
     @Autowired
     private ControlCameraMapper controlCameraMapper;
+    @Autowired
+    private DeviceService deviceService;
 
     /**
      * 南岸库告警总数接口
@@ -123,5 +126,11 @@ public class HomeController {
     public JSONObject getControlTasks() {
         int count = controlCameraMapper.count();
         return FastJsonUtils.JsonBuilder.ok().property("Total", count).json();
+    }
+
+    @GetMapping("/device/num/statistics")
+    public JSONObject getDeviceStatistics() {
+        final JSONObject deviceStatistics = deviceService.getDeviceStatistics();
+        return FastJsonUtils.JsonBuilder.ok().object(deviceStatistics).json();
     }
 }

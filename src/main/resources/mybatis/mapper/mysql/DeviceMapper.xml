@@ -20,21 +20,27 @@
         <result column="login_state" jdbcType="INTEGER" property="LoginState"/>
     </resultMap>
 
-    <select id="getMBus"  resultMap="MBusResultMap">
+    <select id="getMBus" resultMap="MBusResultMap">
 		SELECT a.device_id,a.device_name,a.device_type,b.service_addr,b.private_service_addr,b.http_port,b.login_state
 		FROM t_cfg_device a,t_cfg_nmsdevice b
 		WHERE a.device_id=b.device_id AND a.device_type=119;
     </select>
 
-    <select id="getStaticAnalysisUnit"  resultMap="AnalysisUnitResultMap">
+    <select id="getStaticAnalysisUnit" resultMap="AnalysisUnitResultMap">
 		SELECT a.device_id,a.device_name,a.device_type,b.service_ip,b.http_port,b.login_state
 		FROM t_cfg_device a,t_scim_analysis_unit b
 		WHERE a.device_id=b.device_id AND a.device_type=8902;
     </select>
 
-    <select id="getDynamicAnalysisUnit"  resultMap="AnalysisUnitResultMap">
+    <select id="getDynamicAnalysisUnit" resultMap="AnalysisUnitResultMap">
 		SELECT a.device_id,a.device_name,a.device_type,b.service_ip,b.http_port,b.login_state
 		FROM t_cfg_device a,t_scim_analysis_unit b
 		WHERE a.device_id=b.device_id AND a.device_type=8901;
+    </select>
+
+    <select id="getDeviceCount" statementType="CALLABLE" resultType="java.util.HashMap">
+    {
+         CALL up_scim_device_statis()
+    }
     </select>
 </mapper>
