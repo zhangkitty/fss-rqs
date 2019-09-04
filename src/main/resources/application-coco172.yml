@@ -38,7 +38,7 @@ spring:
     host: 10.45.152.172
     port: 6379
     #连接超时时间(毫秒)
-    timeout: 100ms
+    timeout: 10000ms
     #password: redis
     jedis:
       pool:

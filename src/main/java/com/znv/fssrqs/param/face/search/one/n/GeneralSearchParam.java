@@ -60,28 +60,28 @@ public class GeneralSearchParam {
     private String AgeUpLimit;
 
     //眼镜，0：没戴，1：普通眼镜，2：太阳镜
-    private Integer Glass;
+    private String Glass;
 
     //是否戴口罩，0：否，1：是
-    private Integer Respirator;
+    private String Respirator;
 
     //肤色，0：黄种人，1：黑种人，2：白种人，3：维族人
-    private Integer SkinColor;
+    private String SkinColor;
 
     //胡子，0：无，1：有
-    private Integer Mustache;
+    private String Mustache;
 
     //表情，0-9: 0:生气，1：平静，2：困惑，3：厌恶，4：高兴，5：悲伤，6：惊恐，7：惊喜，8：斜视，9：尖叫
-    private Integer Emotion;
+    private String Emotion;
 
     // 睁眼，0：无，1：有
-    private Integer EyeOpen;
+    private String EyeOpen;
 
     // 张嘴，0：无，1：有
-    private Integer MouthOpen;
+    private String MouthOpen;
 
     //性别，0：未知的性别  1：男，2： 女， 9：未说明的性别
-    private Integer GenderType;
+    private String GenderType;
 
     private String UUID;
 }
