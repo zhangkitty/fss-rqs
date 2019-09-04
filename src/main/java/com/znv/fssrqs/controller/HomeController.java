@@ -122,6 +122,6 @@ public class HomeController {
     @GetMapping("/control/task/num")
     public JSONObject getControlTasks() {
         int count = controlCameraMapper.count();
-        return FastJsonUtils.JsonBuilder.ok().property("count", count).json();
+        return FastJsonUtils.JsonBuilder.ok().property("Total", count).json();
     }
 }
