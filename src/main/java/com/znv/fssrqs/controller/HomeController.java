@@ -8,6 +8,7 @@ import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.elasticsearch.homepage.AlarmTopLibCountService;
 import com.znv.fssrqs.elasticsearch.homepage.DeviceCaptureService;
 import com.znv.fssrqs.elasticsearch.homepage.HistoryAlarmDataService;
+import com.znv.fssrqs.elasticsearch.homepage.TopTenDeviceAlarmService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class HomeController {
     private HistoryAlarmDataService historyAlarmDataService;
     @Autowired
     private DeviceCaptureService deviceCaptureService;
+    @Autowired
+    private TopTenDeviceAlarmService topTenDeviceAlarmService;
     @Resource
     private LibDao libDao;
 
@@ -100,7 +103,16 @@ public class HomeController {
      * 0-日,1-自然周,2-自然月
      */
     @PostMapping("/device/capture/statistics")
-    public JSONObject getHistoryDeviceCapture(@RequestBody JSONObject params) {
+    public JSONObject getHistoryDeviceCapture(@RequestBody String body) {
+        final JSONObject params = JSON.parseObject(body);
         return deviceCaptureService.getDeviceCaptureList(params);
+    }
+
+    /**
+     * 查询摄像机前十告警数统计
+     */
+    @GetMapping("/top/ten/device/alarms")
+    public JSONObject top10DeviceAlarm(@RequestParam Map<String, Object> params) {
+        return topTenDeviceAlarmService.top10DeviceAlarms(params);
     }
 }
