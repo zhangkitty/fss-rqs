@@ -24,12 +24,12 @@ import javax.servlet.http.HttpSession;
  * @Description 用户管理
  */
 @RestController
-@RequestMapping(value="/user", produces = { "application/json;charset=UTF-8" })
+@RequestMapping(value = "/user", produces = {"application/json;charset=UTF-8"})
 public class UserController {
     @Resource
     private MUserDao userDao;
 
-    @GetMapping("/")
+    @GetMapping
     public String getUserById(HttpServletRequest request) {
         final JSONObject localUser = LocalUserUtil.getLocalUser();
         if (localUser == null || !localUser.containsKey("UserId")) {
@@ -41,15 +41,15 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public ResponseVo fixPassWord(HttpServletRequest request, @RequestBody JSONObject requestBody){
+    public ResponseVo fixPassWord(HttpServletRequest request, @RequestBody JSONObject requestBody) {
         HttpSession session = request.getSession();
         JSONObject userLoginObject = (JSONObject) session.getAttribute("UserLogin");
         String userId = userLoginObject.getString("UserId");
-        Integer result = userDao.updateUserInfo(userId,requestBody.getString("password"));
+        Integer result = userDao.updateUserInfo(userId, requestBody.getString("password"));
 
-        if(result>0){
+        if (result > 0) {
             return ResponseVo.success(null);
-        }else {
+        } else {
             return ResponseVo.error("失败");
         }
     }
