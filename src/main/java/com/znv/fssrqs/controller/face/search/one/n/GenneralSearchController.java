@@ -14,6 +14,7 @@ import com.znv.fssrqs.util.FeatureCompUtil;
 import com.znv.fssrqs.util.MD5Util;
 import com.znv.fssrqs.util.TimingCounter;
 import com.znv.fssrqs.vo.ResponseVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(produces = { "application/json;charset=UTF-8" })
+@Slf4j
 public class GenneralSearchController {
 
     @Autowired
@@ -129,6 +131,8 @@ public class GenneralSearchController {
         jsonObject.put("SortField",exactSearchResultParams.getSortField());
         jsonObject.put("SortOrder",exactSearchResultParams.getSortOrder());
         JSONObject ret = exactSearch.queryExactSearchRet(host,jsonObject);
+        log.info(ret.toJSONString());
+
 
         return  ResponseVo.success(ret);
 
