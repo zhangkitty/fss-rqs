@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
+import com.znv.fssrqs.dao.mysql.ControlCameraMapper;
 import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.elasticsearch.homepage.AlarmTopLibCountService;
 import com.znv.fssrqs.elasticsearch.homepage.DeviceCaptureService;
@@ -39,6 +40,8 @@ public class HomeController {
     private TopTenDeviceAlarmService topTenDeviceAlarmService;
     @Resource
     private LibDao libDao;
+    @Autowired
+    private ControlCameraMapper controlCameraMapper;
 
     /**
      * 南岸库告警总数接口
@@ -114,5 +117,11 @@ public class HomeController {
     @GetMapping("/top/ten/device/alarms")
     public JSONObject top10DeviceAlarm(@RequestParam Map<String, Object> params) {
         return topTenDeviceAlarmService.top10DeviceAlarms(params);
+    }
+
+    @GetMapping("/control/task/num")
+    public JSONObject getControlTasks() {
+        int count = controlCameraMapper.count();
+        return FastJsonUtils.JsonBuilder.ok().property("count", count).json();
     }
 }
