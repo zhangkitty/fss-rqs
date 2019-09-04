@@ -29,7 +29,7 @@ public class UserController {
     @Resource
     private MUserDao userDao;
 
-    @GetMapping("/user")
+    @GetMapping("/")
     public String getUserById(HttpServletRequest request) {
         final JSONObject localUser = LocalUserUtil.getLocalUser();
         if (localUser == null || !localUser.containsKey("UserId")) {
