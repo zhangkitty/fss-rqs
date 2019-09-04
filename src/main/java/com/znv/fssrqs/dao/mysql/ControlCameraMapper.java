@@ -21,4 +21,5 @@ public interface ControlCameraMapper {
     List<String> listDeviceIdInArray(List<String> list);
 
     List<LibVo> selectByGroupLibId(@Param("libIds") String libIds);
+    int count();
 }
