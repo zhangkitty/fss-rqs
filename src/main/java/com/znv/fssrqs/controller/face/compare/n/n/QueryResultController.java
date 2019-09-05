@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -66,7 +67,7 @@ public class QueryResultController {
     }
 
     @RequestMapping(value = "/site/FSSAPP/pc/nvsm/pairexport.ds",method = RequestMethod.POST)
-    public void export(@RequestBody QueryResultParams queryResultParams,HttpServletResponse response){
+    public void export(@RequestBody @Valid QueryResultParams queryResultParams, HttpServletResponse response){
         JSONObject jsonObject = queryResultService.queryResultService(queryResultParams);
 CompareTaskEntity compareTaskEntity = compareTaskDao.findAllCompareTask()
         .stream().filter(value->value.getTaskId().equals(queryResultParams.getTaskId())).collect(Collectors.toList()).get(0);

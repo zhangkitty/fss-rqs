@@ -35,10 +35,10 @@ spring:
       data-username: ""
       data-password: ""
   redis: #redis相关配置
-    host: 10.45.157.172
+    host: 10.45.152.172
     port: 6379
     #连接超时时间(毫秒)
-    timeout: 100ms
+    timeout: 10000ms
     #password: redis
     jedis:
       pool:

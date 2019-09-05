@@ -91,6 +91,14 @@ person:
 conf:
   ##配置defaultUserId后，所有接口不登录
   defaultUserId: "11000000000"
+  server:
+    bussiness-and-access: 8 #业务和接入服务数量
+    face-ai-unit: 4 #人脸分析单元数量
+    big-data: 3 #大数据服务数量
+    machine:
+      bussiness: 1 #业务服务使用硬件数
+      face-ai-unit: 1 #人脸分析引擎使用硬件数
+      big_data_engine: 1 #大数据引擎使用硬件数
 #pagehelper.
 pagehelper:
   autoDialect: true

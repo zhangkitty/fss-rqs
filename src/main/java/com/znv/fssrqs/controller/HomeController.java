@@ -4,12 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
+import com.znv.fssrqs.config.EsBaseConfig;
+import com.znv.fssrqs.config.HdfsConfigManager;
+import com.znv.fssrqs.constant.CommonConstant;
+import com.znv.fssrqs.dao.mysql.ControlCameraMapper;
 import com.znv.fssrqs.dao.mysql.LibDao;
-import com.znv.fssrqs.elasticsearch.homepage.AlarmTopLibCountService;
-import com.znv.fssrqs.elasticsearch.homepage.DeviceCaptureService;
-import com.znv.fssrqs.elasticsearch.homepage.HistoryAlarmDataService;
+import com.znv.fssrqs.elasticsearch.homepage.*;
+import com.znv.fssrqs.service.DeviceService;
+import com.znv.fssrqs.util.DataConvertUtils;
 import com.znv.fssrqs.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,8 +39,16 @@ public class HomeController {
     private HistoryAlarmDataService historyAlarmDataService;
     @Autowired
     private DeviceCaptureService deviceCaptureService;
+    @Autowired
+    private TopTenDeviceAlarmService topTenDeviceAlarmService;
     @Resource
     private LibDao libDao;
+    @Autowired
+    private ControlCameraMapper controlCameraMapper;
+    @Autowired
+    private DeviceService deviceService;
+    @Autowired
+    private PersonListCountService personListCountService;
 
     /**
      * 南岸库告警总数接口
@@ -100,7 +113,36 @@ public class HomeController {
      * 0-日,1-自然周,2-自然月
      */
     @PostMapping("/device/capture/statistics")
-    public JSONObject getHistoryDeviceCapture(@RequestBody JSONObject params) {
+    public JSONObject getHistoryDeviceCapture(@RequestBody String body) {
+        final JSONObject params = JSON.parseObject(body);
         return deviceCaptureService.getDeviceCaptureList(params);
+    }
+
+    /**
+     * 查询摄像机前十告警数统计
+     */
+    @GetMapping("/top/ten/device/alarms")
+    public JSONObject top10DeviceAlarm(@RequestParam Map<String, Object> params) {
+        return topTenDeviceAlarmService.top10DeviceAlarms(params);
+    }
+
+    @GetMapping("/control/task/num")
+    public JSONObject getControlTasks() {
+        int count = controlCameraMapper.count();
+        return FastJsonUtils.JsonBuilder.ok().property("Total", count).json();
+    }
+
+    /**
+     * 设备树统计
+     */
+    @GetMapping("/device/num/statistics")
+    public JSONObject getDeviceStatistics() {
+        final JSONObject deviceStatistics = deviceService.getDeviceStatistics();
+        return FastJsonUtils.JsonBuilder.ok().object(deviceStatistics).json();
+    }
+
+    @GetMapping("/person/statistics")
+    public JSONObject getKeyPersons() {
+        return personListCountService.getPersonStatistics();
     }
 }

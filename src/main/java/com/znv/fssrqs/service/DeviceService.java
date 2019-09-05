@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.znv.fssrqs.config.HomeConfig;
+import com.znv.fssrqs.dao.mysql.MDeviceDao;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
 import com.znv.fssrqs.service.redis.AccessPrecintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,10 @@ public class DeviceService {
     private UserGroupDeviceService userGroupDeviceService;
     @Autowired
     private AccessPrecintService accessPrecintService;
+    @Autowired
+    private HomeConfig homeConfig;
+    @Resource
+    private MDeviceDao mDeviceDao;
 
     /**
      * 获取用户设备树
@@ -194,5 +201,26 @@ public class DeviceService {
             precinct.put("Total", total + 1);
             this.updateParentsTotal(precinct.getString("UpPrecinctId"), precintMap);
         }
+    }
+
+    public JSONObject getDeviceStatistics() {
+        JSONObject jsonObject = new JSONObject();
+        //设置服务器数量
+        jsonObject.put("BusAndAccessServerCount", homeConfig.getBussinessAndAccess());
+        jsonObject.put("FaceAIUnitServerCount", homeConfig.getFaceAIUnit());
+        jsonObject.put("BigDataServerCount", homeConfig.getBigData());
+        jsonObject.put("ServerTotal", homeConfig.getBussinessAndAccess() + homeConfig.getFaceAIUnit() + homeConfig.getBigData());
+        //设置服务器数量
+        jsonObject.put("BusAndAccessMachineCount", homeConfig.getBussinessMachine());
+        jsonObject.put("FaceAIUnitMachineCount", homeConfig.getFaceAIUnitMachine());
+        jsonObject.put("BigDataMachineCount", homeConfig.getBigDataEngineMachine());
+        jsonObject.put("MachineTotal", homeConfig.getBussinessMachine() + homeConfig.getFaceAIUnitMachine() + homeConfig.getBigDataEngineMachine());
+        //调用存过统计设备
+        final Map deviceCountMap = mDeviceDao.getDeviceCount();
+        jsonObject.put("NormalCameraCount", deviceCountMap.getOrDefault("normalCameraCount", 0));
+        jsonObject.put("SubDomainCameraCount", deviceCountMap.getOrDefault("subDomainCount", 0));
+        jsonObject.put("CaptureCameraCount", deviceCountMap.getOrDefault("captureCameraCount", 0));
+        jsonObject.put("CameraTotal", deviceCountMap.getOrDefault("deviceTotal", 0));
+        return jsonObject;
     }
 }

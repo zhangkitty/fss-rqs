@@ -27,6 +27,6 @@ public class QueryResultParams {
 
     private String remark;
 
-    @NotBlank
+    @NotNull(message = "相似度不能为空")
     private String sim;
 }

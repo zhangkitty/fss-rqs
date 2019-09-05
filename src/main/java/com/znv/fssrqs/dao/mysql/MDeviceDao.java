@@ -2,7 +2,6 @@ package com.znv.fssrqs.dao.mysql;
 
 import com.znv.fssrqs.entity.mysql.AnalysisUnitEntity;
 import com.znv.fssrqs.entity.mysql.MBusEntity;
-import com.znv.fssrqs.entity.mysql.MUserEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +17,5 @@ public interface MDeviceDao {
 
     List<AnalysisUnitEntity> getDynamicAnalysisUnit();
 
+    Map getDeviceCount();
 }
