@@ -28,7 +28,7 @@ public class SessionHandler implements HandlerInterceptor {
             return true;
         }
 
-        if ("/fnms/user/login".equals(request.getRequestURI())) {
+        if ("/user/login".equals(request.getRequestURI())) {
             return true;
         }
 
