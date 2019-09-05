@@ -6,7 +6,7 @@
         <id column="user_id" jdbcType="VARCHAR" property="UserID"/>
         <result column="precinct_id" jdbcType="VARCHAR" property="PrecinctId"/>
         <result column="role_id" jdbcType="VARCHAR" property="RoleId"/>
-        <result column="usergroup_id" jdbcType="VARCHAR" property="UserGroupId"/>
+        <result column="user_group_id" jdbcType="VARCHAR" property="UserGroupId"/>
         <result column="department_id" jdbcType="VARCHAR" property="DepartmentId"/>
         <result column="user_name" jdbcType="VARCHAR" property="UserName"/>
         <result column="user_type" jdbcType="INTEGER" property="UserType"/>
@@ -33,11 +33,12 @@
         <result column="system_flag" jdbcType="INTEGER" property="SystemFlag"/>
         <result column="is_show" jdbcType="INTEGER" property="IsShow"/>
         <result column="create_time" jdbcType="VARCHAR" property="CreateTime"/>
+        <result column="user_group_name" jdbcType="VARCHAR" property="UserGroupName"/>
     </resultMap>
 
     <select id="getUser" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select *
-        from t_cfg_user u
+        select u.*,t_fss_user.fss_role_id role_id,t_fss_usergroup.user_group_name,t_fss_usergroup.user_group_id
+        from t_cfg_user u left join t_fss_user on t_fss_user.user_id=u.user_id left join t_fss_usergroup on t_fss_user.fss_usergroup_id=t_fss_usergroup.user_group_id
         where 1=1
         <if test="UserID != null and UserID!=''">
             and u.user_id = #{UserID,jdbcType=VARCHAR}
@@ -89,8 +90,8 @@
     </select>
     <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-        a.user_id, fss_role_id, fss_usergroup_id,user_name,user_type,fss_role_id,fss_usergroup_id,
-        a.fax,a.employee_id,a.mobile_telephone,a.true_name,a.user_pwd,ug.user_group_name
+        a.user_id, fss_role_id role_id, fss_usergroup_id user_group_id,user_name,user_type,
+        a.fax,a.employee_id,a.mobile_telephone,a.true_name,a.user_pwd,ug.user_group_name user_group_name
         from t_cfg_user a left join t_fss_user b on a.user_id=b.user_id
         left join t_fss_usergroup ug on b.fss_usergroup_id=ug.user_group_id
         where 1=1
