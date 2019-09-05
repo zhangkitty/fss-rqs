@@ -3,8 +3,10 @@ package com.znv.fssrqs.timer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.dao.mysql.MDeviceDao;
+import com.znv.fssrqs.dao.mysql.MReidDao;
 import com.znv.fssrqs.entity.mysql.AnalysisUnitEntity;
 import com.znv.fssrqs.entity.mysql.MBusEntity;
+import com.znv.fssrqs.entity.mysql.ReidUnitEntity;
 import com.znv.fssrqs.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.ParseException;
@@ -13,10 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
@@ -25,6 +24,9 @@ public class SystemDeviceLoadTask {
 
     @Autowired
     MDeviceDao deviceDao;
+
+    @Autowired
+    MReidDao reidDao;
 
     // 在线缓冲服务器列表
     private static List<MBusEntity> mBusOnlineList = new CopyOnWriteArrayList<>();
@@ -36,6 +38,11 @@ public class SystemDeviceLoadTask {
     // 离线静态分析单元列表
     private static List<AnalysisUnitEntity> staticAIUnitOfflineList = new CopyOnWriteArrayList<>();
 
+    // 在线人体分析单元列表
+    private static List<ReidUnitEntity> reidUnitOnlineList = new CopyOnWriteArrayList<>();
+    // 离线人体分析单元列表
+    private static List<ReidUnitEntity> reidUnitOfflineList = new CopyOnWriteArrayList<>();
+
     private static int count = 1;
     private static boolean firstLoad = true;
 
@@ -45,6 +52,7 @@ public class SystemDeviceLoadTask {
             firstLoad = false;
             loadMBus();
             loadStaticAIUnit();
+            loadAndCheckReidUnit();
             return;
         }
 
@@ -52,9 +60,11 @@ public class SystemDeviceLoadTask {
         if (count++ % 100 == 0) {
             loadAndCheckMBus();
             loadAndCheckStaticAIUnit();
+            loadAndCheckReidUnit();
         } else {
             checkMBus();
             checkStaticAIUnit();
+            checkReidUnit();
         }
     }
 
@@ -239,6 +249,104 @@ public class SystemDeviceLoadTask {
             return false;
         }
         return true;
+    }
+
+    private void loadAndCheckReidUnit() {
+        // 重新加载所有
+        reidUnitOfflineList.clear();
+        Map<String, Object> mapParam = new HashMap<>();
+        List<ReidUnitEntity> unitList = reidDao.getReidUnit(mapParam);
+        reidUnitOnlineList.clear();
+        reidUnitOnlineList.addAll(unitList);
+
+        // 遍历每个设备，在线的保留，离线转OfflineList
+        Iterator<ReidUnitEntity> iterator = reidUnitOnlineList.iterator();
+        Map<String, Object> reidDaoParam = new HashMap<>();
+        while (iterator.hasNext()) {
+            ReidUnitEntity reidUnit = iterator.next();
+            if (!checkReidUnitOnline(reidUnit)) {
+                reidUnitOfflineList.add(reidUnit);
+                reidUnitOnlineList.remove(reidUnit);
+
+                reidDaoParam.clear();
+                reidDaoParam.put("deviceID", reidUnit.getDeviceID());
+                reidDaoParam.put("loginState", 1);
+                reidDao.updateReidLoginState(reidDaoParam);
+            } else {
+                reidDaoParam.clear();
+                reidDaoParam.put("deviceID", reidUnit.getDeviceID());
+                reidDaoParam.put("loginState", 0);
+                reidDao.updateReidLoginState(reidDaoParam);
+            }
+        }
+
+        log.info("reload ReID Unit, online {}, offline {}.",
+                reidUnitOnlineList.size(), reidUnitOfflineList.size());
+    }
+
+    private boolean checkReidUnitOnline(ReidUnitEntity analysisUnit) {
+        String data = "{\"startTime\":\"2019-01-01 00:00:01\", \"endTime\":\"2030-01-01 23:59:59\", \"type\":\"objext\", \"status\":\"1\", \"pageNo\":1, \"pageSize\":1}";
+        try {
+            String ret = HttpUtils.sendPostData(data, String.format("http://%s:%s/%s",
+                    analysisUnit.getIP(), analysisUnit.getPort(), "rest/taskManage/getVideoObjectTaskList"));
+            JSONObject obj = JSON.parseObject(ret);
+            if (!obj.containsKey("ret") || !"0".equals(obj.getString("ret"))) {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private void checkReidUnit() {
+        boolean isDeviceStateChanged = false;
+        List<ReidUnitEntity> newOfflineList = new ArrayList<>();
+
+        // 遍历在线设备
+        Iterator<ReidUnitEntity> iterator = reidUnitOnlineList.iterator();
+        Map<String, Object> reidDaoParam = new HashMap<>();
+        while (iterator.hasNext()) {
+            ReidUnitEntity reidUnit = iterator.next();
+            if (!checkReidUnitOnline(reidUnit)) {
+                // 设备从在线变成离线
+                newOfflineList.add(reidUnit);
+                reidUnitOnlineList.remove(reidUnit);
+                isDeviceStateChanged = true;
+
+                reidDaoParam.clear();
+                reidDaoParam.put("deviceID", reidUnit.getDeviceID());
+                reidDaoParam.put("loginState", 1);
+                reidDao.updateReidLoginState(reidDaoParam);
+            }
+        }
+
+        // 遍历离线设备
+        iterator = reidUnitOfflineList.iterator();
+        while (iterator.hasNext()) {
+            ReidUnitEntity reidUnit = iterator.next();
+            if (checkReidUnitOnline(reidUnit)) {
+                // 设备从离线变成在线
+                reidUnitOnlineList.add(reidUnit);
+                reidUnitOfflineList.remove(reidUnit);
+                isDeviceStateChanged = true;
+
+                reidDaoParam.clear();
+                reidDaoParam.put("deviceID", reidUnit.getDeviceID());
+                reidDaoParam.put("loginState", 0);
+                reidDao.updateReidLoginState(reidDaoParam);
+            }
+        }
+
+        // 将新离线的设备加入离线列表
+        if (!newOfflineList.isEmpty()) {
+            reidUnitOfflineList.addAll(newOfflineList);
+        }
+
+        if (isDeviceStateChanged) {
+            log.info("ReID Unit changed, online {}, offline {}.",
+                    reidUnitOnlineList.size(), reidUnitOfflineList.size());
+        }
     }
 
     public static MBusEntity getMBus() {
