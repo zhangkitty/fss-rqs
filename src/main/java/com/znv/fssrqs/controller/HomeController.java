@@ -4,17 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
-import com.znv.fssrqs.config.EsBaseConfig;
-import com.znv.fssrqs.config.HdfsConfigManager;
-import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.ControlCameraMapper;
 import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.elasticsearch.homepage.*;
 import com.znv.fssrqs.service.DeviceService;
-import com.znv.fssrqs.util.DataConvertUtils;
 import com.znv.fssrqs.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +44,8 @@ public class HomeController {
     private DeviceService deviceService;
     @Autowired
     private PersonListCountService personListCountService;
+    @Autowired
+    private CapturePersonCountService capturePersonCountService;
 
     /**
      * 南岸库告警总数接口
@@ -142,7 +139,12 @@ public class HomeController {
     }
 
     @GetMapping("/person/statistics")
-    public JSONObject getKeyPersons() {
+    public JSONObject getPersonAggs() {
         return personListCountService.getPersonStatistics();
+    }
+
+    @GetMapping("/capture/person/statistics")
+    public JSONObject getStrangerAggs() {
+        return capturePersonCountService.getStrangerAggs();
     }
 }
