@@ -46,6 +46,8 @@ public class HomeController {
     private PersonListCountService personListCountService;
     @Autowired
     private CapturePersonCountService capturePersonCountService;
+    @Autowired
+    private ControlPersonCountService controlPersonCountService;
 
     /**
      * 南岸库告警总数接口
@@ -146,5 +148,10 @@ public class HomeController {
     @GetMapping("/capture/person/statistics")
     public JSONObject getStrangerAggs() {
         return capturePersonCountService.getStrangerAggs();
+    }
+
+    @GetMapping("/control/person/statistics")
+    public JSONObject getControlPersonAggs() {
+        return controlPersonCountService.getControlPersonCount();
     }
 }
