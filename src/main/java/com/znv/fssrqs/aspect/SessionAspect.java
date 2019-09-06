@@ -57,9 +57,7 @@ public class SessionAspect {
 
         JSONObject userLogin = (JSONObject)session.getAttribute("UserLogin");
         if (userLogin == null || !userLogin.containsKey("UserId")) {
-            ResponseVo responseVo = ResponseVo.returnBusinessException(
-                    new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN));
-            return JSONObject.toJSONString(responseVo);
+            throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
         } else {
             LocalUserUtil.setLocalUser(userLogin);
             return point.proceed();
