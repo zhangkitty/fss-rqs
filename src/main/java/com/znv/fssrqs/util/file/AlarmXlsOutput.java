@@ -115,6 +115,9 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
             createHeaderRow(sheet);
             fourthCell.setCellValue(dataObject.getIntValue("Size"));
             JSONObject paramObject = JSON.parseObject(params);
+            if (!paramObject.containsKey("Features")) {
+                throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "FeaturesIsEmpty");
+            }
             final JSONArray features = paramObject.getJSONArray("Features");
             JSONArray alarmDataList = dataObject.getJSONArray("List");
             final int size = alarmDataList.size();
