@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
-import com.znv.fssrqs.dao.mysql.EventDao;
 import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.SpringContextUtil;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.znv.fssrqs.util.file.CellDescUtils.make;
 
@@ -119,9 +119,11 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
                 throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "FeaturesIsEmpty");
             }
             final JSONArray features = paramObject.getJSONArray("Features");
+            if (Objects.isNull(features)) {
+                throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "");
+            }
             JSONArray alarmDataList = dataObject.getJSONArray("List");
             final int size = alarmDataList.size();
-            //EventDao eventDao = SpringContextUtil.getCtx().getBean(EventDao.class);
             final LibDao libDao = SpringContextUtil.getCtx().getBean(LibDao.class);
             Map<String, Map<String, Object>> eventMap = libDao.selectAllMap();
             for (int index = 0; index < size; index++) {
