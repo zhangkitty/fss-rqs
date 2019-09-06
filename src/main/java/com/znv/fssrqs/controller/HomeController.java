@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
+import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.ControlCameraMapper;
 import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.elasticsearch.homepage.*;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.service.DeviceService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +50,8 @@ public class HomeController {
     private CapturePersonCountService capturePersonCountService;
     @Autowired
     private ControlPersonCountService controlPersonCountService;
+    @Autowired
+    private PersonLibCountService personLibCountService;
 
     /**
      * 南岸库告警总数接口
@@ -153,5 +157,13 @@ public class HomeController {
     @GetMapping("/control/person/statistics")
     public JSONObject getControlPersonAggs() {
         return controlPersonCountService.getControlPersonCount();
+    }
+
+    @GetMapping("/person/lib/statistics")
+    public JSONObject getPersonLibAggs(@RequestParam Map<String, Object> params) {
+        if (!params.containsKey("PersonLibType")) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "参数非法");
+        }
+        return personLibCountService.personAggsByLibId(Integer.parseInt((String) params.get("PersonLibType")));
     }
 }
