@@ -3,6 +3,7 @@ package com.znv.fssrqs.common;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.service.UserService;
 import com.znv.fssrqs.util.DataConvertUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.annotation.WebListener;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSessionListener;
 import java.util.HashMap;
 
 @WebListener
+@Slf4j
 public class SessionListener implements HttpSessionListener {
     @Autowired
     private UserService userService;
@@ -24,6 +26,7 @@ public class SessionListener implements HttpSessionListener {
             return;
         }
 
+        log.info("user {} session timeout", user.getString("UserId"));
         HashMap<String, Object> params = new HashMap<>();
         params.put("userId", user.getString("UserId"));
         params.put("sessionId", user.getString("SessionId"));
