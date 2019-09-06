@@ -28,7 +28,9 @@ public class SessionHandler implements HandlerInterceptor {
             return true;
         }
 
-        if ("/user/login".equals(request.getRequestURI())) {
+        if (("/fnms/user/login").equals(request.getRequestURI())) {
+            JSONObject userLogin = (JSONObject)request.getSession().getAttribute("UserLogin");
+            LocalUserUtil.setLocalUser(userLogin);
             return true;
         }
 
