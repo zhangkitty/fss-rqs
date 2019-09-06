@@ -85,15 +85,4 @@ public class LoginController {
     }
 
 
-    @DeleteMapping(value = "/logout")
-    public ResponseVo logout(HttpServletRequest request) {
-        // 更新session
-        HttpSession session = request.getSession();
-        if (session != null) {
-            session.invalidate();
-            request.getSession();
-        }
-
-        return ResponseVo.success(null);
-    }
 }
