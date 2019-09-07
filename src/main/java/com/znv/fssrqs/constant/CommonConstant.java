@@ -128,6 +128,8 @@ public class CommonConstant {
         public static final String ES_SEARCH_TEMPLATE_HISTORY_CAMEMA_TAKE_COUNT = "template_history_camera_takeph_count";
         public static final String INDEX_LOG_NAME = "fss.es.index.log.name";
         public static final String INDEX_LOG_TYPE = "fss.es.index.log.type";
+        public static final String INDEX_PERSON_CLUSTER_NAME = "fused_src_data_realtime";
+        public static final String INDEX_PERSON_CLUSTER_TYPE = "fused";
     }
 
     public static class FdfsConfig {
