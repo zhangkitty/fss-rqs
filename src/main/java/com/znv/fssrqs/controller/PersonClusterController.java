@@ -24,7 +24,7 @@ public class PersonClusterController {
     /**
      * 人员聚类融合统计查询
      */
-    @PostMapping("/person/cluster/statistics")
+    @PostMapping("/ReID/cluster/statistics")
     public JSONObject getPersonFusedStatistics(@RequestBody String body) {
         JSONObject requestParams = JSON.parseObject(body);
         return personClusterService.getPersonAggs(requestParams);
