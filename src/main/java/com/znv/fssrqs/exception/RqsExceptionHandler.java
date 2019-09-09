@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
 
 import static com.znv.fssrqs.util.FastJsonUtils.JsonBuilder.badRequest;
@@ -23,7 +24,7 @@ import static com.znv.fssrqs.util.FastJsonUtils.JsonBuilder.error;
 @Slf4j
 public class RqsExceptionHandler {
     @ExceptionHandler({Exception.class})
-    public String resolveException(Exception e, HttpServletRequest request) {
+    public String resolveException(HttpServletRequest request, HttpServletResponse res, Exception e) {
 //        StackTraceElement[] st = e.getStackTrace();
 //        String exclass = new String();
 //        String method = new String();
@@ -35,6 +36,8 @@ public class RqsExceptionHandler {
 //            }
 //        }
         log.error(e.getMessage(), e);
+        res.setContentType("application/json;charset=UTF-8");
+        res.setHeader("private-header", "fss-rqs");
         Locale locale = request.getLocale();
         if(e instanceof MethodArgumentNotValidException){
             return JSONObject.toJSONString(ResponseVo.getInstance(ErrorCodeEnum.PARAM_ILLEGAL.getCode(),((MethodArgumentNotValidException) e).getBindingResult().getFieldError().getDefaultMessage(),null));
