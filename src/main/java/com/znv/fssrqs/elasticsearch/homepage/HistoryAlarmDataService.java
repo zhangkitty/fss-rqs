@@ -119,9 +119,9 @@ public class HistoryAlarmDataService {
                     personObject.put("PersonID", personId);
                     personObject.remove("person_id");
                     personObject.put("PersonName", personObject.remove("person_name"));
-                    final Map<String, Object> eventNameMap = eventMap.get(personObject.getString("ControlEventID"));
+                    final Map<String, Object> eventNameMap = eventMap.get(Integer.parseInt(personObject.getString("ControlEventID")));
                     if (eventNameMap != null) {
-                        personObject.put("EventName", eventNameMap.get(personObject.getString("ControlEventID")));
+                        personObject.put("EventName", eventNameMap.get("Name"));
                     } else {
                         personObject.put("EventName", "");
                     }
