@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znv.fssrqs.dao.mysql.ReidTaskDao">
+
+    <insert id="sava" parameterType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" keyProperty="taskId" keyColumn="task_id" useGeneratedKeys="true">
+        insert into t_reid_task
+        (task_name,reid_unit_id,device_id,device_name,device_site,gps_x,gps_y,user_id,url,reid_params_text,create_time)
+        values
+        (#{taskName},#{reidUnitId},#{deviceId},#{deviceName},#{deviceSite},#{gpsX},#{gpsY},#{userId},#{url},#{reidParamsText},now())
+    </insert>
+
+    <select id="getAll" resultType="com.znv.fssrqs.entity.mysql.ReidTaskEntity">
+        select * from t_reid_task
+    </select>
+
+    <update id="update">
+      update t_reid_task
+      <set>
+          <if test="taskName != null">
+              task_name = #{taskName,jdbcType=VARCHAR},
+          </if>
+          <if test="reidUnitId != null">
+              reid_unit_id = #{reidUnitId,jdbcType=VARCHAR},
+          </if>
+          <if test="deviceId != null">
+              device_id = #{deviceId,jdbcType=VARCHAR},
+          </if>
+          <if test="deviceName != null">
+              device_name = #{deviceName,jdbcType=VARCHAR},
+          </if>
+          <if test="deviceSite != null">
+              device_site = #{deviceSite,jdbcType=VARCHAR},
+          </if>
+          <if test="gpsX != null">
+              gps_x = #{gpsX,jdbcType=VARCHAR},
+          </if>
+          <if test="gpsY != null">
+              gps_y = #{gpsY,jdbcType=VARCHAR},
+          </if>
+          <if test="userId != null">
+              user_id = #{userId,jdbcType=VARCHAR},
+          </if>
+          <if test="url != null">
+              url = #{url,jdbcType=VARCHAR},
+          </if>
+          <if test="reidParamsText != null">
+              reid_params_text = #{reidParamsText,jdbcType=VARCHAR},
+          </if>
+          update_time=now()
+      </set>
+      where task_id = #{taskId,jdbcType=INTEGER}
+    </update>
+
+    <delete id="delete" parameterType = "java.util.List">
+      delete from t_reid_task where 1>2
+         or task_id in
+        <foreach collection="list"  item="item" open="(" separator="," close=")"  >
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>
