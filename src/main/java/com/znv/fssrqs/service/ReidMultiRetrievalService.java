@@ -77,6 +77,13 @@ public class ReidMultiRetrievalService {
         JSONObject templateParams = new JSONObject();
         JSONObject params = new JSONObject();
         templateParams.put("id", "template_reid_feature_search");
+        final Integer currentPage = (Integer) params.getOrDefault("CurrentPage", 1);
+        final Integer pageSize = (Integer) params.getOrDefault("PageSize", 10);
+        int from = ParamUtils.getPageOffset(currentPage, pageSize).intValue();
+        if (from + pageSize >= 10000) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "EsDefaultSplitPageError");
+        }
+
         final JSONArray features = requestParams.getJSONArray("Features");
         if (features.size() > 0) {
             String url = String.format(CommonConstant.ThousandSights.GET_FEATURE_URL, "10.45.154.54", 20280);
@@ -162,15 +169,9 @@ public class ReidMultiRetrievalService {
             params.put("sortField", requestParams.getString("SortField"));
             params.put("sortOrder", requestParams.getString("sortOrder"));
         }
-
-        final Integer currentPage = (Integer) params.getOrDefault("CurrentPage", 1);
-        final Integer pageSize = (Integer) params.getOrDefault("PageSize", 10);
-        int from=ParamUtils.getPageOffset(currentPage,pageSize).intValue();
         params.put("from", from);
         params.put("size", pageSize);
         templateParams.put("params", params);
-
-        System.out.println(templateParams.toJSONString());
         return templateParams;
     }
 
