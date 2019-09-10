@@ -35,7 +35,6 @@ import java.io.IOException;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, MybatisAutoConfiguration.class, SecurityAutoConfiguration.class, MultipartAutoConfiguration.class})
 @ServletComponentScan
 @Slf4j
-//@EnableSwagger2
 public class FssRqsApplication {
     public static final String LOPQ_MODEL_FILE = "/lopq/lopq_model_V1.0_D512_C36.lopq";
 
@@ -51,22 +50,5 @@ public class FssRqsApplication {
     }
 
 
-//    @Bean
-//    public Docket createApi(){
-//        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-//                .apis(RequestHandlerSelectors.basePackage("com.znv.fssrqs.controller"))
-//                .paths(PathSelectors.any())
-//                .build();
-//    }
-//
-//    private ApiInfo apiInfo(){
-//        return new ApiInfoBuilder()
-//                .title("API文档")
-//                .description("API使用即参数定义")
-//                .termsOfServiceUrl("http://blog.csdn.net/qq_31001665")
-//                .contact("ZZP")
-//                .version("0.1")
-//                .build();
-//    }
 
 }
