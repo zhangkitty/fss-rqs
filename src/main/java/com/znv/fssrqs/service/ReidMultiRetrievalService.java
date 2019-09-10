@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
+import com.znv.fssrqs.dao.mysql.ReidTaskDao;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.FastJsonUtils;
@@ -13,8 +14,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +31,8 @@ import java.util.stream.Collectors;
 public class ReidMultiRetrievalService {
     @Autowired
     private ElasticSearchClient elasticSearchClient;
+    @Resource
+    private ReidTaskDao reidTaskDao;
 
     public JSONObject getSearch(JSONObject params) {
         checkParams(params);
@@ -182,9 +187,17 @@ public class ReidMultiRetrievalService {
         long total = response.getLongValue("total");
         long took = response.getLongValue("took");
         final JSONArray jsonArray = response.getJSONObject("hits").getJSONArray("hits");
+        final Map<String, Map<String, Object>> allDevices = reidTaskDao.getAllDevices();
         final List<JSONObject> list = jsonArray.parallelStream().map(object -> {
             JSONObject jsonObject = (JSONObject) object;
             final JSONObject source = jsonObject.getJSONObject("_source");
+            final String deviceId = source.getString("DeviceID");
+            final Map<String, Object> orDefault = allDevices.getOrDefault(deviceId, null);
+            if (orDefault != null) {
+                source.put("DeviceName", orDefault.getOrDefault("DeviceName", ""));
+            } else {
+                source.put("DeviceName", "");
+            }
             return source;
         }).collect(Collectors.toList());
         return FastJsonUtils.JsonBuilder.ok().list(list).property("Total", total).property("Took", took).json();
