@@ -127,7 +127,9 @@ public class HistoryAlarmDataService {
                     }
 
                     if (libMap != null) {
-                        personObject.put("LibName", libMap.get(String.valueOf(personObject.getIntValue("lib_id"))));
+                        int libId=personObject.getIntValue("lib_id");
+                        final Map<String, Object> map = libMap.get(libId);
+                        personObject.put("LibName", map.get("LibName"));
                     } else {
                         personObject.put("LibName", "");
                     }
