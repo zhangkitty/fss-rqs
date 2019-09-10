@@ -9,6 +9,7 @@ import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.OkHttpUtil;
+import com.znv.fssrqs.util.ParamUtils;
 import com.znv.fssrqs.util.Result;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,8 +163,11 @@ public class ReidMultiRetrievalService {
             params.put("sortOrder", requestParams.getString("sortOrder"));
         }
 
-        params.put("from", 0);
-        params.put("size", 9999);
+        final Integer currentPage = (Integer) params.getOrDefault("CurrentPage", 1);
+        final Integer pageSize = (Integer) params.getOrDefault("PageSize", 10);
+        int from=ParamUtils.getPageOffset(currentPage,pageSize).intValue();
+        params.put("from", from);
+        params.put("size", pageSize);
         templateParams.put("params", params);
 
         System.out.println(templateParams.toJSONString());
