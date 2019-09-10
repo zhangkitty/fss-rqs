@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.EventDao;
+import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,8 @@ public class HistoryAlarmDataService {
     private ElasticSearchClient elasticSearchClient;
     @Resource
     private EventDao eventDao;
+    @Resource
+    private LibDao libDao;
 
     public JSONObject getHistoryAlarmList(Map<String, Object> requestMap, String remoteIp) {
         Integer size = (Integer) requestMap.getOrDefault("PageSize", 10);
@@ -84,6 +87,8 @@ public class HistoryAlarmDataService {
 
             //查询事件
             final Map<String, Map<String, Object>> eventMap = eventDao.selectAllMap();
+            //查询静态库ID
+            final Map<String, Map<String, Object>> libMap = libDao.selectAllMap();
             //人员信息
             alarmList.parallelStream().forEach(object -> {
                 JSONObject personObject = (JSONObject) object;
@@ -121,6 +126,12 @@ public class HistoryAlarmDataService {
                         personObject.put("EventName", "");
                     }
 
+                    if (libMap != null) {
+                        personObject.put("LibName", libMap.get(String.valueOf(personObject.getIntValue("lib_id"))));
+                    } else {
+                        personObject.put("LibName", "");
+                    }
+
                     personObject.put("Similarity", personObject.remove("similarity"));
                     personObject.remove("similarity");
                     String personImg = "";
@@ -132,7 +143,6 @@ public class HistoryAlarmDataService {
                     personObject.put("PersonImg", personImg);
                     personObject.put("AlarmType", personObject.remove("alarm_type"));
                     personObject.put("LibID", personObject.remove("lib_id"));
-                    personObject.put("LibName", personObject.remove("img_url"));
                     personObject.put("OfficeID", personObject.remove("office_id"));
                     personObject.put("OfficeName", personObject.remove("office_name"));
                     personObject.put("CameraId", personObject.remove("camera_id"));
