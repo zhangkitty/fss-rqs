@@ -85,6 +85,11 @@ public class ControlPersonCountService {
         //查询记录数
         final Integer total = response.getJSONObject("hits").getInteger("total");
         final JSONArray aggBuckets = response.getJSONObject("aggregations").getJSONObject("agg_by_control_police_category").getJSONArray("buckets");
+        aggBuckets.forEach(object -> {
+            JSONObject jsonObject = (JSONObject) object;
+            jsonObject.put("Key", jsonObject.remove("key"));
+            jsonObject.put("DocCount", jsonObject.remove("doc_count"));
+        });
         return FastJsonUtils.JsonBuilder.ok().list(aggBuckets).property("Total", total).property("Took", took).json();
     }
 }
