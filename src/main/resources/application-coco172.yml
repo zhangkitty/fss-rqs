@@ -20,7 +20,7 @@ logging:
 spring:
   datasource:
     mysql:
-      jdbc-url: jdbc:mysql://10.45.152.172:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useAffectedRows=true
+      jdbc-url: jdbc:mysql://10.45.152.172:3306/usmsc?serverTimezone=Hongkong&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useAffectedRows=true
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: zxm10

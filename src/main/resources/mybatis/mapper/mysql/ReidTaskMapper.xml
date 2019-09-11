@@ -11,7 +11,7 @@
     </insert>
 
     <select id="getAll" resultType="com.znv.fssrqs.entity.mysql.ReidTaskEntity">
-        select * from t_reid_task
+        select * from t_reid_task a LEFT JOIN t_cfg_device b on a.device_id=b.device_id
     </select>
 
     <update id="update">
