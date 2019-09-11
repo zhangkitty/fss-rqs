@@ -18,6 +18,8 @@ logging:
     org.springframework.web: trace
     com.znv.fssrqs.dao.mysql: debug
 spring:
+  jackson:
+    default-property-inclusion: non_null
   datasource:
     mysql:
       jdbc-url: jdbc:mysql://10.45.152.172:3306/usmsc?serverTimezone=Hongkong&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useAffectedRows=true

@@ -11,7 +11,21 @@
     </insert>
 
     <select id="getAll" resultType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" parameterType="com.znv.fssrqs.controller.reid.params.QueryReidTaskParma">
-        select * from t_reid_task a LEFT JOIN t_cfg_device b on a.device_id=b.device_id
+        select
+        ifnull(task_id,"") as task_id,
+        ifnull(task_name,"") as task_name,
+        ifnull(reid_unit_id,"") as reid_unit_id,
+        ifnull(b.device_id,"") as device_id,
+        ifnull(b.device_name,"") as device_name,
+        ifnull(b.install_site,"") as install_site,
+        ifnull(user_id,"") as user_id,
+        ifnull(url,"") as url,
+        ifnull(reid_params_text,"") as reid_params_text,
+        ifnull(create_time,"") as create_time,
+        ifnull(a.update_time,"") as update_time,
+        ifnull(x,"") as x,
+        ifnull(y,"") as y
+        from t_reid_task a LEFT JOIN t_cfg_device b on a.device_id=b.device_id
         <if test="taskId != null">
           where a.task_id = #{taskId}
         </if>
