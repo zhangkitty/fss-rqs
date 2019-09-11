@@ -171,10 +171,6 @@ public class HistoryAlarmDataService {
             });
             took += jsonEsResultSecond.getIntValue("took");
         }
-        JSONObject outputResult = new JSONObject();
-        outputResult.put("Took", took);
-        outputResult.put("Total", total);
-        outputResult.put("Hits", alarmList);
         return FastJsonUtils.JsonBuilder.ok().list(alarmList).property("Total", total).property("Took", took).json();
     }
 
