@@ -53,7 +53,7 @@ public class ReidTaskController {
     @RequestMapping(value = "/getAllTask",method = RequestMethod.POST)
     public ResponseVo getAll(@RequestBody @Validated  QueryReidTaskParma queryReidTaskParma){
         Page page = PageHelper.startPage(queryReidTaskParma.getPageNum(), queryReidTaskParma.getPageSize());
-        List<ReidTaskEntity> list = reidTaskDao.getAll();
+        List<ReidTaskEntity> list = reidTaskDao.getAll(queryReidTaskParma);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total",page.getTotal());
         jsonObject.put("list",list);

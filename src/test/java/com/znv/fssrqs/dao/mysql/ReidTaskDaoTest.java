@@ -41,8 +41,7 @@ public class ReidTaskDaoTest {
 
     @Test
     public void getALl(){
-        List<ReidTaskEntity> list = reidTaskDao.getAll();
-        System.out.println("mdzcc");
+
     }
 
     @Test

@@ -17,4 +17,6 @@ public class QueryReidTaskParma {
 
     @NotNull(message = "没有传分页参数")
     private Integer pageNum;
+
+    private Integer taskId;
 }
