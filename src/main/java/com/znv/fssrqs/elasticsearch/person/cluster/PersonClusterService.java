@@ -6,7 +6,9 @@ import com.google.common.collect.Maps;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.exception.ZnvException;
+import com.znv.fssrqs.timer.SystemDeviceLoadTask;
 import com.znv.fssrqs.util.FastJsonUtils;
+import com.znv.fssrqs.util.ImageUtils;
 import com.znv.fssrqs.util.Result;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
 public class PersonClusterService {
     @Autowired
     private ElasticSearchClient elasticSearchClient;
+    @Autowired
+    private SystemDeviceLoadTask systemDeviceLoadTask;
 
     public JSONObject getPersonAggs(JSONObject requestParams) {
         this.checkParams(requestParams);
@@ -138,8 +142,44 @@ public class PersonClusterService {
             bucketsMap.put(key, jsonObject);
         });
 
+        final JSONArray hits = response.getJSONObject("hits").getJSONArray("hits");
+        final List<JSONObject> list = processHits(hits);
         JSONObject outResult = new JSONObject();
         outResult.put("Aggs", bucketsMap);
+        outResult.put("Hits", list);
         return FastJsonUtils.JsonBuilder.ok().property("Total", total).property("Took", took).object(outResult).json();
+    }
+
+    private List<JSONObject> processHits(JSONArray hits) {
+        return hits.parallelStream().map(object -> {
+            JSONObject jsonObject = ((JSONObject) object).getJSONObject("_source");
+            String smallUuid = jsonObject.getString("img_url");
+            String imgUrl = ImageUtils.getImgUrl(SystemDeviceLoadTask.getMBus().getIP(), "GetSmallPic", smallUuid);
+            //小图地址
+            jsonObject.put("SmallPictureUrl", imgUrl);
+            String bigPictureUuid = jsonObject.getString("BigPictureUuid");
+            if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)) {
+                jsonObject.put("BigPictureUrl", "");
+            } else {
+                jsonObject.put("BigPictureUrl", ImageUtils.getImgUrl(SystemDeviceLoadTask.getMBus().getIP(), "GetBigBgPic", bigPictureUuid));
+            }
+            jsonObject.put("LeaveTime", jsonObject.remove("leave_time"));
+            jsonObject.put("ImgWidth", jsonObject.remove("img_width"));
+            jsonObject.put("PersonID", jsonObject.remove("person_id"));
+            jsonObject.put("ImgHeight", jsonObject.remove("img_height"));
+            jsonObject.put("CameraID", jsonObject.remove("camera_id"));
+            jsonObject.put("CameraType", jsonObject.remove("camera_type"));
+            jsonObject.put("EnterTime", jsonObject.remove("enter_time"));
+            jsonObject.put("UUID", jsonObject.remove("uuid"));
+            jsonObject.put("PersonID", jsonObject.remove("person_id"));
+            jsonObject.put("OfficeID", jsonObject.remove("office_id"));
+            jsonObject.put("LibID", jsonObject.remove("lib_id"));
+            jsonObject.put("CameraType", jsonObject.remove("camera_type"));
+            jsonObject.put("LeftPos", jsonObject.remove("left_pos"));
+            jsonObject.put("Similarity", jsonObject.remove("similarity"));
+            jsonObject.put("LeftPos", jsonObject.remove("left_pos"));
+            jsonObject.put("FusedID", jsonObject.remove("fused_id"));
+            return jsonObject;
+        }).collect(Collectors.toList());
     }
 }
