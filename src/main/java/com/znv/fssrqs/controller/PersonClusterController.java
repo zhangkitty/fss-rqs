@@ -6,6 +6,7 @@ import com.znv.fssrqs.elasticsearch.person.cluster.PersonClusterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -28,5 +29,10 @@ public class PersonClusterController {
     public JSONObject getPersonFusedStatistics(@RequestBody String body) {
         JSONObject requestParams = JSON.parseObject(body);
         return personClusterService.getPersonAggs(requestParams);
+    }
+
+    @PostMapping("/ReID/cluster/track/search")
+    public JSONObject getPersonFusedDetail(@RequestBody String body) {
+        return null;
     }
 }

@@ -8,13 +8,11 @@ import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.Result;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -31,6 +29,7 @@ public class PersonClusterService {
     private ElasticSearchClient elasticSearchClient;
 
     public JSONObject getPersonAggs(JSONObject requestParams) {
+        this.checkParams(requestParams);
         JSONObject templateParams = getTemplateParams(requestParams);
         String url = new StringBuffer().append(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_NAME)
                 .append("/")
@@ -43,19 +42,54 @@ public class PersonClusterService {
         return getResult(result.value());
     }
 
+    private void checkParams(JSONObject requestParams) {
+        if (StringUtils.isEmpty(requestParams.getString("StartTime")) || StringUtils.isEmpty(requestParams.getString("EndTime"))) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "StartTimeOrEndTimeNotEmpty");
+        }
+
+        if (!requestParams.containsKey("OfficeIDs") || !(requestParams.getJSONArray("OfficeIDs") instanceof JSONArray)) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "OfficeIDsTypeError");
+        }
+
+        if (!requestParams.containsKey("CameraIDs") || !(requestParams.getJSONArray("CameraIDs") instanceof JSONArray)) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "CameraIDsTypeError");
+        }
+
+        if (StringUtils.isEmpty(requestParams.getString("FusedID"))) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "FusedIDEmpty");
+        }
+
+        if (requestParams.getString("StartTime").compareTo(requestParams.getString("EndTime")) > 0) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "StartTimeGtEndTime");
+        }
+    }
+
     private JSONObject getTemplateParams(JSONObject requestParams) {
         JSONObject templateParams = new JSONObject();
         JSONObject params = new JSONObject();
-        params.put("enter_time_start", "2010-05-05 00:00:00");
-        params.put("enter_time_end", "2020-06-13 11:11:17");
+        params.put("enter_time_start", requestParams.getString("StartTime"));
+        params.put("enter_time_end", requestParams.getString("EndTime"));
         params.put("from", 0);
-        params.put("size", 0);
-        params.put("is_office", false);
-        params.put("office_id", new ArrayList<>());
-        params.put("is_fused", false);
-        params.put("fused_id", new ArrayList<>());
-        params.put("is_camera", false);
-        params.put("camera_id", new ArrayList<>());
+        params.put("size", requestParams.getIntValue("Size") > 8 ? requestParams.getIntValue("Size") : 8);
+        final JSONArray officeIDs = requestParams.getJSONArray("OfficeIDs");
+        if (officeIDs.size() > 0) {
+            params.put("is_office", true);
+            params.put("office_id", officeIDs);
+        } else {
+            params.put("is_office", false);
+        }
+
+        params.put("is_fused", true);
+        params.put("fused_id", Collections.singletonList(requestParams.getString("FusedID")));
+
+        final JSONArray cameraIDs = requestParams.getJSONArray("CameraIDs");
+        if (cameraIDs.size() > 0) {
+            params.put("is_camera", true);
+            params.put("camera_id", cameraIDs);
+        } else {
+            params.put("is_camera", false);
+        }
+
         params.put("date_aggregation", true);
         templateParams.put("id", "template_person_aggregation");
         templateParams.put("params", params);
@@ -88,19 +122,24 @@ public class PersonClusterService {
                     final int docNums = fusedJsonObject.getInteger("doc_count");
                     if (map.containsKey(fusedId)) {
                         final JSONObject tmpFusedObject = map.get(fusedId);
-                        int tmpDocNums = tmpFusedObject.getInteger("doc_count").intValue();
+                        int tmpDocNums = tmpFusedObject.getInteger("DocCount").intValue();
                         tmpDocNums += docNums;
-                        tmpFusedObject.put("doc_count", tmpDocNums);
+                        tmpFusedObject.put("DocCount", tmpDocNums);
                     } else {
+                        fusedJsonObject.put("Key", fusedJsonObject.remove("key"));
+                        fusedJsonObject.put("DocCount", fusedJsonObject.remove("doc_count"));
                         map.put(fusedId, fusedJsonObject);
                     }
                 });
             });
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("total", totalCount.get());
-            jsonObject.put("buckets", map.values());
+            jsonObject.put("Total", totalCount.get());
+            jsonObject.put("Buckets", map.values());
             bucketsMap.put(key, jsonObject);
         });
-        return FastJsonUtils.JsonBuilder.ok().property("Total", total).property("Took", took).object(bucketsMap).json();
+
+        JSONObject outResult = new JSONObject();
+        outResult.put("Aggs", bucketsMap);
+        return FastJsonUtils.JsonBuilder.ok().property("Total", total).property("Took", took).object(outResult).json();
     }
 }
