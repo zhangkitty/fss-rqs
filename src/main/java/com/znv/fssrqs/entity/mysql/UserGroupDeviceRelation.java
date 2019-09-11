@@ -27,6 +27,7 @@ public class UserGroupDeviceRelation extends Device {
     @JSONField(name = "ApeKinds")
     @JsonProperty("ApeKinds")
     private String ApeKinds;
+    private Integer UseType;
 
     @Override
     public String getApeID() {
@@ -60,5 +61,13 @@ public class UserGroupDeviceRelation extends Device {
 
     public void setApeKinds(String apeKinds) {
         ApeKinds = apeKinds;
+    }
+
+    public Integer getUseType() {
+        return UseType;
+    }
+
+    public void setUseType(Integer useType) {
+        UseType = useType;
     }
 }

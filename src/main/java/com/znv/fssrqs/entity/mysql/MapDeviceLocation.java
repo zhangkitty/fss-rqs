@@ -20,6 +20,7 @@ public class MapDeviceLocation {
     private Double Latitude;
 
     private Double Longitude;
+    private Integer UseType;
 
     public String getApeID() {
         return ApeID;
@@ -51,5 +52,13 @@ public class MapDeviceLocation {
 
     public void setLongitude(Double longitude) {
         Longitude = longitude;
+    }
+
+    public Integer getUseType() {
+        return UseType;
+    }
+
+    public void setUseType(Integer useType) {
+        UseType = useType;
     }
 }
