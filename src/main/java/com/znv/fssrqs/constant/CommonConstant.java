@@ -151,4 +151,14 @@ public class CommonConstant {
         public static final int BAD_REQUEST = 20000;
         public static final int INTERNAL_ERROR = 50000;
     }
+
+    //千视通配置
+    public static class ThousandSights {
+        //图片特征值提取
+        public static final String GET_FEATURE_URL = "http://%s:%d/rest/feature/extractFromPicture";
+        //图片目标检测
+        public static final String TAEGET_DETECTION_URL = "http//%s:%d/rest/feature/structPicture";
+        //以图搜图
+        public static final String P4P_URL = "http://%s:%d/rest/feature/search";
+    }
 }

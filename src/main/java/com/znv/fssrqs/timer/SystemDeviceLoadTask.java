@@ -2,11 +2,13 @@ package com.znv.fssrqs.timer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.MDeviceDao;
 import com.znv.fssrqs.dao.mysql.MReidDao;
 import com.znv.fssrqs.entity.mysql.AnalysisUnitEntity;
 import com.znv.fssrqs.entity.mysql.MBusEntity;
 import com.znv.fssrqs.entity.mysql.ReidUnitEntity;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.ParseException;
@@ -369,7 +371,21 @@ public class SystemDeviceLoadTask {
         return staticAIUnitOnlineList.get(i);
     }
 
-    public List<MBusEntity> getMBusOnlineList(){
+    public List<MBusEntity> getMBusOnlineList() {
         return mBusOnlineList;
+    }
+
+    public List<ReidUnitEntity> getReidUnitOnlineList() {
+        return reidUnitOnlineList;
+    }
+
+    public ReidUnitEntity getReidUnit() {
+        if (reidUnitOnlineList.size() == 0) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "NoAvailableReidUnit");
+        }
+        //随机选择代理
+        Random random = new Random();
+        int i = random.nextInt(reidUnitOnlineList.size());
+        return reidUnitOnlineList.get(i);
     }
 }
