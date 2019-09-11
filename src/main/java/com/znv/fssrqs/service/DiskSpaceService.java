@@ -7,6 +7,7 @@ import com.znv.fssrqs.util.command.ssh.SSHContext;
 import com.znv.fssrqs.vo.DiskInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @Service
+@DependsOn("hdfsConfigManager")
 public class DiskSpaceService {
     public final String DEFAULT_IP = "0.0.0.0";
     private JSONObject diskCount = new JSONObject();
