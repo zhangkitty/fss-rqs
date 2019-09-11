@@ -3,12 +3,14 @@ package com.znv.fssrqs.elasticsearch.homepage;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.EsBaseConfig;
+import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.Result;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,12 +34,20 @@ public class PersonLibCountService {
     private String templateName = "template_personlib_count";
 
     public JSONObject personAggsByLibId(Integer personLibType) {
-        String url = new StringBuffer()
-                .append(EsBaseConfig.getInstance().getIndexPersonListName())
-                .append("/")
-                .append(EsBaseConfig.getInstance().getIndexPersonListType())
-                .append("/_search/template").toString();
-
+        String url = "";
+        String isMultiIndex = HdfsConfigManager.getString("person.list.multi.index");
+        if (StringUtils.isEmpty(isMultiIndex) || isMultiIndex.trim().equals("2")) {//单索引
+            url = new StringBuffer().append(EsBaseConfig.getInstance().getIndexPersonListName())
+                    .append("/")
+                    .append(EsBaseConfig.getInstance().getIndexPersonListType())
+                    .append("/_search").toString();
+        } else {
+            url = new StringBuffer().append(EsBaseConfig.getInstance().getIndexPersonListName())
+                    .append("-*")
+                    .append("/")
+                    .append(EsBaseConfig.getInstance().getIndexPersonListType())
+                    .append("/_search").toString();
+        }
         JSONObject templateParams = new JSONObject();
         JSONObject params = new JSONObject();
         params.put("is_del", 0);
