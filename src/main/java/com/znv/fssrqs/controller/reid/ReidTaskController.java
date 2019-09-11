@@ -31,7 +31,6 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping(value = "/reid-task", produces = {"application/json;charset=UTF-8"})
 public class ReidTaskController {
 
     @Autowired
@@ -41,7 +40,7 @@ public class ReidTaskController {
     private ReidTaskDao reidTaskDao;
 
 
-    @RequestMapping(value = "/save",method = RequestMethod.POST)
+    @RequestMapping(value = "/reid-task/save",method = RequestMethod.POST)
     public ResponseVo saveTask(@RequestBody  ReidTaskParam reidTaskParam){
         ReidTaskEntity reidTaskEntity = new ReidTaskEntity();
         BeanUtils.copyProperties(reidTaskParam, reidTaskEntity);
@@ -50,17 +49,24 @@ public class ReidTaskController {
 
     }
 
-    @RequestMapping(value = "/getAllTask",method = RequestMethod.POST)
-    public ResponseVo getAll(@RequestBody @Validated  QueryReidTaskParma queryReidTaskParma){
-        Page page = PageHelper.startPage(queryReidTaskParma.getPageNum(), queryReidTaskParma.getPageSize());
-        List<ReidTaskEntity> list = reidTaskDao.getAll(queryReidTaskParma);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("total",page.getTotal());
-        jsonObject.put("list",list);
-        return ResponseVo.success(jsonObject);
+    @RequestMapping(value = "/reid-task/getAllTask",method = RequestMethod.POST)
+    public ResponseVo getAll(@RequestBody String str){
+        try {
+            QueryReidTaskParma queryReidTaskParma = JSONObject.parseObject(str,QueryReidTaskParma.class);
+            Page page = PageHelper.startPage(queryReidTaskParma.getPageNum(), queryReidTaskParma.getPageSize());
+            List<ReidTaskEntity> list = reidTaskDao.getAll(queryReidTaskParma);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("total",page.getTotal());
+            jsonObject.put("list",list);
+            return ResponseVo.success(jsonObject);
+        }catch (Exception e){
+            return  ResponseVo.error("入参错误");
+        }
+
+
     }
 
-    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    @RequestMapping(value = "/reid-task/update",method = RequestMethod.POST)
     public ResponseVo update(@RequestBody String str){
         try{
             ReidTaskEntity reidTaskEntity = JSONObject.parseObject(str,ReidTaskEntity.class);
@@ -75,7 +81,7 @@ public class ReidTaskController {
         }
     }
 
-    @RequestMapping(value = "/delete",method = RequestMethod.POST)
+    @RequestMapping(value = "/reid-task/delete",method = RequestMethod.POST,consumes = MediaType.TEXT_PLAIN_VALUE)
     public ResponseVo delete(@RequestBody List<Integer> list){
         Integer result =reidTaskDao.delete(list);
         if(result==list.size()){
