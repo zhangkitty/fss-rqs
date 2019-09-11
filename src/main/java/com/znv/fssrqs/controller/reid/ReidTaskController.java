@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.support.HttpRequestHandlerServlet;
 
 import javax.validation.Valid;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,7 +53,7 @@ public class ReidTaskController {
     @RequestMapping(value = "/getAllTask",method = RequestMethod.POST)
     public ResponseVo getAll(@RequestBody @Validated  QueryReidTaskParma queryReidTaskParma){
         Page page = PageHelper.startPage(queryReidTaskParma.getPageNum(), queryReidTaskParma.getPageSize());
-        List<ReidTaskEntity> list = reidTaskDao.getAll();
+        List<ReidTaskEntity> list = reidTaskDao.getAll(queryReidTaskParma);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total",page.getTotal());
         jsonObject.put("list",list);

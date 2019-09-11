@@ -10,8 +10,11 @@
         (#{taskName},#{reidUnitId},#{deviceId},#{deviceName},#{deviceSite},#{gpsX},#{gpsY},#{userId},#{url},#{reidParamsText},now())
     </insert>
 
-    <select id="getAll" resultType="com.znv.fssrqs.entity.mysql.ReidTaskEntity">
-        select * from t_reid_task
+    <select id="getAll" resultType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" parameterType="com.znv.fssrqs.controller.reid.params.QueryReidTaskParma">
+        select * from t_reid_task a LEFT JOIN t_cfg_device b on a.device_id=b.device_id
+        <if test="taskId != null">
+          where a.task_id = #{taskId}
+        </if>
     </select>
 
     <update id="update">

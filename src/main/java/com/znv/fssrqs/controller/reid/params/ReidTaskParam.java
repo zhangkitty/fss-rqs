@@ -24,16 +24,6 @@ public class ReidTaskParam {
     @NotBlank(message = "deviceId不能为空")
     String deviceId;
 
-    @NotBlank(message = "deviceName不能为空")
-    String deviceName;
-
-    @NotBlank(message = "deviceSite不能为空")
-    String deviceSite;
-
-    Float gpsX;
-
-    Float gpsY;
-
     @NotBlank(message = "userId不能为空")
     String userId;
 

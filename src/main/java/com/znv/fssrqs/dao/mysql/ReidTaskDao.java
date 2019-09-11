@@ -1,6 +1,7 @@
 package com.znv.fssrqs.dao.mysql;
 
 
+import com.znv.fssrqs.controller.reid.params.QueryReidTaskParma;
 import com.znv.fssrqs.entity.mysql.ReidTaskEntity;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,7 +17,7 @@ public interface ReidTaskDao {
     @Options(useGeneratedKeys = true)
     int sava(ReidTaskEntity reidTaskEntity);
 
-    List<ReidTaskEntity> getAll();
+    List<ReidTaskEntity> getAll(QueryReidTaskParma queryReidTaskParma);
 
     Integer update(ReidTaskEntity reidTaskEntity);
 

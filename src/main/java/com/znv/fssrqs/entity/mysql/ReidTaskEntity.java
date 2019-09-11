@@ -3,6 +3,7 @@ package com.znv.fssrqs.entity.mysql;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -23,11 +24,11 @@ public class ReidTaskEntity {
 
     private String deviceName;
 
-    private String deviceSite;
+    private String installSite;
 
-    private Float gpsX;
+    private Float X;
 
-    private Float gpsY;
+    private Float Y;
 
     private String userId;
 
@@ -35,7 +36,7 @@ public class ReidTaskEntity {
 
     private String reidParamsText;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date updateTime;
+    private String updateTime;
 }

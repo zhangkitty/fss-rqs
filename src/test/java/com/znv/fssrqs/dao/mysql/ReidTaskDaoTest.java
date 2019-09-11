@@ -32,9 +32,6 @@ public class ReidTaskDaoTest {
         reidTaskEntity.setReidUnitId("1232141");
         reidTaskEntity.setDeviceId("31414123");
         reidTaskEntity.setDeviceName("afsdfasdf");
-        reidTaskEntity.setDeviceSite("dsfafaaf");
-        reidTaskEntity.setGpsX(3.2f);
-        reidTaskEntity.setGpsY(3.2f);
         reidTaskEntity.setUserId("dsafafafa");
         reidTaskEntity.setUrl("sdfafaf");
         reidTaskEntity.setReidParamsText("fasdfafaf");
@@ -44,8 +41,7 @@ public class ReidTaskDaoTest {
 
     @Test
     public void getALl(){
-        List<ReidTaskEntity> list = reidTaskDao.getAll();
-        System.out.println("mdzcc");
+
     }
 
     @Test
@@ -56,9 +52,6 @@ public class ReidTaskDaoTest {
         reidTaskEntity.setReidUnitId("1232141");
         reidTaskEntity.setDeviceId("31414123");
         reidTaskEntity.setDeviceName("afsdfasdf");
-        reidTaskEntity.setDeviceSite("dsfafaaf");
-        reidTaskEntity.setGpsX(3.2f);
-        reidTaskEntity.setGpsY(3.2f);
         reidTaskEntity.setUserId("dsafafafa");
         reidTaskEntity.setUrl("sdfafaf");
         reidTaskEntity.setReidParamsText("fasdfafaf");
