@@ -1,5 +1,6 @@
 package com.znv.fssrqs.controller.reid;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -18,11 +19,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.support.HttpRequestHandlerServlet;
+import sun.jvm.hotspot.opto.InlineTree;
 
 import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhangcaochao
@@ -81,8 +85,11 @@ public class ReidTaskController {
         }
     }
 
-    @RequestMapping(value = "/reid-task/delete",method = RequestMethod.POST,consumes = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseVo delete(@RequestBody List<Integer> list){
+    @RequestMapping(value = "/reid-task/delete",method = RequestMethod.POST)
+    public ResponseVo delete(@RequestBody String str){
+        JSONObject jsonObject = JSON.parseObject(str);
+        List<Integer> list = new ArrayList<>();
+        jsonObject.getJSONArray("ids").stream().forEach(v->list.add((Integer) v));
         Integer result =reidTaskDao.delete(list);
         if(result==list.size()){
             return ResponseVo.success(null);
