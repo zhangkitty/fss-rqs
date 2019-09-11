@@ -9,26 +9,25 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by dongzelong on  2019/9/6 16:11.
+ * Created by dongzelong on  2019/9/11 15:25.
  *
  * @author dongzelong
  * @version 1.0
  * @Description TODO
  */
 @Mapper
-public interface AITaskDeviceRuleDao {
-    @MapKey("CameraID")
-    @Select("SELECT t_scim_facetask.camera_id CameraID,t_cfg_device.device_name CameraName FROM t_scim_facetask LEFT JOIN t_cfg_device ON t_scim_facetask.`camera_id`=t_cfg_device.`device_id`;")
-    Map<String, Map<String, Object>> selectAllTaskCameras();
-
+public interface ReidAnalysisTaskDao {
+    @MapKey("DeviceID")
+    @Select({"SELECT t.`device_id` DeviceID,d.`device_name` DeviceName FROM t_reid_task t left join t_cfg_device d on t.`device_id`=d.`device_id`"})
+    Map<String, Map<String, Object>> getAllDevices();
 
     @Select({
             "<script>",
-            "SELECT t_scim_facetask.camera_id CameraID FROM t_scim_facetask  WHERE t_scim_facetask.`camera_id` IN ",
+            "SELECT device_id DeviceID FROM t_reid_task WHERE device_id IN ",
             "<foreach collection='deviceIds' item='deviceId' index='index' open='(' separator=',' close=')'>",
             "#{deviceId}",
             "</foreach>",
             "</script>"
     })
-    List<String> getDevicesByDeviceIds(@Param("deviceIds") List<String> deviceIds);
+    List<String> getDevicesByDeviceIds(@Param("deviceIds") List<String> deviceId);
 }

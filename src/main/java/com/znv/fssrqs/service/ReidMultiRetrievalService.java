@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.ReidTaskDao;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
-import com.znv.fssrqs.entity.mysql.MBusEntity;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.timer.SystemDeviceLoadTask;
 import com.znv.fssrqs.util.FastJsonUtils;
