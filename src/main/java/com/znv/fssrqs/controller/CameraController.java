@@ -142,8 +142,13 @@ public class CameraController {
             deviceIds.add(apeID);
         });
 
-        final List<String> faceDeviceIds = aiTaskDeviceRuleDao.getDevicesByDeviceIds(deviceIds);
-        final List<String> reidDeviceIds = reidAnalysisTaskDao.getDevicesByDeviceIds(deviceIds);
+        List<String> faceDeviceIds = null;
+        List<String> reidDeviceIds = null;
+        if (deviceIds.size() > 0) {
+            faceDeviceIds = aiTaskDeviceRuleDao.getDevicesByDeviceIds(deviceIds);
+            reidDeviceIds = reidAnalysisTaskDao.getDevicesByDeviceIds(deviceIds);
+        }
+
         JSONObject devMap = new JSONObject();
         for (MapDeviceLocation device : mapDevices) {
             String apeId = device.getApeID();

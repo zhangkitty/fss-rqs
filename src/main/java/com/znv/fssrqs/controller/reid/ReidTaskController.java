@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.znv.fssrqs.controller.face.compare.n.n.QueryResultParams;
 import com.znv.fssrqs.controller.reid.params.QueryReidTaskParma;
 import com.znv.fssrqs.controller.reid.params.ReidTaskParam;
 import com.znv.fssrqs.dao.mysql.ReidTaskDao;
@@ -13,20 +12,13 @@ import com.znv.fssrqs.service.reid.ReidTaskService;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.support.HttpRequestHandlerServlet;
-import sun.jvm.hotspot.opto.InlineTree;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author zhangcaochao
