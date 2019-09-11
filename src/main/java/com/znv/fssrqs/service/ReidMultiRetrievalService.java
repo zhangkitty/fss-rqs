@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
-import com.znv.fssrqs.dao.mysql.ReidTaskDao;
+import com.znv.fssrqs.dao.mysql.ReidAnalysisTaskDao;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.timer.SystemDeviceLoadTask;
@@ -34,7 +34,7 @@ public class ReidMultiRetrievalService {
     @Autowired
     private ElasticSearchClient elasticSearchClient;
     @Resource
-    private ReidTaskDao reidTaskDao;
+    private ReidAnalysisTaskDao reidAnalysisTaskDao;
     @Resource
     private SystemDeviceLoadTask systemDeviceLoadTask;
 
@@ -195,7 +195,7 @@ public class ReidMultiRetrievalService {
         long total = response.getLongValue("total");
         long took = response.getLongValue("took");
         final JSONArray jsonArray = response.getJSONObject("hits").getJSONArray("hits");
-        final Map<String, Map<String, Object>> allDevices = reidTaskDao.getAllDevices();
+        final Map<String, Map<String, Object>> allDevices = reidAnalysisTaskDao.getAllDevices();
         final List<JSONObject> list = jsonArray.parallelStream().map(object -> {
             JSONObject jsonObject = (JSONObject) object;
             final JSONObject source = jsonObject.getJSONObject("_source");

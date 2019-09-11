@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.znv.fssrqs.config.HomeConfig;
 import com.znv.fssrqs.dao.mysql.AITaskDeviceRuleDao;
 import com.znv.fssrqs.dao.mysql.MDeviceDao;
+import com.znv.fssrqs.dao.mysql.ReidAnalysisTaskDao;
 import com.znv.fssrqs.dao.mysql.ReidTaskDao;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
@@ -42,7 +43,7 @@ public class DeviceService {
     @Resource
     private MDeviceDao mDeviceDao;
     @Resource
-    private ReidTaskDao reidTaskDao;
+    private ReidAnalysisTaskDao reidAnalysisTaskDao;
     @Resource
     private AITaskDeviceRuleDao aiTaskDeviceRuleDao;
 
@@ -96,7 +97,7 @@ public class DeviceService {
                 //人体分析任务关联的设备
                 final List<String> faceDeviceIds = aiTaskDeviceRuleDao.getDevicesByDeviceIds(deviceIds);
                 //人脸分析任务关联的设备
-                final List<String> reidDeviceIds = reidTaskDao.getDevicesByDeviceIds(deviceIds);
+                final List<String> reidDeviceIds = reidAnalysisTaskDao.getDevicesByDeviceIds(deviceIds);
                 //用户所属分组ID
                 Integer userGroupId = userGroup.getUserGroupID();
                 //区域ID

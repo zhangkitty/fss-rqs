@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
+import com.google.common.collect.Lists;
+import com.znv.fssrqs.dao.mysql.AITaskDeviceRuleDao;
 import com.znv.fssrqs.dao.mysql.DeviceDeptRelationDao;
 import com.znv.fssrqs.dao.mysql.FaceAITaskDao;
+import com.znv.fssrqs.dao.mysql.ReidAnalysisTaskDao;
 import com.znv.fssrqs.entity.mysql.MapDeviceLocation;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
@@ -49,6 +52,10 @@ public class CameraController {
     private AccessDeviceService accessDeviceService;
     @Resource
     private FaceAITaskDao faceAITaskDao;
+    @Resource
+    private ReidAnalysisTaskDao reidAnalysisTaskDao;
+    @Resource
+    private AITaskDeviceRuleDao aiTaskDeviceRuleDao;
 
     /**
      * 查询用户下设备列表
@@ -128,13 +135,39 @@ public class CameraController {
             mapDevices = userGroupDeviceService.queryNormalMapDevice(userGroupId);
         }
 
+        String useType = request.getParameter("UseType");
+        List<String> deviceIds = Lists.newArrayList();
+        mapDevices.stream().forEach(userGroupDeviceRelation -> {
+            final String apeID = userGroupDeviceRelation.getApeID();
+            deviceIds.add(apeID);
+        });
+
+        final List<String> faceDeviceIds = aiTaskDeviceRuleDao.getDevicesByDeviceIds(deviceIds);
+        final List<String> reidDeviceIds = reidAnalysisTaskDao.getDevicesByDeviceIds(deviceIds);
         JSONObject devMap = new JSONObject();
         for (MapDeviceLocation device : mapDevices) {
-            JSONObject devObj = new JSONObject();
-            devObj.put("ID", device.getApeID());
-            devObj.put("Name", device.getApeName());
-            devObj.put("Coordinates", new Double[]{device.getLongitude(), device.getLatitude()});
-            devMap.put(device.getApeID(), devObj);
+            String apeId = device.getApeID();
+            if (reidDeviceIds.contains(apeId)) {
+                device.setUseType(2);
+            } else if (faceDeviceIds.contains(apeId)) {
+                device.setUseType(1);
+            } else {
+                device.setUseType(0);
+            }
+
+            if (StringUtils.isEmpty(useType)) {
+                JSONObject devObj = new JSONObject();
+                devObj.put("ID", device.getApeID());
+                devObj.put("Name", device.getApeName());
+                devObj.put("Coordinates", new Double[]{device.getLongitude(), device.getLatitude()});
+                devMap.put(device.getApeID(), devObj);
+            } else if (useType.equals(String.valueOf(device.getUseType()))) {
+                JSONObject devObj = new JSONObject();
+                devObj.put("Name", device.getApeName());
+                devObj.put("ID", device.getApeID());
+                devObj.put("Coordinates", new Double[]{device.getLongitude(), device.getLatitude()});
+                devMap.put(device.getApeID(), devObj);
+            }
         }
         return FastJsonUtils.JsonBuilder.ok().list(filterFaceTree(devMap, user)).json().toJSONString();
     }
