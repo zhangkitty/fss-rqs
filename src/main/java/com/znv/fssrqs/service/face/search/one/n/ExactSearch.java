@@ -110,9 +110,7 @@ public class ExactSearch {
             for (int j = 0; j < coarseCodeNum; j++) {
                 String indexName = indexNamePrepix + "-" + j;
                 String url = indexName + "/" + EsBaseConfig.getInstance().getEsIndexHistoryType() + "/_search/template";
-
                 Result<JSONObject, String> response = elasticSearchClient.postRequest(url, paramsWithTempId);
-
                 JSONArray esHits = response.value().getJSONObject("hits").getJSONArray("hits");
                 if (esHits.size() > 0) {
                     log.info("ExactSearch indexName {}， result {}", j, esHits.size());
