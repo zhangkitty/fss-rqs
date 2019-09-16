@@ -238,7 +238,7 @@ public class ExactSearch {
             JSONArray hitsArray = new JSONArray();
 
             JSONObject data = new JSONObject();
-            data.put("QueryStatus", concurrentHashMap.containsKey(eventId)? concurrentHashMap.get(eventId) : 1);
+            data.put("QueryStatus", concurrentHashMap.get(eventId));
             for (Object object : hitsJsonarray) {
                 JSONObject retJson = (JSONObject) object;
                 JSONObject o = retJson.getJSONObject("_source");
