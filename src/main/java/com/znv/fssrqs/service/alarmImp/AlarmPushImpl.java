@@ -27,9 +27,9 @@ public class AlarmPushImpl {
             return;
         }
 
-        Enumeration<Integer> subscriberIds = SubscriberLoadTask.getSubscriberIds();
+        Enumeration<String> subscriberIds = SubscriberLoadTask.getSubscriberIds();
         while (subscriberIds.hasMoreElements()) {
-            Integer subscriberId = subscriberIds.nextElement();
+            String subscriberId = subscriberIds.nextElement();
             MSubscribersEntity subscribersEntity = SubscriberLoadTask.getSubscriberInfo(subscriberId);
             JSONArray dispositionNotificationList = buildAlarmObject(subscriberId, jsonList);
             if (! dispositionNotificationList.isEmpty()) {
@@ -46,7 +46,7 @@ public class AlarmPushImpl {
         }
     }
 
-    private JSONArray buildAlarmObject(Integer subscriberId, List<JSONObject> jsonList) {
+    private JSONArray buildAlarmObject(String subscriberId, List<JSONObject> jsonList) {
         JSONArray dispositionNotificationList = new JSONArray();
         for (JSONObject jsonObject : jsonList) {
             if (! jsonObject.containsKey("isAlarm")
