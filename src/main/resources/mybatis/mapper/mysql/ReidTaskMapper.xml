@@ -19,7 +19,7 @@
         ifnull(mbus_server,"") as mbus_server,
         ifnull(task_type,"") as task_type,
         ifnull(rtsp_server,"") as rtsp_server,
-        ifnull(device_id,"") as device_id,
+        ifnull(a.device_id,"") as device_id,
         ifnull(b.device_name,"") as device_name,
         ifnull(b.install_site,"") as install_site,
         ifnull(user_id,"") as user_id,
