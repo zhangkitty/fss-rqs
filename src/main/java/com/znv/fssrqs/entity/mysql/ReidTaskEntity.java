@@ -25,6 +25,8 @@ public class ReidTaskEntity {
 
     private String deviceId;
 
+    private String deviceName;
+
     private String userId;
 
     private String url;
