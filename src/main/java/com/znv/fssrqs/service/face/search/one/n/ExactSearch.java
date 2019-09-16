@@ -68,8 +68,6 @@ public class ExactSearch {
             @Override
             public void run() {
                 doSearch(params);
-                concurrentHashMap.put(params.getUUID(), 1);
-                log.error(params.getUUID() + " put 1");
             }
         });
 
@@ -120,6 +118,8 @@ public class ExactSearch {
         } catch (Exception e) {
             log.error("ExactSearch Error: {}", e);
             throw ZnvException.badRequest("EsAccessFailed", "ExactSearch Exception");
+        }finally {
+            concurrentHashMap.put(params.getUUID(), 1);
         }
     }
 
