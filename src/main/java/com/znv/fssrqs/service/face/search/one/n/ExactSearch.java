@@ -7,9 +7,15 @@ import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.action.bulk.BulkProcessor;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.unit.ByteSizeUnit;
+import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
 import org.springframework.stereotype.Service;
 
 /**
@@ -112,7 +118,7 @@ public class ExactSearch {
                 JSONArray esHits = response.value().getJSONObject("hits").getJSONArray("hits");
                 if (esHits.size() > 0) {
                     log.info("ExactSearch indexName {}， result {}", j, esHits.size());
-                    this.bulkWriteToEs(EsBaseConfig.getInstance().getEsExactSearchResult(), EsBaseConfig.getInstance().getEsIndexHistoryType(), esHits, params.getUUID(), j, indexName);
+                    this.bulkWriteToEs(params,EsBaseConfig.getInstance().getEsExactSearchResult(), EsBaseConfig.getInstance().getEsIndexHistoryType(), esHits, params.getUUID(), j, indexName);
                 }
             }
         } catch (Exception e) {
@@ -124,14 +130,11 @@ public class ExactSearch {
     }
 
     //index:要写数据的索引名； type:要写数据的type； esHits：要写的数据； eventId：事务id，由web发送，标志一次查询； searchNum：查询索引的顺序号；indexName：查询索引的名称
-    public void bulkWriteToEs(String index, String type, JSONArray esHits, String eventId, Object searchNum, String indexName) {
+    public void bulkWriteToEs(GeneralSearchParam params,String index, String type, JSONArray esHits, String eventId, Object searchNum, String indexName) {
         try {
             log.info("开始写结果");
             TransportClient client = elasticSearchClient.getClient();
             BulkRequestBuilder bulkRequest = client.prepareBulk();
-//            bulkRequest.add(client.prepareIndex("index1", "type1", "id1").setSource(new JSONObject()));
-//            bulkRequest.add(client.prepareIndex("index2", "type2", "id2").setSource(new JSONObject()));
-//            BulkResponse bulkResponse = bulkRequest.execute().actionGet();
             FeatureCompUtil fc = new FeatureCompUtil();
             int len = esHits.size();
             //  if(len > 0){ //已在调用函数中做了判断1
@@ -148,8 +151,35 @@ public class ExactSearch {
                     if (i == len - 1) {
                         statusCode = 1;
                     }
-                    bulkRequest.add(client.prepareIndex(index, type, String.valueOf(docId))
-                            .setSource(jsonBuilder()
+                    BulkProcessor bulkProcessor = BulkProcessor.builder(
+                            client,
+                            new BulkProcessor.Listener() {
+                                @Override
+                                public void beforeBulk(long executionId,
+                                                       BulkRequest request) {
+                                }
+
+                                @Override
+                                public void afterBulk(long executionId,
+                                                      BulkRequest request,
+                                                      BulkResponse response) {
+                                    System.out.println("---尝试操作" + request.numberOfActions() + "条数据成功---");
+                                }
+
+                                @Override
+                                public void afterBulk(long executionId,
+                                                      BulkRequest request,
+                                                      Throwable failure) {
+                                    log.info("插入失败");
+                                }
+                            })
+                            .setBulkActions(1000)
+                            .setBulkSize(new ByteSizeValue(5, ByteSizeUnit.MB))
+                            .setFlushInterval(TimeValue.timeValueSeconds(5))
+                            .setConcurrentRequests(2)
+                            .build();
+
+                    bulkProcessor.add(new IndexRequest(index,type,eventId).source(jsonBuilder()
                                     .startObject()
                                     .field("score", score)
                                     .field("big_picture_uuid", source.getString("big_picture_uuid"))
@@ -182,17 +212,9 @@ public class ExactSearch {
                             )
                     );
                 }
-                BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-                if (bulkResponse.hasFailures()) {
-                    // process failures by iterating through each bulk response item
-                    log.error(bulkRequest.toString());
-                    // System.out.println(bulkRequest.toString());
-                }
-            //}
         } catch (Exception e) {
             log.error("es批量写数据异常", e);
         }
-        log.info("写结束");
     }
 
 
@@ -229,6 +251,8 @@ public class ExactSearch {
         params.put("query", bool);
         params.put("sort", sort);
         try {
+            JSONObject data = new JSONObject();
+            data.put("QueryStatus", concurrentHashMap.get(eventId));
             String result = HttpUtils.sendPostData(params.toJSONString(), url);
             JSONObject resultJson = JSONObject.parseObject(result);
             resultJson = resultJson.getJSONObject("hits");
@@ -236,14 +260,10 @@ public class ExactSearch {
             // ret.put("queryStatus", concurrentHashMap.get(eventId));
             JSONArray hitsJsonarray = resultJson.getJSONArray("hits");
             JSONArray hitsArray = new JSONArray();
-
-            JSONObject data = new JSONObject();
-            data.put("QueryStatus", concurrentHashMap.get(eventId));
             for (Object object : hitsJsonarray) {
                 JSONObject retJson = (JSONObject) object;
                 JSONObject o = retJson.getJSONObject("_source");
                 JSONObject resObj = new JSONObject();
-
                 resObj.put("OfficeID", o.getString("office_id"));
                 resObj.put("Score", o.getDoubleValue("score"));
                 resObj.put("IsAlarm", o.getString("is_alarm"));

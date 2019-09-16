@@ -5,9 +5,9 @@
 
     <insert id="sava" parameterType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" keyProperty="taskId" keyColumn="task_id" useGeneratedKeys="true">
         insert into t_reid_task
-        (task_name,reid_unit_id,device_id,user_id,url,reid_params_text,create_time)
+        (task_name,reid_unit_id,device_id,user_id,url,reid_params_text,sim_threshold,mbus_server,task_type,rtsp_server,create_time)
         values
-        (#{taskName},#{reidUnitId},#{deviceId},#{userId},#{url},#{reidParamsText},now())
+        (#{taskName},#{reidUnitId},#{deviceId},#{userId},#{url},#{reidParamsText},#{simThreshold},#{mbusServer},#{taskType},#{rtspServer},now())
     </insert>
 
     <select id="getAll" resultType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" parameterType="com.znv.fssrqs.controller.reid.params.QueryReidTaskParma">
@@ -15,6 +15,10 @@
         ifnull(task_id,"") as task_id,
         ifnull(task_name,"") as task_name,
         ifnull(reid_unit_id,"") as reid_unit_id,
+        ifnull(sim_threshold,"") as sim_threshold,
+        ifnull(mbus_server,"") as mbus_server,
+        ifnull(task_type,"") as task_type,
+        ifnull(rtsp_server,"") as rtsp_server,
         ifnull(b.device_id,"") as device_id,
         ifnull(b.device_name,"") as device_name,
         ifnull(b.install_site,"") as install_site,
@@ -43,18 +47,6 @@
           <if test="deviceId != null">
               device_id = #{deviceId,jdbcType=VARCHAR},
           </if>
-          <if test="deviceName != null">
-              device_name = #{deviceName,jdbcType=VARCHAR},
-          </if>
-          <if test="deviceSite != null">
-              device_site = #{deviceSite,jdbcType=VARCHAR},
-          </if>
-          <if test="gpsX != null">
-              gps_x = #{gpsX,jdbcType=VARCHAR},
-          </if>
-          <if test="gpsY != null">
-              gps_y = #{gpsY,jdbcType=VARCHAR},
-          </if>
           <if test="userId != null">
               user_id = #{userId,jdbcType=VARCHAR},
           </if>
@@ -63,6 +55,18 @@
           </if>
           <if test="reidParamsText != null">
               reid_params_text = #{reidParamsText,jdbcType=VARCHAR},
+          </if>
+          <if test="simThreshold !=null">
+              sim_threshold = #{simThreshold,jdbcType=VARCHAR},
+          </if>
+          <if test="mbusServer !=null">
+              mbus_server = #{mbusServer,jdbcType = VARCHAR},
+          </if>
+          <if test="taskType !=null">
+              task_type = #{taskType,jdbcType =  VARCHAR},
+          </if>
+          <if test="rtspServer !=null">
+              rtsp_server = #{rtspServer,jdbcType =  VARCHAR},
           </if>
           update_time=now()
       </set>

@@ -31,6 +31,14 @@ public class ReidTaskEntity {
 
     private String reidParamsText;
 
+    private String simThreshold;
+
+    private String mbusServer;
+
+    private String taskType;
+
+    private String rtspServer;
+
     private String createTime;
 
     private String updateTime;
