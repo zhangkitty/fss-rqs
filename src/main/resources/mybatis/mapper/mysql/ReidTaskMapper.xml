@@ -5,9 +5,9 @@
 
     <insert id="sava" parameterType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" keyProperty="taskId" keyColumn="task_id" useGeneratedKeys="true">
         insert into t_reid_task
-        (task_name,reid_unit_id,device_id,device_name,device_site,gps_x,gps_y,user_id,url,reid_params_text,create_time)
+        (task_name,reid_unit_id,device_id,user_id,url,reid_params_text,create_time)
         values
-        (#{taskName},#{reidUnitId},#{deviceId},#{deviceName},#{deviceSite},#{gpsX},#{gpsY},#{userId},#{url},#{reidParamsText},now())
+        (#{taskName},#{reidUnitId},#{deviceId},#{userId},#{url},#{reidParamsText},now())
     </insert>
 
     <select id="getAll" resultType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" parameterType="com.znv.fssrqs.controller.reid.params.QueryReidTaskParma">

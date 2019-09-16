@@ -21,9 +21,6 @@ public class ReidTaskService {
 
     public Integer save(ReidTaskEntity reidTaskEntity){
 
-
-
-
         reidTaskDao.sava(reidTaskEntity);
         return reidTaskEntity.getTaskId();
     }

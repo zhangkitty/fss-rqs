@@ -31,7 +31,6 @@ public class ReidTaskDaoTest {
         reidTaskEntity.setTaskName("taskName");
         reidTaskEntity.setReidUnitId("1232141");
         reidTaskEntity.setDeviceId("31414123");
-        reidTaskEntity.setDeviceName("afsdfasdf");
         reidTaskEntity.setUserId("dsafafafa");
         reidTaskEntity.setUrl("sdfafaf");
         reidTaskEntity.setReidParamsText("fasdfafaf");
@@ -51,7 +50,6 @@ public class ReidTaskDaoTest {
         reidTaskEntity.setTaskName("taskName");
         reidTaskEntity.setReidUnitId("1232141");
         reidTaskEntity.setDeviceId("31414123");
-        reidTaskEntity.setDeviceName("afsdfasdf");
         reidTaskEntity.setUserId("dsafafafa");
         reidTaskEntity.setUrl("sdfafaf");
         reidTaskEntity.setReidParamsText("fasdfafaf");
