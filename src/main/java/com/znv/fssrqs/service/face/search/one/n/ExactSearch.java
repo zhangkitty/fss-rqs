@@ -68,8 +68,6 @@ public class ExactSearch {
             @Override
             public void run() {
                 doSearch(params);
-                concurrentHashMap.put(params.getUUID(), 1);
-                log.error(params.getUUID() + " put 1");
             }
         });
 
@@ -110,12 +108,8 @@ public class ExactSearch {
             for (int j = 0; j < coarseCodeNum; j++) {
                 String indexName = indexNamePrepix + "-" + j;
                 String url = indexName + "/" + EsBaseConfig.getInstance().getEsIndexHistoryType() + "/_search/template";
-
-                Response response = elasticSearchClient.getInstance().getRestClient().performRequest("get",url,Collections.emptyMap(),httpEntity);
-
-                JSONObject result = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
-
-                JSONArray esHits = result.getJSONObject("hits").getJSONArray("hits");
+                Result<JSONObject, String> response = elasticSearchClient.postRequest(url, paramsWithTempId);
+                JSONArray esHits = response.value().getJSONObject("hits").getJSONArray("hits");
                 if (esHits.size() > 0) {
                     log.info("ExactSearch indexName {}， result {}", j, esHits.size());
                     this.bulkWriteToEs(EsBaseConfig.getInstance().getEsExactSearchResult(), EsBaseConfig.getInstance().getEsIndexHistoryType(), esHits, params.getUUID(), j, indexName);
@@ -124,17 +118,23 @@ public class ExactSearch {
         } catch (Exception e) {
             log.error("ExactSearch Error: {}", e);
             throw ZnvException.badRequest("EsAccessFailed", "ExactSearch Exception");
+        }finally {
+            concurrentHashMap.put(params.getUUID(), 1);
         }
     }
 
     //index:要写数据的索引名； type:要写数据的type； esHits：要写的数据； eventId：事务id，由web发送，标志一次查询； searchNum：查询索引的顺序号；indexName：查询索引的名称
     public void bulkWriteToEs(String index, String type, JSONArray esHits, String eventId, Object searchNum, String indexName) {
         try {
+            log.info("开始写结果");
+            TransportClient client = elasticSearchClient.getClient();
+            BulkRequestBuilder bulkRequest = client.prepareBulk();
+//            bulkRequest.add(client.prepareIndex("index1", "type1", "id1").setSource(new JSONObject()));
+//            bulkRequest.add(client.prepareIndex("index2", "type2", "id2").setSource(new JSONObject()));
+//            BulkResponse bulkResponse = bulkRequest.execute().actionGet();
             FeatureCompUtil fc = new FeatureCompUtil();
             int len = esHits.size();
             //  if(len > 0){ //已在调用函数中做了判断1
-                TransportClient client = elasticSearchClient.getClient();
-                BulkRequestBuilder bulkRequest = client.prepareBulk();
                 int statusCode = 0;
                 for (int i = 0; i < len; i++) {
                     JSONObject hit = esHits.getJSONObject(i);
@@ -182,7 +182,7 @@ public class ExactSearch {
                             )
                     );
                 }
-                BulkResponse bulkResponse = bulkRequest.get();
+                BulkResponse bulkResponse = bulkRequest.execute().actionGet();
                 if (bulkResponse.hasFailures()) {
                     // process failures by iterating through each bulk response item
                     log.error(bulkRequest.toString());
@@ -192,6 +192,7 @@ public class ExactSearch {
         } catch (Exception e) {
             log.error("es批量写数据异常", e);
         }
+        log.info("写结束");
     }
 
 
@@ -237,7 +238,7 @@ public class ExactSearch {
             JSONArray hitsArray = new JSONArray();
 
             JSONObject data = new JSONObject();
-            data.put("QueryStatus", concurrentHashMap.containsKey(eventId)? concurrentHashMap.get(eventId) : 1);
+            data.put("QueryStatus", concurrentHashMap.get(eventId));
             for (Object object : hitsJsonarray) {
                 JSONObject retJson = (JSONObject) object;
                 JSONObject o = retJson.getJSONObject("_source");

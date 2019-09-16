@@ -20,6 +20,7 @@ public class ReidTaskService {
     private ReidTaskDao reidTaskDao;
 
     public Integer save(ReidTaskEntity reidTaskEntity){
+
         reidTaskDao.sava(reidTaskEntity);
         return reidTaskEntity.getTaskId();
     }

@@ -25,14 +25,6 @@ public class ReidTaskEntity {
 
     private String deviceId;
 
-    private String deviceName;
-
-    private String installSite;
-
-    private Float X;
-
-    private Float Y;
-
     private String userId;
 
     private String url;
