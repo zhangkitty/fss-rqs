@@ -12,6 +12,7 @@ import com.znv.fssrqs.service.reid.ReidUnitService;
 import com.znv.fssrqs.timer.SystemDeviceLoadTask;
 import com.znv.fssrqs.util.FastJsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,6 +68,16 @@ public class SystemController {
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(mBusOnlineList).json(), new PascalNameFilter());
     }
 
+    @Value("${spring.datasource.mysql.jdbc-url}")
+    private String jdbcUrl;
+
+    @GetMapping("/icap/ipps")
+    public JSONObject getIcapIpps() {
+        String ip = jdbcUrl.split(":")[2].substring(2);
+        String port = "8000";
+        return FastJsonUtils.JsonBuilder.ok().property("Ipps",ip+":"+port).json();
+    }
+
     /**
      * 获取大数据磁盘信息
      */
@@ -80,7 +91,7 @@ public class SystemController {
 
     @GetMapping(value = "/Info/DeviceType")
     public JSONObject getInfoDeviceType(@RequestParam Map mapParam) {
-        if (! mapParam.containsKey("DeviceKind")) {
+        if (!mapParam.containsKey("DeviceKind")) {
             throw ZnvException.error("RequestParamNull", "DeviceKind");
         }
 
@@ -89,7 +100,7 @@ public class SystemController {
 
     @GetMapping(value = "/Info/Manufacture")
     public JSONObject getInfoManufacture(@RequestParam Map mapParam) {
-        if (! mapParam.containsKey("DeviceKind")) {
+        if (!mapParam.containsKey("DeviceKind")) {
             throw ZnvException.error("RequestParamNull", "DeviceKind");
         }
 
