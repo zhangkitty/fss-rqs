@@ -41,6 +41,12 @@ public class ReidTaskEntity {
 
     private String rtspServer;
 
+    private String installSite;
+
+    private String x;
+
+    private String y;
+
     private String createTime;
 
     private String updateTime;
