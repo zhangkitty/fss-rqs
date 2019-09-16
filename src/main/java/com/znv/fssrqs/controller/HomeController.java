@@ -65,12 +65,12 @@ public class HomeController {
         final JSONArray esAgg = resultObject.getJSONObject("aggregations").getJSONObject("lib_ids").getJSONArray("buckets");
         //遍历聚合
         Iterator<Object> iterator = esAgg.iterator();
-        Set<String> libIdSet = Sets.newHashSet();
+        Set<Integer> libIdSet = Sets.newHashSet();
         while (iterator.hasNext()) {
             JSONObject jsonObject = (JSONObject) iterator.next();
-            String libId = jsonObject.getString("key");
+            Integer libId = Integer.parseInt(jsonObject.getString("key"));
             libIdSet.add(libId);
-            jsonObject.put("LibID", libId);
+            jsonObject.put("LibID", libId+"");
             jsonObject.remove("key");
             if (libMap.containsKey(libId)) {
                 jsonObject.put("LibName", libMap.get(libId).get("LibName"));
@@ -84,10 +84,10 @@ public class HomeController {
 
         JSONArray array = params.getJSONArray("LibIDs");
         array.forEach(o -> {
-            String libId = (String) o;
+            Integer libId = Integer.parseInt((String) o);
             if (!libIdSet.contains(libId)) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("LibID", libId);
+                jsonObject.put("LibID", libId+"");
                 if (libMap.containsKey(libId)) {
                     jsonObject.put("LibName", libMap.get(libId).get("LibName"));
                 } else {
