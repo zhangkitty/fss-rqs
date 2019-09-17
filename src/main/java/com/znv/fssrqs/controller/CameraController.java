@@ -165,12 +165,14 @@ public class CameraController {
                 devObj.put("ID", device.getApeID());
                 devObj.put("Name", device.getApeName());
                 devObj.put("Coordinates", new Double[]{device.getLongitude(), device.getLatitude()});
+                devObj.put("UseType",device.getUseType());
                 devMap.put(device.getApeID(), devObj);
             } else if (useType.equals(String.valueOf(device.getUseType()))) {
                 JSONObject devObj = new JSONObject();
                 devObj.put("Name", device.getApeName());
                 devObj.put("ID", device.getApeID());
                 devObj.put("Coordinates", new Double[]{device.getLongitude(), device.getLatitude()});
+                devObj.put("UseType",device.getUseType());
                 devMap.put(device.getApeID(), devObj);
             }
         }
