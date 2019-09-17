@@ -61,5 +61,11 @@ public class ReidTaskDaoTest {
         List<Integer> list = new ArrayList<Integer>(Arrays.asList(3,4,5));
         reidTaskDao.delete(list);
     }
+
+    @Test
+    public void findOne(){
+       ReidTaskEntity reidTaskEntity =  reidTaskDao.getOne(47);
+       System.out.println("mdzz");
+    }
 }
 
