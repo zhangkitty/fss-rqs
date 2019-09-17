@@ -76,7 +76,7 @@ public class FormatObject {
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         // 转换成东八区时区
         sdf1.setTimeZone(TimeZone.getTimeZone("UTC"));
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         try {
             Date enterTime1 = sdf1.parse(time);
