@@ -4,21 +4,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.FnmsConsts;
 import com.znv.fssrqs.constant.Status;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
-import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
 import com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam;
 import com.znv.fssrqs.timer.CompareTaskLoader;
 import com.znv.fssrqs.timer.NtoNCompare;
-import com.znv.fssrqs.util.HttpUtils;
-import com.znv.fssrqs.util.ICAPVThreadPool;
-import com.znv.fssrqs.util.MD5Util;
 import com.znv.fssrqs.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author zhangcaochao
@@ -28,7 +26,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 @Service
 public class CompareService {
-
+    private ExecutorService executor = Executors.newCachedThreadPool();
     @Autowired
     private ElasticSearchClient elasticSearchClient;
 
@@ -88,7 +86,7 @@ public class CompareService {
 
 
    public Integer delete(String taskId){
-       ICAPVThreadPool.getInstance().execute(new Runnable() {
+       executor.execute(new Runnable() {
            @Override
            public void run() {
                ConcurrentLinkedDeque<CompareTaskEntity> waitTask= CompareTaskLoader.getInstance().getWaitQueue();
@@ -123,7 +121,7 @@ public class CompareService {
      * N：M 暂停
      */
     public void stop() {
-        ICAPVThreadPool.getInstance().execute(new Runnable() {
+        executor.execute(new Runnable() {
             @Override
             public void run() {
                 CompareTaskEntity task = CompareTaskLoader.getInstance().getExecQueue().element();
@@ -139,7 +137,7 @@ public class CompareService {
      * @param taskId
      */
     public void forceStart(String taskId) {
-        ICAPVThreadPool.getInstance().execute(new Runnable() {
+        executor.execute(new Runnable() {
             @Override
             public void run() {
                 CompareTaskEntity execTask = CompareTaskLoader.getInstance().getExecQueue().element();
