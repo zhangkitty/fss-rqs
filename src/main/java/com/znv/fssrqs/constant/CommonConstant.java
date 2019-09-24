@@ -130,6 +130,8 @@ public class CommonConstant {
         public static final String INDEX_LOG_TYPE = "fss.es.index.log.type";
         public static final String INDEX_PERSON_CLUSTER_NAME = "fused_src_data_realtime_test";
         public static final String INDEX_PERSON_CLUSTER_TYPE = "fused";
+        public static final String INDEX_PERSON_CLUSTER_HISTORY_NAME = "fused_src_data_realtime";
+        public static final String INDEX_PERSON_CLUSTER_HISTORY_TYPE = "fused";
     }
 
     public static class FdfsConfig {
