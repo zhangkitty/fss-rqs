@@ -22,7 +22,7 @@ public class STPersonListSearchDTO {
     @JSONField(name = "lib_id")
     private String[] LibId;
 
-    @JSONField(name="is_del")
+    @JSONField(name = "is_del")
     private String IsDel;
 
     private String ImgData;
@@ -41,6 +41,6 @@ public class STPersonListSearchDTO {
 
     private String from;
 
-    private Boolean lib_aggregation=true;
+    private Boolean lib_aggregation = true;
 
 }

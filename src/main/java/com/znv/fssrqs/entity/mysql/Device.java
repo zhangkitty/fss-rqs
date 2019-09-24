@@ -119,6 +119,7 @@ public class Device {
     public void setStationID(String stationID) {
         StationID = stationID;
     }
+
     @JsonIgnore
     public String getName() {
         return Name;

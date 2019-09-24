@@ -32,7 +32,7 @@ public class AlarmPushImpl {
             Integer subscriberId = subscriberIds.nextElement();
             MSubscribersEntity subscribersEntity = SubscriberLoadTask.getSubscriberInfo(subscriberId);
             JSONArray dispositionNotificationList = buildAlarmObject(subscriberId, jsonList);
-            if (! dispositionNotificationList.isEmpty()) {
+            if (!dispositionNotificationList.isEmpty()) {
                 JSONObject notification = new JSONObject();
                 notification.put("DispositionNotificationList", dispositionNotificationList);
                 try {
@@ -49,13 +49,13 @@ public class AlarmPushImpl {
     private JSONArray buildAlarmObject(Integer subscriberId, List<JSONObject> jsonList) {
         JSONArray dispositionNotificationList = new JSONArray();
         for (JSONObject jsonObject : jsonList) {
-            if (! jsonObject.containsKey("isAlarm")
+            if (!jsonObject.containsKey("isAlarm")
                     || jsonObject.getIntValue("isAlarm") != 1) {
                 continue;
             }
 
-            if (! jsonObject.containsKey("cameraId") ||
-                    ! jsonObject.containsKey("libId")
+            if (!jsonObject.containsKey("cameraId") ||
+                    !jsonObject.containsKey("libId")
             ) {
                 continue;
             }
@@ -64,7 +64,7 @@ public class AlarmPushImpl {
                     jsonObject.getString("cameraId"), subscriberId);
             boolean subscribedLib = SubscriberLoadTask.isSubscribedLib(
                     jsonObject.getString("libId"), subscriberId);
-            if (! subscribedCamera || !subscribedLib) {
+            if (!subscribedCamera || !subscribedLib) {
                 continue;
             }
 

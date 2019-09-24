@@ -23,7 +23,7 @@ public class ProducerState {
 
     static void addTopicCount(String topic) {
         if (topicMap.containsKey(topic)) {
-            topicMap.put(topic, (Integer)topicMap.get(topic) + 1);
+            topicMap.put(topic, (Integer) topicMap.get(topic) + 1);
         } else {
             topicMap.put(topic, 1);
         }
@@ -79,7 +79,7 @@ public class ProducerState {
         sb.append(", skip count: ").append(skipCount);
         sb.append(", resend count: ").append(resendCount);
         sb.append("\nProducer call time: ").append(hrs).append("h").append(min).append("m").append(sec);
-        sb.append("s, speed: ").append((long)callCount / times).append("'/s");
+        sb.append("s, speed: ").append((long) callCount / times).append("'/s");
         sb.append("\nProducer used topic: ").append(JSON.toJSONString(topicMap));
         String ret = sb.toString();
         log.info(ret);

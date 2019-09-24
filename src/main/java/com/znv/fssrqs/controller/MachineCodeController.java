@@ -29,4 +29,9 @@ public class MachineCodeController {
         }
         return FastJsonUtils.JsonBuilder.ok().property("code", MD5Util.encode(str)).json();
     }
+
+    @GetMapping("/generate/license")
+    public JSONObject generateLicense() {
+        return FastJsonUtils.JsonBuilder.ok().json();
+    }
 }

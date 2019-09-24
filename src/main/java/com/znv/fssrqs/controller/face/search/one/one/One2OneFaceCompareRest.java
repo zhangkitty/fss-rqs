@@ -26,7 +26,7 @@ public class One2OneFaceCompareRest {
     public ResponseVo getFaceAttr(@RequestBody String content) {
         JSONObject json = JSON.parseObject(content);
         String imageData = json.getString("ImageData");
-        if(one2OneFaceCompareService.getFaceAttr(imageData)!=null)
+        if (one2OneFaceCompareService.getFaceAttr(imageData) != null)
             return ResponseVo.success(one2OneFaceCompareService.getFaceAttr(imageData));
         return ResponseVo.error("该图片不是人脸");
     }
@@ -35,8 +35,8 @@ public class One2OneFaceCompareRest {
     @PostMapping("/compare/img_compara_value")
     public ResponseVo getComparaValue(@RequestBody One2OneFaceCompareRestParams one2OneFaceCompareRestParams) {
 
-        JSONObject result  =  one2OneFaceCompareService.getCompareValue(one2OneFaceCompareRestParams.getImageOne(), one2OneFaceCompareRestParams.getImageTwo());
+        JSONObject result = one2OneFaceCompareService.getCompareValue(one2OneFaceCompareRestParams.getImageOne(), one2OneFaceCompareRestParams.getImageTwo());
 
-        return  ResponseVo.success(result);
+        return ResponseVo.success(result);
     }
 }

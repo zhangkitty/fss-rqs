@@ -51,7 +51,7 @@ public class NtoNCompare {
 
     @Scheduled(fixedRate = 3000)
     public void query() {
-        if (CompareTaskLoader.getInstance().getExecQueue().size()==0) {
+        if (CompareTaskLoader.getInstance().getExecQueue().size() == 0) {
             if (CompareTaskLoader.getInstance().getWaitQueue().size() != 0) {
                 CompareTaskEntity o = (CompareTaskEntity) CompareTaskLoader.getInstance().getWaitQueue().poll();
                 CompareTaskLoader.getInstance().getExecQueue().add(o);
@@ -59,9 +59,8 @@ public class NtoNCompare {
                 o.setStatus(Status.STARTING.getCode());
                 CompareTaskLoader.getInstance().notifyObserver(o);
             }
-        }
-        else {
-            CompareTaskEntity task = (CompareTaskEntity)CompareTaskLoader.getInstance().getExecQueue().element();
+        } else {
+            CompareTaskEntity task = (CompareTaskEntity) CompareTaskLoader.getInstance().getExecQueue().element();
 //            int num1 = libCount(task.getLib1());
 //            int num2 = libCount(task.getLib2());
 //            if (num1 == 0 || num2 == 0) {
@@ -79,11 +78,11 @@ public class NtoNCompare {
 //            }
             String retData = sendSpark(task, FnmsConsts.StatisticsModeIds.START_ACTION);
 
-            log.error("retData:"+retData);
+            log.info("retData:" + retData);
             JSONObject params = JSONObject.parseObject(retData);
             if (!StringUtils.isEmpty(retData) && params.getString("action").equals("201")) {
                 String result = params.getString("result");
-                log.error("result:"+result);
+                log.info("result:" + result);
                 float process = Float.parseFloat(result);
                 if (task.getStatus() == Status.STARTING.getCode()) {
                     task.setStatus(Status.STARTED.getCode());
@@ -133,7 +132,7 @@ public class NtoNCompare {
         if (StringUtils.isEmpty(online)) {
             for (String ip : ips) {
                 String url = String.format("http://%s:%s/?%s", ip, "11111", URLEncoder.encode(sendObj.toString()));
-                log.error("1:"+url);
+                log.error("1:" + url);
                 try {
                     data = HttpUtils.sendGet(url);
                     online = ip;
@@ -147,7 +146,7 @@ public class NtoNCompare {
         } else {
             try {
                 String url = String.format("http://%s:%s/?%s", online, "11111", URLEncoder.encode(sendObj.toString()));
-                log.error("2:"+url);
+                log.error("2:" + url);
                 ;
                 data = HttpUtils.sendGet(url);
             } catch (Exception e) {

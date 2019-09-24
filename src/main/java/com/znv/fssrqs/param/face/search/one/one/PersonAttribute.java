@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class PersonAttribute {
 
-    @JSONField(name="MouthOpen")
+    @JSONField(name = "MouthOpen")
     private Integer mouthOpen;
 
     private Integer attractive;

@@ -9,8 +9,8 @@
         <result column="tree_id" jdbcType="INTEGER" property="treeId"/>
     </resultMap>
     <sql id="Base_Column_List">
-    node_id, node_name, node_kind, up_node_id, tree_id
-  </sql>
+        node_id, node_name, node_kind, up_node_id, tree_id
+    </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -25,19 +25,19 @@
         and RIGHT(t.node_id,LENGTH(t.node_id)-LENGTH(t.tree_id)) in (select s.camera_id from t_scim_facetask s)
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from t_fss_customtree_node
-    where node_id = #{nodeId,jdbcType=VARCHAR}
-  </delete>
+        delete from t_fss_customtree_node
+        where node_id = #{nodeId,jdbcType=VARCHAR}
+    </delete>
     <delete id="deleteByTreeId" parameterType="java.lang.Integer">
-    delete from t_fss_customtree_node
-    where tree_id = #{treeId,jdbcType=INTEGER}
-  </delete>
+        delete from t_fss_customtree_node
+        where tree_id = #{treeId,jdbcType=INTEGER}
+    </delete>
     <insert id="insert" parameterType="com.znv.fssrqs.entity.mysql.CustomTreeNode">
-    insert into t_fss_customtree_node (node_id, node_name, node_kind, 
-      up_node_id, tree_id)
-    values (#{nodeId,jdbcType=VARCHAR}, #{nodeName,jdbcType=VARCHAR}, #{nodeKind,jdbcType=INTEGER}, 
-      #{upNodeId,jdbcType=VARCHAR}, #{treeId,jdbcType=INTEGER})
-  </insert>
+        insert into t_fss_customtree_node (node_id, node_name, node_kind,
+        up_node_id, tree_id)
+        values (#{nodeId,jdbcType=VARCHAR}, #{nodeName,jdbcType=VARCHAR}, #{nodeKind,jdbcType=INTEGER},
+        #{upNodeId,jdbcType=VARCHAR}, #{treeId,jdbcType=INTEGER})
+    </insert>
     <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.CustomTreeNode">
         insert into t_fss_customtree_node
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -94,20 +94,20 @@
         where node_id = #{nodeId,jdbcType=VARCHAR}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.znv.fssrqs.entity.mysql.CustomTreeNode">
-    update t_fss_customtree_node
-    set node_name = #{nodeName,jdbcType=VARCHAR},
-      node_kind = #{nodeKind,jdbcType=INTEGER},
-      up_node_id = #{upNodeId,jdbcType=VARCHAR},
-      tree_id = #{treeId,jdbcType=INTEGER}
-    where node_id = #{nodeId,jdbcType=VARCHAR}
-  </update>
+        update t_fss_customtree_node
+        set node_name = #{nodeName,jdbcType=VARCHAR},
+        node_kind = #{nodeKind,jdbcType=INTEGER},
+        up_node_id = #{upNodeId,jdbcType=VARCHAR},
+        tree_id = #{treeId,jdbcType=INTEGER}
+        where node_id = #{nodeId,jdbcType=VARCHAR}
+    </update>
     <select id="queryId" parameterType="java.lang.Integer"
             statementType="CALLABLE" resultType="int">
-	{
-	call up_tree_max_save(
-	#{treeId,mode=IN,jdbcType=INTEGER})
-	}
-  </select>
+        {
+        call up_tree_max_save(
+        #{treeId,mode=IN,jdbcType=INTEGER})
+        }
+    </select>
     <insert id="insertBatch">
         insert into t_fss_customtree_node (node_id, node_name, node_kind,
         up_node_id, tree_id)

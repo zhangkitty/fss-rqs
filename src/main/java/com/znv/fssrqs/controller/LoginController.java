@@ -22,7 +22,7 @@ import java.util.Map;
  * @Description TODO
  */
 @RestController
-@RequestMapping(value="/user", produces = { "application/json;charset=UTF-8" })
+@RequestMapping(value = "/user", produces = {"application/json;charset=UTF-8"})
 public class LoginController {
     @Autowired
     private UserService userService;

@@ -15,13 +15,14 @@ public class Template {
     /**
      * 根据键值对填充字符串，如("hello ${name}",{name:"xiaoming"})
      * 输出：
+     *
      * @param content
      * @param map
      * @return
      */
-    public static String renderString(String content, Map<String, String> map){
+    public static String renderString(String content, Map<String, String> map) {
         Set<Map.Entry<String, String>> sets = map.entrySet();
-        for(Map.Entry<String, String> entry : sets) {
+        for (Map.Entry<String, String> entry : sets) {
             String regex = "\\$\\{" + entry.getKey() + "\\}";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(content);

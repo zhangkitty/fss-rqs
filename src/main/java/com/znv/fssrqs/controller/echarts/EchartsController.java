@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping(produces = { "application/json;charset=UTF-8" })
+@RequestMapping(produces = {"application/json;charset=UTF-8"})
 public class EchartsController {
 
     @Autowired
     private PersonLibInfoService personLibInfoService;
 
-    @RequestMapping(value = "/personlib/reportinfo",method = RequestMethod.POST)
-    public ResponseVo getPersonLibInfo(@RequestBody PersonLibIdParam libID){
-        JSONObject jsonObject = personLibInfoService.requestSearch(new PersonListGroupQueryParam(),libID);
+    @RequestMapping(value = "/personlib/reportinfo", method = RequestMethod.POST)
+    public ResponseVo getPersonLibInfo(@RequestBody PersonLibIdParam libID) {
+        JSONObject jsonObject = personLibInfoService.requestSearch(new PersonListGroupQueryParam(), libID);
         return ResponseVo.success(jsonObject);
     }
 }

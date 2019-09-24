@@ -27,6 +27,9 @@ import java.io.IOException;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, MybatisAutoConfiguration.class, SecurityAutoConfiguration.class, MultipartAutoConfiguration.class})
 @ServletComponentScan
 @Slf4j
+//@NacosPropertySource(dataId = "fss-rqs", autoRefreshed = true)
+//@EnableDiscoveryClient
+//@NacosConfigurationProperties(dataId = "alibaba-nacos-config-client",autoRefreshed = true)
 public class FssRqsApplication {
     public static final String LOPQ_MODEL_FILE = "/lopq/lopq_model_V1.0_D512_C36.lopq";
 
@@ -41,4 +44,8 @@ public class FssRqsApplication {
         application.run(args);
     }
 
+    public void init() {
+        int a = 1;
+        Integer b = new Integer(1);
+    }
 }

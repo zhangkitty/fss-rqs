@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class GeneralSearchParam {
 
-//    @NotNull (message = "设备ID不能为空")
+    //    @NotNull (message = "设备ID不能为空")
     private String[] DeviceIDs;
 
     @NotBlank(message = "开始时间不能为空")
@@ -51,7 +51,7 @@ public class GeneralSearchParam {
     private String FilterType;
 
     //是否进行图片查询，true：进行图片查询，false：不进行图片查询
-    private Boolean  IsCalcSim;
+    private Boolean IsCalcSim;
 
     //年龄
     private String AgeLowerLimit;

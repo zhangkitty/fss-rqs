@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 public class UndefinedException extends Exception {
 
     private Integer errcode;
     private String msg;
 
-    public UndefinedException(ErrorCodeEnum errorCodeEnum){
+    public UndefinedException(ErrorCodeEnum errorCodeEnum) {
         this.errcode = errorCodeEnum.getCode();
         this.msg = errorCodeEnum.getMessage();
     }

@@ -11,14 +11,15 @@
         <result column="device_name" jdbcType="VARCHAR" property="Name"/>
     </resultMap>
     <sql id="Base_Column_List">
-    user_group_id,device_id,power_ids,device_kind
-  </sql>
+        user_group_id,device_id,power_ids,device_kind
+    </sql>
     <insert id="insert" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation">
-    insert into t_fss_usergroup_device (device_id, power_ids, user_group_id,device_kind
-      )
-    values (#{ApeID,jdbcType=VARCHAR}, #{PowerIDs,jdbcType=VARCHAR}, #{UserGroupID,jdbcType=INTEGER},#{ApeKind,jdbcType=INTEGER}
-      )
-  </insert>
+        insert into t_fss_usergroup_device (device_id, power_ids, user_group_id,device_kind
+        )
+        values (#{ApeID,jdbcType=VARCHAR}, #{PowerIDs,jdbcType=VARCHAR},
+        #{UserGroupID,jdbcType=INTEGER},#{ApeKind,jdbcType=INTEGER}
+        )
+    </insert>
     <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation">
         insert into t_fss_usergroup_device
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -78,33 +79,34 @@
     </select>
     <select id="queryAdminUserDevice" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation"
             resultMap="BaseResultMap">
-    SELECT
-    DISTINCT(d.device_id),
-    d.precinct_id,
-    d.device_id,
-    d.device_name,
-    d.device_kind
-    FROM
-    t_scim_facetask f
-    JOIN t_cfg_device d ON f.camera_id = d.device_id or d.device_kind = 10
-    JOIN t_cfg_precinct p ON f.precinct_id = p.precinct_id
-    WHERE
-    d.device_kind = 4 or d.device_kind = 10
-    ORDER BY
-    f.create_time ASC;
-  </select>
+        SELECT
+        DISTINCT(d.device_id),
+        d.precinct_id,
+        d.device_id,
+        d.device_name,
+        d.device_kind
+        FROM
+        t_scim_facetask f
+        JOIN t_cfg_device d ON f.camera_id = d.device_id or d.device_kind = 10
+        JOIN t_cfg_precinct p ON f.precinct_id = p.precinct_id
+        WHERE
+        d.device_kind = 4 or d.device_kind = 10
+        ORDER BY
+        f.create_time ASC;
+    </select>
     <select id="queryAdminMapDevice" resultType="com.znv.fssrqs.entity.mysql.MapDeviceLocation">
-    select 
-	a.camera_id as ApeID,c.device_name as ApeName,a.latitude,a.longitude
-	from t_sps_camera_ex a  
-    left join t_cfg_device c on c.device_id=a.camera_id where c.device_kind=4 or c.device_kind = 10
-  </select>
+        select
+        a.camera_id as ApeID,c.device_name as ApeName,a.latitude,a.longitude
+        from t_sps_camera_ex a
+        left join t_cfg_device c on c.device_id=a.camera_id where c.device_kind=4 or c.device_kind = 10
+    </select>
 
     <select id="queryNormalMapDevice" parameterType="java.lang.Integer"
             resultType="com.znv.fssrqs.entity.mysql.MapDeviceLocation">
-  select 
-	a.camera_id as cameraId,c.device_name as cameraName,a.latitude,a.longitude
-	from t_sps_camera_ex a left join t_fss_usergroup_device b on a.camera_id=b.device_id
-    left join t_cfg_device c on c.device_id=a.camera_id where c.device_kind=4 or c.device_kind=10 and b.user_group_id=#{UserGroupID,jdbcType=INTEGER}
-  </select>
+        select
+        a.camera_id as cameraId,c.device_name as cameraName,a.latitude,a.longitude
+        from t_sps_camera_ex a left join t_fss_usergroup_device b on a.camera_id=b.device_id
+        left join t_cfg_device c on c.device_id=a.camera_id where c.device_kind=4 or c.device_kind=10 and
+        b.user_group_id=#{UserGroupID,jdbcType=INTEGER}
+    </select>
 </mapper>

@@ -14,12 +14,12 @@
         <result column="hk_lib_id" jdbcType="VARCHAR" property="HkLibID"/>
     </resultMap>
     <sql id="Base_Column_List">
-    user_group_id,person_lib_id,power_ids,personlib_type,lib_name,plib_alarm_level,fevent_id
-  </sql>
+        user_group_id,person_lib_id,power_ids,personlib_type,lib_name,plib_alarm_level,fevent_id
+    </sql>
     <insert id="insert" parameterType="com.znv.fssrqs.entity.mysql.UserLibRelation">
-    insert into t_fss_userlib_relation (user_group_id, person_lib_id)
-    values (#{UserGroupID,jdbcType=INTEGER}, #{PersonLibID,jdbcType=INTEGER})
-  </insert>
+        insert into t_fss_userlib_relation (user_group_id, person_lib_id)
+        values (#{UserGroupID,jdbcType=INTEGER}, #{PersonLibID,jdbcType=INTEGER})
+    </insert>
     <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.UserLibRelation">
         insert into t_fss_userlib_relation
         <trim prefix="(" suffix=")" suffixOverrides=",">

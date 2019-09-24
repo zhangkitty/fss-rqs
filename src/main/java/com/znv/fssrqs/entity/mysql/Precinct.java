@@ -1,5 +1,7 @@
 package com.znv.fssrqs.entity.mysql;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * Created by dongzelong on  2019/8/1 11:57.
  *
@@ -7,7 +9,8 @@ package com.znv.fssrqs.entity.mysql;
  * @version 1.0
  * @Description TODO
  */
-public class Precinct {
+public class Precinct extends JSONObject {
+    private static final long serialVersionUID = 1L;
     private String precinctId;
 
     private String precinctName;

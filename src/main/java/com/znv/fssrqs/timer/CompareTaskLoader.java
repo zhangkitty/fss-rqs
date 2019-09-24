@@ -5,6 +5,7 @@ import com.znv.fssrqs.constant.Status;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
+import com.znv.fssrqs.util.ICAPVThreadPool;
 import com.znv.fssrqs.util.SpringContextUtil;
 import com.znv.fssrqs.util.command.ssh.SSHCommandExecutor;
 import lombok.Data;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author zhangcaochao
@@ -28,7 +27,6 @@ import java.util.concurrent.Executors;
 @Data
 @Slf4j
 public class CompareTaskLoader {
-    private ExecutorService executor = Executors.newCachedThreadPool();
 
     private static class SingletonHolder {
         private static CompareTaskLoader instance = new CompareTaskLoader();
@@ -94,7 +92,7 @@ public class CompareTaskLoader {
 
 
     public void registerObserver(CompareTaskEntity o) {
-        executor.execute(new Runnable() {
+        ICAPVThreadPool.getInstance().execute(new Runnable() {
 
             @Override
             public void run() {

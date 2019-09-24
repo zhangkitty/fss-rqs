@@ -40,7 +40,7 @@ public class KafkaAvroDeSerializer implements Deserializer<Object> {
             }
 
             SpecificDatumReader<Schema> reader = new SpecificDatumReader(schema);
-            Decoder decoder = DecoderFactory.get().binaryDecoder(buffer.array(), (BinaryDecoder)null);
+            Decoder decoder = DecoderFactory.get().binaryDecoder(buffer.array(), (BinaryDecoder) null);
             Object object = reader.read(null, decoder);
             if (schema.getType().equals(Type.STRING)) {
                 object = object.toString();

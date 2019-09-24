@@ -105,9 +105,9 @@ public class MultiIndexController {
             JSONObject jsonObject = (JSONObject) object;
             String pictureUuid = jsonObject.getString("ImgUrl");
             if ("null".equals(pictureUuid) || StringUtils.isEmpty(pictureUuid)) {
-                jsonObject.put("ImgUrl", "");
+                jsonObject.put("SmallPictureUrl", "");
             } else {
-                jsonObject.put("ImgUrl", ImageUtils.getImgUrl(remoteIp, "GetSmallPic", pictureUuid));
+                jsonObject.put("SmallPictureUrl", ImageUtils.getImgUrl(remoteIp, "GetSmallPic", pictureUuid));
             }
             String bigPictureUuid = jsonObject.getString("BigPictureUuid");
             if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)) {

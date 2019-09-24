@@ -32,7 +32,7 @@ public class SessionHandler implements HandlerInterceptor {
             return true;
         }
 
-        JSONObject userLogin = (JSONObject)request.getSession().getAttribute("UserLogin");
+        JSONObject userLogin = (JSONObject) request.getSession().getAttribute("UserLogin");
         if (userLogin == null) {
             ResponseVo responseVo = ResponseVo.returnBusinessException(
                     new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN));

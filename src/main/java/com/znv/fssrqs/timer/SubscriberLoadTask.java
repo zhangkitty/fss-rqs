@@ -29,7 +29,7 @@ public class SubscriberLoadTask {
     // Map：库ID+订阅者ID -> 订阅者ID
     private static ConcurrentHashMap<String, Integer> subscriberLibMap = new ConcurrentHashMap();
 
-    // @Scheduled(initialDelay = 10000, fixedRate = 300000)
+    @Scheduled(initialDelay = 10000, fixedRate = 300000)
     public void loadSubscribers(){
         List<MSubscribersEntity> subscriberList = subscribersDao.findAll();
         subscriberInfoMap.clear();

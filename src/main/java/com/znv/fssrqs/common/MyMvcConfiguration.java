@@ -6,8 +6,10 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 @Configuration
 public class MyMvcConfiguration extends WebMvcConfigurationSupport {
     @Bean

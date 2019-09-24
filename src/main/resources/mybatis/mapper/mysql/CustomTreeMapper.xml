@@ -9,8 +9,8 @@
         <result column="system_tree" jdbcType="INTEGER" property="systemTree"/>
     </resultMap>
     <sql id="Base_Column_List">
-    tree_id, tree_name, tree_desc, default_tree, system_tree
-  </sql>
+        tree_id, tree_name, tree_desc, default_tree, system_tree
+    </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -23,16 +23,16 @@
         from t_fss_customtree order by tree_id
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_fss_customtree
-    where tree_id = #{treeId,jdbcType=INTEGER}
-  </delete>
+        delete from t_fss_customtree
+        where tree_id = #{treeId,jdbcType=INTEGER}
+    </delete>
     <insert id="insert" keyProperty="treeId" useGeneratedKeys="true"
             parameterType="com.znv.fssrqs.entity.mysql.CustomTree">
-    insert ignore t_fss_customtree (tree_name, tree_desc, 
-      default_tree, system_tree)
-    values (#{treeName,jdbcType=VARCHAR}, #{treeDesc,jdbcType=VARCHAR}, 
-      #{defaultTree,jdbcType=INTEGER}, #{systemTree,jdbcType=INTEGER})
-  </insert>
+        insert ignore t_fss_customtree (tree_name, tree_desc,
+        default_tree, system_tree)
+        values (#{treeName,jdbcType=VARCHAR}, #{treeDesc,jdbcType=VARCHAR},
+        #{defaultTree,jdbcType=INTEGER}, #{systemTree,jdbcType=INTEGER})
+    </insert>
     <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.CustomTree">
         insert into t_fss_customtree
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -89,13 +89,13 @@
         where tree_id = #{treeId,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.znv.fssrqs.entity.mysql.CustomTree">
-    update t_fss_customtree
-    set tree_name = #{treeName,jdbcType=VARCHAR},
-      tree_desc = #{treeDesc,jdbcType=VARCHAR},
-      default_tree = #{defaultTree,jdbcType=INTEGER},
-      system_tree = #{systemTree,jdbcType=INTEGER}
-    where tree_id = #{treeId,jdbcType=INTEGER}
-  </update>
+        update t_fss_customtree
+        set tree_name = #{treeName,jdbcType=VARCHAR},
+        tree_desc = #{treeDesc,jdbcType=VARCHAR},
+        default_tree = #{defaultTree,jdbcType=INTEGER},
+        system_tree = #{systemTree,jdbcType=INTEGER}
+        where tree_id = #{treeId,jdbcType=INTEGER}
+    </update>
     <update id="updateBatch" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update t_fss_customtree

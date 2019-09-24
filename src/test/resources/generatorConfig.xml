@@ -40,8 +40,18 @@
             <property name="exampleMethodVisibility" value="public"/>
         </javaClientGenerator>
 
-        <table tableName="fss_hk_lib_relation"
-               domainObjectName="HkLibRelation">
+        <!--<table tableName="fss_hk_lib_relation"-->
+        <!--domainObjectName="HkLibRelation">-->
+        <!--&lt;!&ndash;<columnOverride column="id" jdbcType="CHAR" javaType="java.lang.String"></columnOverride>&ndash;&gt;-->
+        <!--</table>-->
+
+        <!--<table tableName="t_cfg_user"-->
+               <!--domainObjectName="User">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--&lt;!&ndash;<columnOverride column="id" jdbcType="CHAR" javaType="java.lang.String"></columnOverride>&ndash;&gt;-->
+        <!--</table>-->
+        <table tableName="t_system_info"
+               domainObjectName="SystemInfo">
             <!--<columnOverride column="id" jdbcType="CHAR" javaType="java.lang.String"></columnOverride>-->
         </table>
     </context>

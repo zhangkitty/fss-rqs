@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 public class LocalUserUtil {
     public static ThreadLocal<JSONObject> localUser = new ThreadLocal();
 
-    public static JSONObject getLocalUser(){
+    public static JSONObject getLocalUser() {
         return localUser.get();
     }
 

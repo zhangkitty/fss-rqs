@@ -37,7 +37,7 @@ public class PersonDao {
      * @return
      */
     public boolean upsert(Integer libId, String personId, String isDel) {
-        return jdbcTemplate.update(String.format("upsert into %s (LIB_ID,PERSON_ID,IS_DEL) values (%d,'%s','%s')", HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME), libId, personId, isDel))>0;
+        return jdbcTemplate.update(String.format("upsert into %s (LIB_ID,PERSON_ID,IS_DEL) values (%d,'%s','%s')", HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME), libId, personId, isDel)) > 0;
     }
 
     /**
@@ -46,7 +46,7 @@ public class PersonDao {
      */
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     public int select(Integer libId, String personId) {
-        return jdbcTemplate.query("SELECT PERSONLIB_TYPE FROM "+HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME)+" WHERE PERSON_ID = ? AND LIB_ID = ?", new PreparedStatementSetter() {
+        return jdbcTemplate.query("SELECT PERSONLIB_TYPE FROM " + HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.PERSON_LIST_TABLE_NAME) + " WHERE PERSON_ID = ? AND LIB_ID = ?", new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setString(1, personId);
