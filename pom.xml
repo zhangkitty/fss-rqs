@@ -261,10 +261,10 @@
                     <artifactId>servlet-api-2.5</artifactId>
                     <groupId>org.mortbay.jetty</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
+                <!--<exclusion>-->
+                    <!--<artifactId>guava</artifactId>-->
+                    <!--<groupId>com.google.guava</groupId>-->
+                <!--</exclusion>-->
             </exclusions>
         </dependency>
         <!-- phoenix-core 版本号要和本地安装的phoenix版本号保持一致 -->
@@ -281,10 +281,10 @@
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
+                <!--<exclusion>-->
+                    <!--<artifactId>guava</artifactId>-->
+                    <!--<groupId>com.google.guava</groupId>-->
+                <!--</exclusion>-->
                 <!--<exclusion>-->
                 <!--<groupId>org.apache.hadoop</groupId>-->
                 <!--<artifactId>hadoop-common</artifactId>-->
@@ -450,12 +450,17 @@
         <!--<artifactId>nacos-config-spring-boot-starter</artifactId>-->
         <!--<version>0.2.1</version>-->
         <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.google.guava</groupId>-->
+            <!--<artifactId>guava</artifactId>-->
+            <!--<version>28.0-jre</version>-->
+        <!--</dependency>-->
+        <!--es guava包为guava18,hbase依赖guava16,加入这个为了解决es和hbase依赖冲突问题-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>28.0-jre</version>
+            <version>16.0</version>
         </dependency>
-
         <!--<dependency>-->
         <!--<groupId>org.springframework.cloud</groupId>-->
         <!--<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
