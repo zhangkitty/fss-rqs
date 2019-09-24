@@ -37,4 +37,10 @@
         FROM t_cfg_device a,t_scim_analysis_unit b
         WHERE a.device_id=b.device_id AND a.device_type=8901;
     </select>
+
+    <select id="getDeviceCount" statementType="CALLABLE" resultType="java.util.HashMap">
+    {
+         CALL up_scim_device_statis()
+    }
+    </select>
 </mapper>
