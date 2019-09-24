@@ -40,13 +40,13 @@ public class PersonLibCountService {
             url = new StringBuffer().append(EsBaseConfig.getInstance().getIndexPersonListName())
                     .append("/")
                     .append(EsBaseConfig.getInstance().getIndexPersonListType())
-                    .append("/_search").toString();
+                    .append("/_search/template").toString();
         } else {
             url = new StringBuffer().append(EsBaseConfig.getInstance().getIndexPersonListName())
                     .append("-*")
                     .append("/")
                     .append(EsBaseConfig.getInstance().getIndexPersonListType())
-                    .append("/_search").toString();
+                    .append("/_search/template").toString();
         }
         JSONObject templateParams = new JSONObject();
         JSONObject params = new JSONObject();
