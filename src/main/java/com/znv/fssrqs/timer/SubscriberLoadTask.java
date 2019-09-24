@@ -21,13 +21,13 @@ public class SubscriberLoadTask {
     MSubscribersDao subscribersDao;
 
     // Map：订阅者ID -> 订阅者
-    private static ConcurrentHashMap<Integer, MSubscribersEntity> subscriberInfoMap = new ConcurrentHashMap();
+    private static ConcurrentHashMap<String, MSubscribersEntity> subscriberInfoMap = new ConcurrentHashMap();
 
     // Map：抓拍机ID+订阅者ID -> 订阅者ID
-    private static ConcurrentHashMap<String, Integer> subscriberCameraMap = new ConcurrentHashMap();
+    private static ConcurrentHashMap<String, String> subscriberCameraMap = new ConcurrentHashMap();
 
     // Map：库ID+订阅者ID -> 订阅者ID
-    private static ConcurrentHashMap<String, Integer> subscriberLibMap = new ConcurrentHashMap();
+    private static ConcurrentHashMap<String, String> subscriberLibMap = new ConcurrentHashMap();
 
     @Scheduled(initialDelay = 10000, fixedRate = 300000)
     public void loadSubscribers(){
@@ -50,19 +50,19 @@ public class SubscriberLoadTask {
         }
     }
 
-    public static Enumeration<Integer> getSubscriberIds() {
+    public static Enumeration<String> getSubscriberIds() {
         return subscriberInfoMap.keys();
     }
 
-    public static MSubscribersEntity getSubscriberInfo(Integer subscriberId) {
+    public static MSubscribersEntity getSubscriberInfo(String subscriberId) {
         return subscriberInfoMap.get(subscriberId);
     }
 
-    public static boolean isSubscribedCamera(String cameraId, Integer subscriberId) {
+    public static boolean isSubscribedCamera(String cameraId, String subscriberId) {
         return subscriberCameraMap.containsKey(cameraId + subscriberId);
     }
 
-    public static boolean isSubscribedLib(String libId, Integer subscriberId) {
+    public static boolean isSubscribedLib(String libId, String subscriberId) {
         // libId为-1，表示订阅所有
         if (subscriberLibMap.containsKey("-1" + subscriberId)) {
             return true;

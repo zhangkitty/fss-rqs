@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class MSubscriberCameraEntity {
-    private Integer subscriberId;
+    private String subscriberId;
     private String cameraId;
 }

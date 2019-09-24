@@ -34,4 +34,5 @@ public class MUserEntity {
     private Integer SystemFlag;
     private Integer IsShow;
     private String CreateTime;
+    private String UserGroupName;
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.constant.CommonConstant;
+import com.znv.fssrqs.dao.mysql.AITaskDeviceRuleDao;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.FastJsonUtils;
@@ -11,7 +12,9 @@ import com.znv.fssrqs.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by dongzelong on  2019/9/3 20:58.
@@ -24,6 +27,8 @@ import java.util.Map;
 public class TopTenDeviceAlarmService {
     @Autowired
     private ElasticSearchClient elasticSearchClient;
+    @Resource
+    private AITaskDeviceRuleDao aiTaskDeviceRuleDao;
 
     /**
      * 去告警索引中,按照摄像机分组聚合,取前10条
@@ -59,10 +64,19 @@ public class TopTenDeviceAlarmService {
         JSONObject aggs = responseObject.getJSONObject("aggregations");
         JSONArray aggCameraBuckets = aggs.getJSONObject("agg_by_camera_id").getJSONObject("agg_by_camera_buckets").getJSONArray("buckets");
         if (!aggCameraBuckets.isEmpty()) {
+            //查询所有分析任务
+            final Map<String, Map<String, Object>> cameraMap = aiTaskDeviceRuleDao.selectAllTaskCameras();
             aggCameraBuckets.forEach(object -> {
                 JSONObject jsonObject = (JSONObject) object;
-                jsonObject.put("CameraID", jsonObject.remove("key"));
-                jsonObject.put("CameraName", jsonObject.remove("camera_name"));
+                final Object key = jsonObject.remove("key");
+                jsonObject.put("CameraID", key);
+                final Map<String, Object> map = cameraMap.getOrDefault(key, null);
+                if (Objects.nonNull(map)) {
+                    jsonObject.put("CameraName", map.get("CameraName"));
+                } else {
+                    jsonObject.put("CameraName", key);
+                    jsonObject.put("Desc", "key has no name");
+                }
                 jsonObject.put("DocCount", jsonObject.remove("doc_count"));
             });
         }

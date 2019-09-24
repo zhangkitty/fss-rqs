@@ -4,17 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
-import com.znv.fssrqs.config.EsBaseConfig;
-import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.ControlCameraMapper;
 import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.elasticsearch.homepage.*;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.service.DeviceService;
-import com.znv.fssrqs.util.DataConvertUtils;
 import com.znv.fssrqs.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +46,12 @@ public class HomeController {
     private DeviceService deviceService;
     @Autowired
     private PersonListCountService personListCountService;
+    @Autowired
+    private CapturePersonCountService capturePersonCountService;
+    @Autowired
+    private ControlPersonCountService controlPersonCountService;
+    @Autowired
+    private PersonLibCountService personLibCountService;
 
     /**
      * 南岸库告警总数接口
@@ -62,12 +65,12 @@ public class HomeController {
         final JSONArray esAgg = resultObject.getJSONObject("aggregations").getJSONObject("lib_ids").getJSONArray("buckets");
         //遍历聚合
         Iterator<Object> iterator = esAgg.iterator();
-        Set<String> libIdSet = Sets.newHashSet();
+        Set<Integer> libIdSet = Sets.newHashSet();
         while (iterator.hasNext()) {
             JSONObject jsonObject = (JSONObject) iterator.next();
-            String libId = jsonObject.getString("key");
+            Integer libId = Integer.parseInt(jsonObject.getString("key"));
             libIdSet.add(libId);
-            jsonObject.put("LibID", libId);
+            jsonObject.put("LibID", libId+"");
             jsonObject.remove("key");
             if (libMap.containsKey(libId)) {
                 jsonObject.put("LibName", libMap.get(libId).get("LibName"));
@@ -81,10 +84,10 @@ public class HomeController {
 
         JSONArray array = params.getJSONArray("LibIDs");
         array.forEach(o -> {
-            String libId = (String) o;
+            Integer libId = Integer.parseInt((String) o);
             if (!libIdSet.contains(libId)) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("LibID", libId);
+                jsonObject.put("LibID", libId+"");
                 if (libMap.containsKey(libId)) {
                     jsonObject.put("LibName", libMap.get(libId).get("LibName"));
                 } else {
@@ -142,7 +145,25 @@ public class HomeController {
     }
 
     @GetMapping("/person/statistics")
-    public JSONObject getKeyPersons() {
+    public JSONObject getPersonAggs() {
         return personListCountService.getPersonStatistics();
+    }
+
+    @GetMapping("/capture/person/statistics")
+    public JSONObject getStrangerAggs() {
+        return capturePersonCountService.getStrangerAggs();
+    }
+
+    @GetMapping("/control/person/statistics")
+    public JSONObject getControlPersonAggs() {
+        return controlPersonCountService.getControlPersonCount();
+    }
+
+    @GetMapping("/person/lib/statistics")
+    public JSONObject getPersonLibAggs(@RequestParam Map<String, Object> params) {
+        if (!params.containsKey("PersonLibType")) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "参数非法");
+        }
+        return personLibCountService.personAggsByLibId(Integer.parseInt((String) params.get("PersonLibType")));
     }
 }

@@ -42,7 +42,6 @@ public class DeviceTreeController {
     private UserGroupDeviceService userGroupDeviceService;
     @Autowired
     private DeviceService deviceService;
-
     @GetMapping("/customize/device/tree/{id}")
     public String getCustomTreeById(@PathVariable(value = "id") String treeId, HttpServletRequest request) {
         //获取一棵树
@@ -169,11 +168,12 @@ public class DeviceTreeController {
      */
     @GetMapping("/device/tree")
     public JSONObject getDeviceTree(HttpServletRequest request) {
+        String useType=request.getParameter("UseType");
         JSONObject user = LocalUserUtil.getLocalUser();
         if (user == null || !user.containsKey("UserId")) {
             throw new BusinessException(ErrorCodeEnum.UNAUTHED_NOT_LOGIN);
         }
-        JSONArray array = deviceService.getUserDeviceTree(user.getString("UserId"));
+        JSONArray array = deviceService.getUserDeviceTree(user.getString("UserId"),useType);
         return FastJsonUtils.JsonBuilder.ok().list(array).json();
     }
 }

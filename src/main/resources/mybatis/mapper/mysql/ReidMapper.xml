@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znv.fssrqs.dao.mysql.MReidDao">
+    <resultMap id="ReidUnitResultMap" type="com.znv.fssrqs.entity.mysql.ReidUnitEntity">
+        <id column="device_id" jdbcType="VARCHAR" property="DeviceID"/>
+        <result column="device_name" jdbcType="VARCHAR" property="DeviceName"/>
+        <result column="device_type" jdbcType="INTEGER" property="DeviceType"/>
+        <result column="service_ip" jdbcType="VARCHAR" property="IP"/>
+        <result column="http_port" jdbcType="INTEGER" property="Port"/>
+        <result column="manufacture_id" jdbcType="VARCHAR" property="ManufactureID"/>
+        <result column="capacity" jdbcType="INTEGER" property="Capacity"/>
+        <result column="version" jdbcType="VARCHAR" property="Version"/>
+        <result column="login_state" jdbcType="INTEGER" property="LoginState"/>
+    </resultMap>
+
+    <select id="getReidUnit" parameterType="java.util.Map" resultMap="ReidUnitResultMap">
+        SELECT
+        d.device_id, d.device_name, d.device_type, u.service_ip, u.http_port,
+        d.manufacture_id, u.capacity, d.version, IFNULL(u.login_state, 2) login_state
+        FROM
+        t_cfg_device d, t_reid_analysis_unit u
+        WHERE d.device_id=u.device_id
+          AND d.device_kind = 91
+        <if test="DeviceID != null and DeviceID!=''">
+          AND d.device_id = #{DeviceID,jdbcType=VARCHAR}
+        </if>
+        <if test="ServiceIP != null and ServiceIP!=''">
+            AND u.service_ip like CONCAT('%',#{ServiceIP,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="DeviceName != null and DeviceName!=''">
+            AND d.device_name like CONCAT('%',#{DeviceName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="From != null and PageSize != null">
+          order by d.device_id limit #{From,jdbcType=INTEGER}, #{Size,jdbcType=INTEGER}
+        </if>
+    </select>
+
+
+    <select id="getReidUnitCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM
+        t_cfg_device d, t_reid_analysis_unit u
+        WHERE d.device_id=u.device_id
+        AND d.device_kind = 91
+        <if test="DeviceID != null and DeviceID!=''">
+            AND d.device_id = #{DeviceID,jdbcType=VARCHAR}
+        </if>
+        <if test="ServiceIP != null and ServiceIP!=''">
+            AND u.service_ip like CONCAT('%',#{ServiceIP,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="DeviceName != null and DeviceName!=''">
+            AND d.device_name like CONCAT('%',#{DeviceName,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+
+    <update id="updateReidLoginState" parameterType="java.util.Map">
+        update t_reid_analysis_unit set login_state= #{loginState,jdbcType=INTEGER}
+        where device_id = #{deviceID,jdbcType=VARCHAR}
+    </update>
+
+    <select id="upReidAnalysisUnitSave" statementType="CALLABLE" parameterType="java.util.Map" resultType="int">
+        call up_reid_analysis_unit_save(
+        #{DeviceID,jdbcType=VARCHAR},
+        #{DeviceName,jdbcType=VARCHAR},
+        #{PrecinctID,jdbcType=VARCHAR},
+        #{DeviceKind,jdbcType=INTEGER},
+        #{DeviceType,jdbcType=INTEGER},
+        #{ManufactureID,jdbcType=INTEGER},
+        #{UpServerID,jdbcType=VARCHAR},
+        #{HttpPort,jdbcType=INTEGER},
+        #{ServiceIP,jdbcType=VARCHAR},
+        #{Capacity,jdbcType=INTEGER},
+        #{Version,jdbcType=VARCHAR},
+        #{InterfaceDescribe,jdbcType=VARCHAR})
+    </select>
+
+    <select id="upReidAnalysisUnitDelete" statementType="CALLABLE" parameterType="java.util.Map" resultType="int">
+        call up_reid_analysis_unit_delete(
+        #{DeviceID,jdbcType=VARCHAR}
+        )
+    </select>
+
+</mapper>

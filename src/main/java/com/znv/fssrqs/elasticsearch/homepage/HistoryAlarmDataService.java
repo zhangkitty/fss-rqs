@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.EventDao;
+import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,8 @@ public class HistoryAlarmDataService {
     private ElasticSearchClient elasticSearchClient;
     @Resource
     private EventDao eventDao;
+    @Resource
+    private LibDao libDao;
 
     public JSONObject getHistoryAlarmList(Map<String, Object> requestMap, String remoteIp) {
         Integer size = (Integer) requestMap.getOrDefault("PageSize", 10);
@@ -84,6 +87,8 @@ public class HistoryAlarmDataService {
 
             //查询事件
             final Map<String, Map<String, Object>> eventMap = eventDao.selectAllMap();
+            //查询静态库ID
+            final Map<String, Map<String, Object>> libMap = libDao.selectAllMap();
             //人员信息
             alarmList.parallelStream().forEach(object -> {
                 JSONObject personObject = (JSONObject) object;
@@ -114,11 +119,19 @@ public class HistoryAlarmDataService {
                     personObject.put("PersonID", personId);
                     personObject.remove("person_id");
                     personObject.put("PersonName", personObject.remove("person_name"));
-                    final Map<String, Object> eventNameMap = eventMap.get(personObject.getString("ControlEventID"));
+                    final Map<String, Object> eventNameMap = eventMap.get(Integer.parseInt(personObject.getString("ControlEventID")));
                     if (eventNameMap != null) {
-                        personObject.put("EventName", eventNameMap.get(personObject.getString("ControlEventID")));
+                        personObject.put("EventName", eventNameMap.get("Name"));
                     } else {
                         personObject.put("EventName", "");
+                    }
+
+                    if (libMap != null) {
+                        int libId=personObject.getIntValue("lib_id");
+                        final Map<String, Object> map = libMap.get(libId);
+                        personObject.put("LibName", map.get("LibName"));
+                    } else {
+                        personObject.put("LibName", "");
                     }
 
                     personObject.put("Similarity", personObject.remove("similarity"));
@@ -132,7 +145,6 @@ public class HistoryAlarmDataService {
                     personObject.put("PersonImg", personImg);
                     personObject.put("AlarmType", personObject.remove("alarm_type"));
                     personObject.put("LibID", personObject.remove("lib_id"));
-                    personObject.put("LibName", personObject.remove("img_url"));
                     personObject.put("OfficeID", personObject.remove("office_id"));
                     personObject.put("OfficeName", personObject.remove("office_name"));
                     personObject.put("CameraId", personObject.remove("camera_id"));
@@ -159,10 +171,6 @@ public class HistoryAlarmDataService {
             });
             took += jsonEsResultSecond.getIntValue("took");
         }
-        JSONObject outputResult = new JSONObject();
-        outputResult.put("Took", took);
-        outputResult.put("Total", total);
-        outputResult.put("Hits", alarmList);
         return FastJsonUtils.JsonBuilder.ok().list(alarmList).property("Total", total).property("Took", took).json();
     }
 

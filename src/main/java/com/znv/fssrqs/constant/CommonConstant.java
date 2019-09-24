@@ -128,6 +128,8 @@ public class CommonConstant {
         public static final String ES_SEARCH_TEMPLATE_HISTORY_CAMEMA_TAKE_COUNT = "template_history_camera_takeph_count";
         public static final String INDEX_LOG_NAME = "fss.es.index.log.name";
         public static final String INDEX_LOG_TYPE = "fss.es.index.log.type";
+        public static final String INDEX_PERSON_CLUSTER_NAME = "fused_src_data_realtime_test";
+        public static final String INDEX_PERSON_CLUSTER_TYPE = "fused";
     }
 
     public static class FdfsConfig {
@@ -148,5 +150,15 @@ public class CommonConstant {
         public static final int OK = 10000;
         public static final int BAD_REQUEST = 20000;
         public static final int INTERNAL_ERROR = 50000;
+    }
+
+    //千视通配置
+    public static class ThousandSights {
+        //图片特征值提取
+        public static final String GET_FEATURE_URL = "http://%s:%d/rest/feature/extractFromPicture";
+        //图片目标检测
+        public static final String TAEGET_DETECTION_URL = "http//%s:%d/rest/feature/structPicture";
+        //以图搜图
+        public static final String P4P_URL = "http://%s:%d/rest/feature/search";
     }
 }

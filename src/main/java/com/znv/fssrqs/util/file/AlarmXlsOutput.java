@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
-import com.znv.fssrqs.dao.mysql.EventDao;
 import com.znv.fssrqs.dao.mysql.LibDao;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.SpringContextUtil;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.znv.fssrqs.util.file.CellDescUtils.make;
 
@@ -50,12 +50,14 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
     private Locale locale;
     private String params;
     private String result;
+    private int exportSize;
 
     public AlarmXlsOutput(Object... params) {
         super((HttpServletResponse) params[0]);
         this.locale = (Locale) params[1];
         this.result = (String) params[2];
         this.params = (String) params[3];
+        this.exportSize = (int) params[4];
     }
 
     /**
@@ -115,13 +117,19 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
             createHeaderRow(sheet);
             fourthCell.setCellValue(dataObject.getIntValue("Size"));
             JSONObject paramObject = JSON.parseObject(params);
+            if (!paramObject.containsKey("Features")) {
+                throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "FeaturesIsEmpty");
+            }
             final JSONArray features = paramObject.getJSONArray("Features");
+            if (Objects.isNull(features)) {
+                throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "");
+            }
             JSONArray alarmDataList = dataObject.getJSONArray("List");
             final int size = alarmDataList.size();
-            //EventDao eventDao = SpringContextUtil.getCtx().getBean(EventDao.class);
             final LibDao libDao = SpringContextUtil.getCtx().getBean(LibDao.class);
             Map<String, Map<String, Object>> eventMap = libDao.selectAllMap();
-            for (int index = 0; index < size; index++) {
+            int index = exportSize > size ? size : exportSize;
+            for (; index < size; index++) {
                 outputRow(sheet, startRow[0], alarmDataList.getJSONObject(index), ALARM_CELLS, features, eventMap);
                 ++startRow[0];
             }

@@ -9,6 +9,7 @@ import com.znv.fssrqs.vo.ResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -84,15 +85,4 @@ public class LoginController {
     }
 
 
-    @DeleteMapping(value = "/logout")
-    public ResponseVo logout(HttpServletRequest request) {
-        // 更新session
-        HttpSession session = request.getSession();
-        if (session != null) {
-            session.invalidate();
-            request.getSession();
-        }
-
-        return ResponseVo.success(null);
-    }
 }

@@ -1,5 +1,7 @@
 package com.znv.fssrqs.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.constant.ExcelResource;
 import com.znv.fssrqs.exception.ZnvException;
@@ -51,9 +53,11 @@ public class FileController {
         AlarmXlsOutput output = null;
         switch (resType) {
             case 1:
+                final JSONObject jsonObject = JSON.parseObject(body);
+                final int exportSize = jsonObject.getIntValue("Size");
                 HistoryAlarmController historyAlarmController = SpringContextUtil.getCtx().getBean(HistoryAlarmController.class);
                 String result = historyAlarmController.getHistoryAlarm(host, body);
-                output = new AlarmXlsOutput(response, locale, result, body);
+                output = new AlarmXlsOutput(response, locale, result, body, exportSize);
                 break;
             default:
                 throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "ExcelResourceNotExist");

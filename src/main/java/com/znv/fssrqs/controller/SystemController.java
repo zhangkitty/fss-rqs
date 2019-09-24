@@ -6,20 +6,21 @@ import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.dao.mysql.SystemInfoMapper;
 import com.znv.fssrqs.entity.mysql.MBusEntity;
 import com.znv.fssrqs.entity.mysql.SystemInfo;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.service.DiskSpaceService;
+import com.znv.fssrqs.service.reid.ReidUnitService;
 import com.znv.fssrqs.timer.SystemDeviceLoadTask;
 import com.znv.fssrqs.util.FastJsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dongzelong on  2019/8/19 16:03.
@@ -37,6 +38,9 @@ public class SystemController {
     private SystemInfoMapper systemInfoMapper;
     @Autowired
     private DiskSpaceService diskSpaceService;
+
+    @Autowired
+    private ReidUnitService reidUnitService;
 
     /**
      * 获取系统信息
@@ -64,6 +68,16 @@ public class SystemController {
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(mBusOnlineList).json(), new PascalNameFilter());
     }
 
+    @Value("${spring.datasource.mysql.jdbc-url}")
+    private String jdbcUrl;
+
+    @GetMapping("/icap/ipps")
+    public JSONObject getIcapIpps() {
+        String ip = jdbcUrl.split(":")[2].substring(2);
+        String port = "8000";
+        return FastJsonUtils.JsonBuilder.ok().property("Ipps",ip+":"+port).json();
+    }
+
     /**
      * 获取大数据磁盘信息
      */
@@ -72,5 +86,24 @@ public class SystemController {
         final JSONObject diskCountMap = diskSpaceService.getDiskCountMap();
         final Object totalObject = diskCountMap.get("Total");
         return FastJsonUtils.JsonBuilder.ok().property("Total", totalObject).list((List<?>) diskCountMap.get("List")).json();
+    }
+
+
+    @GetMapping(value = "/Info/DeviceType")
+    public JSONObject getInfoDeviceType(@RequestParam Map mapParam) {
+        if (!mapParam.containsKey("DeviceKind")) {
+            throw ZnvException.error("RequestParamNull", "DeviceKind");
+        }
+
+        return FastJsonUtils.JsonBuilder.ok().list(reidUnitService.getInfoDeviceType(mapParam)).json();
+    }
+
+    @GetMapping(value = "/Info/Manufacture")
+    public JSONObject getInfoManufacture(@RequestParam Map mapParam) {
+        if (!mapParam.containsKey("DeviceKind")) {
+            throw ZnvException.error("RequestParamNull", "DeviceKind");
+        }
+
+        return FastJsonUtils.JsonBuilder.ok().list(reidUnitService.getInfoManufacture(mapParam)).json();
     }
 }

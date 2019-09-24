@@ -6,7 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.config.HdfsConfigManager;
+import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.util.*;
 import com.znv.fssrqs.vo.SearchRetrieval;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,16 +136,28 @@ public class HistoryAlarmService {
         jsonObject.put("sortField", searchRetrieval.getSortField());
         jsonObject.put("sortOrder", searchRetrieval.getSortOrder());
         int minShouldMatch = 0;
+        if (Objects.isNull(searchRetrieval.getOfficeIDs())) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "区域字段为空");
+        }
+
         if (searchRetrieval.getOfficeIDs() != null && !searchRetrieval.getOfficeIDs().isEmpty()) {
             jsonObject.put("office_id", searchRetrieval.getOfficeIDs());
             jsonObject.put("is_office", true);
             minShouldMatch = 1;
         }
 
+        if (Objects.isNull(searchRetrieval.getCameraIDs())) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "摄像机ID字段为空");
+        }
+
         if (searchRetrieval.getCameraIDs() != null && !searchRetrieval.getCameraIDs().isEmpty()) {
             jsonObject.put("camera_id", searchRetrieval.getCameraIDs());
             jsonObject.put("is_camera", true);
             minShouldMatch = 1;
+        }
+
+        if (Objects.isNull(searchRetrieval.getEventIDs())) {
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "事件ID字段为空");
         }
 
         if (searchRetrieval.getEventIDs() != null && !searchRetrieval.getEventIDs().isEmpty()) {

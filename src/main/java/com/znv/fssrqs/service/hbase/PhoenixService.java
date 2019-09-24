@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.config.HbaseConfig;
 import com.znv.fssrqs.config.HdfsConfigManager;
 import com.znv.fssrqs.constant.CommonConstant;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.kafka.ProducerBase;
 import com.znv.fssrqs.util.PhoenixConnectionPool;
 import com.znv.fssrqs.util.PropertiesUtil;
@@ -356,7 +357,7 @@ public class PhoenixService {
                 throw new RuntimeException("hbase数据表不存在:" + id);
             }
         } catch (Exception e) {
-            throw new RuntimeException("", e);
+            throw ZnvException.error("查询异常", e.getMessage());
         } finally {
             if (Objects.nonNull(conn)) {
                 connectionPool.returnConnection(conn);

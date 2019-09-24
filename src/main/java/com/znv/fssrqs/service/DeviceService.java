@@ -4,11 +4,16 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.znv.fssrqs.config.HomeConfig;
+import com.znv.fssrqs.dao.mysql.AITaskDeviceRuleDao;
 import com.znv.fssrqs.dao.mysql.MDeviceDao;
+import com.znv.fssrqs.dao.mysql.ReidAnalysisTaskDao;
+import com.znv.fssrqs.dao.mysql.ReidTaskDao;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
 import com.znv.fssrqs.service.redis.AccessPrecintService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +42,15 @@ public class DeviceService {
     private HomeConfig homeConfig;
     @Resource
     private MDeviceDao mDeviceDao;
+    @Resource
+    private ReidAnalysisTaskDao reidAnalysisTaskDao;
+    @Resource
+    private AITaskDeviceRuleDao aiTaskDeviceRuleDao;
 
     /**
      * 获取用户设备树
      */
-    public JSONArray getUserDeviceTree(String userId) {
+    public JSONArray getUserDeviceTree(String userId, String useType) {
         JSONArray retCameras = new JSONArray();
         //区域
         Map<String, JSONObject> showPrecinctMap = new HashMap<>();
@@ -78,7 +87,17 @@ public class DeviceService {
                 if (userGroupDevices.size() > count) {
                     userGroupDevices = userGroupDevices.subList(0, count);
                 }
-                rootJson.put("Name", userGroup.getUserGroupName() + "(" + userGroupDevices.size() + ")");
+
+                List<String> deviceIds = Lists.newArrayList();
+                userGroupDevices.stream().forEach(userGroupDeviceRelation -> {
+                    final String apeID = userGroupDeviceRelation.getApeID();
+                    deviceIds.add(apeID);
+                });
+
+                //人体分析任务关联的设备
+                final List<String> faceDeviceIds = aiTaskDeviceRuleDao.getDevicesByDeviceIds(deviceIds);
+                //人脸分析任务关联的设备
+                final List<String> reidDeviceIds = reidAnalysisTaskDao.getDevicesByDeviceIds(deviceIds);
                 //用户所属分组ID
                 Integer userGroupId = userGroup.getUserGroupID();
                 //区域ID
@@ -92,18 +111,41 @@ public class DeviceService {
                 });
 
                 ObjectMapper mapper = new ObjectMapper();
+                long size = 0L;
                 //用户分组+摄像机
                 for (UserGroupDeviceRelation userGroupDevice : userGroupDevices) {
+                    final String apeID = userGroupDevice.getApeID();
+                    if (faceDeviceIds.contains(apeID)) {
+                        userGroupDevice.setUseType(1);
+                    } else if (reidDeviceIds.contains(apeID)) {
+                        userGroupDevice.setUseType(2);
+                    } else {
+                        userGroupDevice.setUseType(0);
+                    }
+
                     JSONObject userGroupDeviceObject = null;
                     try {
                         userGroupDeviceObject = JSONObject.parseObject(mapper.writeValueAsString(userGroupDevice));
                     } catch (JsonProcessingException e) {
                         continue;
                     }
-                    //拼接设备树
-                    this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
+
+                    if (StringUtils.isEmpty(useType)) {//查询所有设备
+                        size++;
+                        //拼接设备树
+                        this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
+                    } else if ("1".equals(useType)) {//只要人脸设备
+                        size++;
+                        //拼接设备树
+                        this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
+                    } else {//只要人体设备
+                        size++;
+                        //拼接设备树
+                        this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
+                    }
                 }
 
+                rootJson.put("Name", userGroup.getUserGroupName() + "(" + size + ")");
                 for (Map.Entry<String, JSONObject> entry : showPrecinctMap.entrySet()) {
                     String precinctId = entry.getKey();
                     if (precintMap.containsKey(precinctId)) {

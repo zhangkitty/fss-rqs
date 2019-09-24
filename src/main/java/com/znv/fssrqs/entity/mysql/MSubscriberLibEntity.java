@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class MSubscriberLibEntity {
-    private Integer subscriberId;
+    private String subscriberId;
     private String libId;
 }

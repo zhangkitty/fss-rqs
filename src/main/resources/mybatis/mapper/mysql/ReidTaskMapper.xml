@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.znv.fssrqs.dao.mysql.ReidTaskDao">
+
+    <insert id="sava" parameterType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" keyProperty="taskId" keyColumn="task_id" useGeneratedKeys="true">
+        insert into t_reid_task
+        (task_name,reid_unit_id,device_id,user_id,url,reid_params_text,sim_threshold,mbus_server,task_type,rtsp_server,create_time)
+        values
+        (#{taskName},#{reidUnitId},#{deviceId},#{userId},#{url},#{reidParamsText},#{simThreshold},#{mbusServer},#{taskType},#{rtspServer},now())
+    </insert>
+
+    <select id="getAll" resultType="com.znv.fssrqs.entity.mysql.ReidTaskEntity" parameterType="com.znv.fssrqs.controller.reid.params.QueryReidTaskParma">
+        select
+        ifnull(task_id,"") as task_id,
+        ifnull(task_name,"") as task_name,
+        ifnull(reid_unit_id,"") as reid_unit_id,
+        ifnull(sim_threshold,"") as sim_threshold,
+        ifnull(mbus_server,"") as mbus_server,
+        ifnull(task_type,"") as task_type,
+        ifnull(rtsp_server,"") as rtsp_server,
+        ifnull(a.device_id,"") as device_id,
+        ifnull(b.device_name,"") as device_name,
+        ifnull(b.install_site,"") as install_site,
+        ifnull(user_id,"") as user_id,
+        ifnull(url,"") as url,
+        ifnull(reid_params_text,"") as reid_params_text,
+        ifnull(create_time,"") as create_time,
+        ifnull(a.update_time,"") as update_time,
+        ifnull(x,"") as x,
+        ifnull(y,"") as y
+        from t_reid_task a LEFT JOIN t_cfg_device b on a.device_id=b.device_id
+        <if test="taskId != null">
+          where a.task_id = #{taskId}
+        </if>
+    </select>
+
+    <update id="update">
+      update t_reid_task
+      <set>
+          <if test="taskName != null">
+              task_name = #{taskName,jdbcType=VARCHAR},
+          </if>
+          <if test="reidUnitId != null">
+              reid_unit_id = #{reidUnitId,jdbcType=VARCHAR},
+          </if>
+          <if test="deviceId != null">
+              device_id = #{deviceId,jdbcType=VARCHAR},
+          </if>
+          <if test="userId != null">
+              user_id = #{userId,jdbcType=VARCHAR},
+          </if>
+          <if test="url != null">
+              url = #{url,jdbcType=VARCHAR},
+          </if>
+          <if test="reidParamsText != null">
+              reid_params_text = #{reidParamsText,jdbcType=VARCHAR},
+          </if>
+          <if test="simThreshold !=null">
+              sim_threshold = #{simThreshold,jdbcType=VARCHAR},
+          </if>
+          <if test="mbusServer !=null">
+              mbus_server = #{mbusServer,jdbcType = VARCHAR},
+          </if>
+          <if test="taskType !=null">
+              task_type = #{taskType,jdbcType =  VARCHAR},
+          </if>
+          <if test="rtspServer !=null">
+              rtsp_server = #{rtspServer,jdbcType =  VARCHAR},
+          </if>
+          update_time=now()
+      </set>
+      where task_id = #{taskId,jdbcType=INTEGER}
+    </update>
+
+    <delete id="delete" parameterType = "java.util.List">
+      delete from t_reid_task where 1>2
+         or task_id in
+        <foreach collection="list"  item="item" open="(" separator="," close=")"  >
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>
