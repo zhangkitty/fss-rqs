@@ -51,9 +51,7 @@ public class SystemController {
         return FastJsonUtils.JsonBuilder.ok().object(systemInfo).json();
     }
 
-    /**
-     * 修改系统信息
-     */
+
     @PutMapping("/system/info")
     @Transactional(transactionManager = "transactionManager")
     public JSONObject modifySystemInfo(HttpServletRequest request, @RequestBody String body) throws IOException {
@@ -75,7 +73,7 @@ public class SystemController {
     public JSONObject getIcapIpps() {
         String ip = jdbcUrl.split(":")[2].substring(2);
         String port = "8000";
-        return FastJsonUtils.JsonBuilder.ok().property("Ipps",ip+":"+port).json();
+        return FastJsonUtils.JsonBuilder.ok().property("Ipps", ip + ":" + port).json();
     }
 
     /**
