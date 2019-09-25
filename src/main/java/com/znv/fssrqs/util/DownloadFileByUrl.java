@@ -5,7 +5,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.springframework.util.Base64Utils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -38,7 +37,12 @@ public class DownloadFileByUrl {
     public static byte[] downLoadByUrl(String fileUrl) {
         CloseableHttpClient client = HttpClientPool.getInstance().getHttpClient();
         String[] arr = fileUrl.split("\\?");
-        fileUrl = String.format("%s?%s", arr[0], URLEncoder.encode(arr[1]));
+        if (fileUrl.contains("http") && fileUrl.contains("/group")&&fileUrl.contains("/M")) {
+
+        }else {
+            fileUrl = String.format("%s?%s", arr[0], URLEncoder.encode(arr[1]));
+        }
+
         HttpGet get = new HttpGet(fileUrl);
         get.setHeader("Connection", "keep-alive");
         get.setHeader("Content-Type", "charset=utf-8");
