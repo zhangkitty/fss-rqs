@@ -19,6 +19,7 @@
     <properties>
         <start-class>com.znv.fssrqs.FssRqsApplication</start-class>
         <java.version>1.8</java.version>
+        <skipTests>true</skipTests>
     </properties>
     <packaging>jar</packaging>
     <dependencies>
