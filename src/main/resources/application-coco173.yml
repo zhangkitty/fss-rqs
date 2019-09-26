@@ -67,10 +67,10 @@ es:
   username: ""
   password: ""
 #  host: lv230.dct-znv.com
-  host: lv217.dct-znv.com
+  host: lv230.dct-znv.com
   port: 9200
 #  clusterName: lv230.dct-znv.com-es
-  clusterName: lv217.dct-znv.com-es
+  clusterName: lv230.dct-znv.com-es
 #海康SDK
 hksdk:
   # false不支持海康脸谱算法 true支持海康脸谱算法
