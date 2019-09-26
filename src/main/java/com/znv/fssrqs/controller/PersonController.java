@@ -275,9 +275,11 @@ public class PersonController {
         if (mapParam.containsKey("GenderCode")) {
             transformedParams.put("sex", mapParam.get("GenderCode"));
         }
-        if (mapParam.containsKey("LibID")) {
+        if (mapParam.containsKey("LibID") && !((JSONArray) mapParam.get("LibID")).isEmpty()) {
             transformedParams.put("lib_id", mapParam.get("LibID"));
             transformedParams.put("is_lib", true);
+        } else {
+            transformedParams.put("is_lib", false);
         }
 
         transformedParams.put("minimum_should_match", 1);
@@ -434,7 +436,7 @@ public class PersonController {
             retObject.put("Message", "ok");
             return retObject;
         } catch (Exception e) {
-            log.error("",e);
+            log.error("", e);
             retObject.put("Code", 50000);
             retObject.put("Message", e.getMessage());
             return retObject;
