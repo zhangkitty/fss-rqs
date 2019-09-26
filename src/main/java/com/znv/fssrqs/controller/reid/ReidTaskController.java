@@ -89,6 +89,7 @@ public class ReidTaskController {
             jsonObject.put("list",list);
             return ResponseVo.success(jsonObject);
         }catch (Exception e){
+            e.printStackTrace();
             return  ResponseVo.error("入参错误");
         }
 

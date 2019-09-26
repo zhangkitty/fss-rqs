@@ -1,12 +1,16 @@
 package com.znv.fssrqs.controller.reid;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.controller.reid.params.QueryReidTaskParma;
+import com.znv.fssrqs.dao.mysql.ReidTaskDao;
+import com.znv.fssrqs.entity.mysql.ReidTaskEntity;
 import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.service.reid.ReidUnitService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -14,6 +18,9 @@ public class ReidAnalysisUnitController {
 
     @Autowired
     private ReidUnitService reidUnitService;
+
+    @Autowired
+    private ReidTaskDao reidTaskDao;
 
     @GetMapping(value = "/ReID/AnalysisUnit")
     public JSONObject getReIDAnalysisUnit(@RequestParam Map mapParam) {
@@ -76,6 +83,12 @@ public class ReidAnalysisUnitController {
         if (! mapParam.containsKey("DeviceID")) {
             throw ZnvException.error("RequestParamNull", "DeviceID");
         }
+
+        List<ReidTaskEntity> list = reidTaskDao.getAll(new QueryReidTaskParma());
+        if(list.stream().anyMatch(v->v.getReidUnitId().equals(mapParam.get("DeviceID")))){
+            return FastJsonUtils.JsonBuilder.failed(20000,"分析单元已绑定分析任务").json();
+        }
+
 
         Integer ret = reidUnitService.deleteReidUnit(mapParam);
         if (ret == -1) {

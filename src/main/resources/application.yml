@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: coco117
+    active: coco173
 #服务端点暴露
 #localhost:8081/actuator/nacos-discovery
 management:

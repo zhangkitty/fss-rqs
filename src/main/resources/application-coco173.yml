@@ -1,0 +1,111 @@
+server:
+  port: 9003
+  servlet: ##servlet默认超时时间30分钟
+    session:
+      timeout: 30m
+    context-path: /fnms
+  tomcat:
+    accesslog:
+      enabled: true
+      pattern: combined
+    basedir: tomcat
+    uri-encoding: UTF-8
+logging:
+  level:
+    root: info
+    org.mybatis: error
+    java.sql: trace
+    org.springframework.web: trace
+    com.znv.fssrqs.dao.mysql: debug
+spring:
+  jackson:
+    default-property-inclusion: non_null
+  datasource:
+    mysql:
+      jdbc-url: jdbc:mysql://10.45.152.173:3306/usmsc?serverTimezone=Hongkong&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useAffectedRows=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: zxm10
+      max-active: 20
+      max-idle: 8
+      min-idle: 8
+      initial-size: 10
+    hbase:
+      driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
+      jdbc-url: jdbc:phoenix:lv230.dct-znv.com:2181:/hbase
+      type: com.alibaba.druid.pool.DruidDataSource
+      data-username: ""
+      data-password: ""
+  redis: #redis相关配置
+    host: 10.45.152.173
+    port: 6379
+    #连接超时时间(毫秒)
+    timeout: 10000ms
+    #password: redis
+    jedis:
+      pool:
+        max-active: 10
+        max-idle: 10
+        #连接池最大阻塞等待时间(使用负值表示没有限制)
+        max-wait: -1ms
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  session:
+    store-type: none
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+#mybatis
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+#elasticSearchClient
+es:
+  username: ""
+  password: ""
+#  host: lv230.dct-znv.com
+  host: lv217.dct-znv.com
+  port: 9200
+#  clusterName: lv230.dct-znv.com-es
+  clusterName: lv217.dct-znv.com-es
+#海康SDK
+hksdk:
+  # false不支持海康脸谱算法 true支持海康脸谱算法
+  is-switch: false
+  base-url: 10.45.157.59
+  app-key: '24606272'
+  app-secret: 'S2K5ChipGIr6elg2RPbC'
+chongqing:
+  eds-url: http://50.1.64.130:10002/pingaoEds
+  image-url: http://50.1.64.130:10002/getImage
+  max-minute-flow: 10000
+  max-day-flow: 10000000
+bigdata:
+  hdfs-url: hdfs://lv230.dct-znv.com:8020/user/fss/V120
+fdfs:
+  trackers:
+  - 10.45.157.59:22122
+####管理服务相关配置
+ms:
+  image-store-type: 0
+person:
+  person-id-length: 16
+conf:
+  ##配置defaultUserId后，所有接口不登录
+  #defaultUserId: "11000000000"
+#pagehelper.
+pagehelper:
+  autoDialect: true
+  closeConn: true
+  offset-as-page-num: false
+echarts:
+  add: 南京,北京
+spark:
+  shellscript: cd /home/fss/v1.60/fssDeployUtil &&  ./fss_service.sh execNNCompare
+ssh: #大数据机器ssh登录密码
+  username: 'root'
+  password: '@znv_2014'
+
