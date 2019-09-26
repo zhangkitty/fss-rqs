@@ -113,7 +113,7 @@ person:
   person-id-length: 16
 conf:
   ##配置defaultUserId后，所有接口不登录
-  defaultUserId: "11000000000"
+  #defaultUserId: "11000000000"
 #pagehelper.
 pagehelper:
   autoDialect: true
