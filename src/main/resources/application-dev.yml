@@ -92,7 +92,7 @@ person:
   person-id-length: 16
 conf:
   ##配置defaultUserId后，所有接口不登录
-  defaultUserId: "11000000000"
+  #defaultUserId: "11000000000"
   server:
     bussiness-and-access: 8 #业务和接入服务数量
     face-ai-unit: 4 #人脸分析单元数量
