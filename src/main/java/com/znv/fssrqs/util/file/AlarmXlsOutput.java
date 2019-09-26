@@ -131,7 +131,7 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
             int index = exportSize > size ? size : exportSize;
             fourthCell.setCellValue(index);
             for (int i = 0; i < index; index++) {
-                outputRow(sheet, startRow[0], alarmDataList.getJSONObject(index), ALARM_CELLS, features, eventMap);
+                outputRow(sheet, startRow[0], alarmDataList.getJSONObject(i), ALARM_CELLS, features, eventMap);
                 ++startRow[0];
             }
         } else {
