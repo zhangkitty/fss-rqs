@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.elasticsearch.person.cluster.PersonClusterService;
 import com.znv.fssrqs.elasticsearch.person.cluster.PersonDetailService;
+import com.znv.fssrqs.util.ImageUtils;
+import com.znv.fssrqs.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
