@@ -33,9 +33,10 @@ public class SessionAspect {
     @Value("${conf.defaultUserId:}")
     private String defaultUserId;
 
-    @Pointcut("within(com.znv.fssrqs.controller.*) " +
+    @Pointcut("within(com.znv.fssrqs.controller..*) " +
             "&& !within(com.znv.fssrqs.controller.LoginController) " +
-            "&& !within(com.znv.fssrqs.controller.SystemController)")
+            "&& !within(com.znv.fssrqs.controller.SystemController)" +
+            "&& !within(com.znv.fssrqs.controller.reid..*)")
     public void checkSession(){}
 
     @Around("checkSession()")
