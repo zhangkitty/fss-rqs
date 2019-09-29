@@ -3,6 +3,7 @@ package com.znv.fssrqs.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.elasticsearch.person.cluster.PersonClusterService;
 import com.znv.fssrqs.elasticsearch.person.cluster.PersonDetailService;
 import com.znv.fssrqs.util.ImageUtils;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -37,25 +39,17 @@ public class PersonClusterController {
     }
 
     @PostMapping("/ReID/cluster/track/search")
-    public String  getPersonFusedDetail(@RequestHeader("Host") String host, @RequestBody String body) {
-        JSONObject ret = new JSONObject();
+    public JSONObject  getPersonFusedDetail(@RequestHeader("Host") String host, @RequestBody String body, HttpServletRequest request) {
         JSONObject requestParams = JSON.parseObject(body);
         Result<JSONObject, String> esResult =  personClusterService.getPersonTask(requestParams);
         String remoteIp = host.split(":")[0];
         if (esResult.isErr()) {
-            ret.put("Code", 50000);
-            ret.put("Message", "获取ES数据失败:errorCode=" + esResult.error());
-            return ret.toJSONString();
+            return FastJsonUtils.JsonBuilder.error(CommonConstant.StatusCode.INTERNAL_ERROR).message(I18nUtils.i18n(request.getLocale(),esResult.error())).json();
         }
 
-        ret.put("Code", 10000);
-        JSONObject retData = new JSONObject();
         JSONObject esObject = esResult.value();
         JSONArray hitsJsonArray = esObject.getJSONArray("Hits");
-        retData.put("List", hitsJsonArray);
-        ret.put("Data", retData);
-        ret.put("Message", "ok");
-        for (Object object : hitsJsonArray) {
+        hitsJsonArray.parallelStream().forEach(object->{
             JSONObject jsonObject = (JSONObject) object;
             String pictureUuid = jsonObject.getString("SmallPictureUrl");
             if ("null".equals(pictureUuid) || StringUtils.isEmpty(pictureUuid)) {
@@ -69,8 +63,8 @@ public class PersonClusterController {
             } else {
                 jsonObject.put("BigPictureUrl", ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
             }
-        }
-        return ret.toJSONString();
+        });
+        return FastJsonUtils.JsonBuilder.ok().list(hitsJsonArray).json();
     }
 
     @GetMapping("/ReID/cluster/fused/{fusedId}/detail")

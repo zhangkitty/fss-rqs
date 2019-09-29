@@ -202,7 +202,7 @@ public class PersonClusterService {
         }
         JSONObject jsonEsResult = resultObject.value();
         if (jsonEsResult.getBoolean("timed_out")) {
-            return Result.err("查询es超时");
+            return Result.err("QueryEsTimeout");
         }
 
         JSONArray esHits = jsonEsResult.getJSONObject("hits").getJSONArray("hits");
@@ -230,7 +230,6 @@ public class PersonClusterService {
                 outHit.setSmallPictureUrl(source.getString("img_url"));
                 outHit.setBigPictureUuid(source.getString("big_picture_uuid"));
                 outHit.setUuid(source.getString("uuid"));
-                // outHit.setCoarseId(source.getInteger("coarse_id"));
                 outHit.setLibId(source.getInteger("lib_id"));
                 outHit.setPersonId(source.getString("person_id"));
                 String scoreStr = String.valueOf(score);
@@ -255,8 +254,6 @@ public class PersonClusterService {
                 outHit.setSmallPictureUrl(source.getString("img_url"));
                 outHit.setBigPictureUuid(source.getString("big_picture_uuid"));
                 outHit.setUuid(source.getString("uuid"));
-                //  outHit.setCoarseId(source.getInteger("coarse_id"));
-                //逗留次数
                 outHit.setStayNum(1);
                 outHits.add(outHit);
             }
