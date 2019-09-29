@@ -1,6 +1,7 @@
 package com.znv.fssrqs.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.elasticsearch.person.cluster.PersonClusterService;
 import com.znv.fssrqs.elasticsearch.person.cluster.PersonDetailService;
@@ -33,8 +34,40 @@ public class PersonClusterController {
     }
 
     @PostMapping("/ReID/cluster/track/search")
-    public JSONObject getPersonFusedDetail(@RequestBody String body) {
-        return null;
+    public String  getPersonFusedDetail(@RequestHeader("Host") String host, @RequestBody String body) {
+        JSONObject ret = new JSONObject();
+        JSONObject requestParams = JSON.parseObject(body);
+        Result<JSONObject, String> esResult =  personClusterService.getPersonTask(requestParams);
+        String remoteIp = host.split(":")[0];
+        if (esResult.isErr()) {
+            ret.put("Code", 50000);
+            ret.put("Message", "获取ES数据失败:errorCode=" + esResult.error());
+            return ret.toJSONString();
+        }
+
+        ret.put("Code", 10000);
+        JSONObject retData = new JSONObject();
+        JSONObject esObject = esResult.value();
+        JSONArray hitsJsonArray = esObject.getJSONArray("Hits");
+        retData.put("List", hitsJsonArray);
+        ret.put("Data", retData);
+        ret.put("Message", "ok");
+        for (Object object : hitsJsonArray) {
+            JSONObject jsonObject = (JSONObject) object;
+            String pictureUuid = jsonObject.getString("SmallPictureUrl");
+            if ("null".equals(pictureUuid) || StringUtils.isEmpty(pictureUuid)) {
+                jsonObject.put("SmallPictureUrl", "");
+            } else {
+                jsonObject.put("SmallPictureUrl", ImageUtils.getImgUrl(remoteIp, "GetSmallPic", pictureUuid));
+            }
+            String bigPictureUuid = jsonObject.getString("BigPictureUuid");
+            if ("null".equals(bigPictureUuid) || StringUtils.isEmpty(bigPictureUuid)) {
+                jsonObject.put("BigPictureUrl", "");
+            } else {
+                jsonObject.put("BigPictureUrl", ImageUtils.getImgUrl(remoteIp, "GetBigBgPic", bigPictureUuid));
+            }
+        }
+        return ret.toJSONString();
     }
 
     @GetMapping("/ReID/cluster/fused/{fusedId}/detail")
