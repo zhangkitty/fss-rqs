@@ -25,10 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by dongzelong on  2019/6/1 13:53.
@@ -275,7 +272,7 @@ public class PersonController {
         if (mapParam.containsKey("GenderCode")) {
             transformedParams.put("sex", mapParam.get("GenderCode"));
         }
-        if (mapParam.containsKey("LibID") && !((JSONArray) mapParam.get("LibID")).isEmpty()) {
+        if (mapParam.containsKey("LibID") && !((ArrayList) mapParam.get("LibID")).isEmpty()) {
             transformedParams.put("lib_id", mapParam.get("LibID"));
             transformedParams.put("is_lib", true);
         } else {
