@@ -17,8 +17,11 @@
     <name>fss-rqs</name>
     <description>Fss Query system project for Spring Boot</description>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <start-class>com.znv.fssrqs.FssRqsApplication</start-class>
         <java.version>1.8</java.version>
+        <skipTests>true</skipTests>
     </properties>
     <packaging>jar</packaging>
     <dependencies>
@@ -193,6 +196,32 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--hbase client-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.hbase</groupId>-->
+            <!--<artifactId>hbase-client</artifactId>-->
+            <!--<version>1.2.0</version>-->
+            <!--<scope>provided</scope>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>commons-io</groupId>-->
+                    <!--<artifactId>*</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>commons-lang</groupId>-->
+                    <!--<artifactId>*</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--&lt;!&ndash;-  此处版本12.0.1 &ndash;&gt;-->
+                    <!--<groupId>com.google.guava</groupId>-->
+                    <!--<artifactId>*</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>commons-codec</groupId>-->
+                    <!--<artifactId>*</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
         <!--hbase配置-->
         <dependency>
             <groupId>org.apache.hbase</groupId>
@@ -235,10 +264,10 @@
                     <artifactId>servlet-api-2.5</artifactId>
                     <groupId>org.mortbay.jetty</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
+                <!--<exclusion>-->
+                    <!--<artifactId>guava</artifactId>-->
+                    <!--<groupId>com.google.guava</groupId>-->
+                <!--</exclusion>-->
             </exclusions>
         </dependency>
         <!-- phoenix-core 版本号要和本地安装的phoenix版本号保持一致 -->
@@ -255,10 +284,10 @@
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
+                <!--<exclusion>-->
+                    <!--<artifactId>guava</artifactId>-->
+                    <!--<groupId>com.google.guava</groupId>-->
+                <!--</exclusion>-->
                 <!--<exclusion>-->
                 <!--<groupId>org.apache.hadoop</groupId>-->
                 <!--<artifactId>hadoop-common</artifactId>-->
@@ -402,16 +431,85 @@
         </dependency>
         <!--分布式任务调度平台-->
         <!--<dependency>-->
-            <!--<groupId>com.xuxueli</groupId>-->
-            <!--<artifactId>xxl-job-core</artifactId>-->
-            <!--<version>2.0.0</version>-->
+        <!--<groupId>com.xuxueli</groupId>-->
+        <!--<artifactId>xxl-job-core</artifactId>-->
+        <!--<version>2.0.0</version>-->
+        <!--</dependency>-->
+
+        <!--集成kafka-->
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.kafka</groupId>-->
+        <!--<artifactId>spring-kafka</artifactId>-->
         <!--</dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+
+        <!--阿里开源nacos配置中心组件-->
+        <!--<dependency>-->
+        <!--<groupId>com.alibaba.boot</groupId>-->
+        <!--<artifactId>nacos-config-spring-boot-starter</artifactId>-->
+        <!--<version>0.2.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.google.guava</groupId>-->
+            <!--<artifactId>guava</artifactId>-->
+            <!--<version>28.0-jre</version>-->
+        <!--</dependency>-->
+        <!--es guava包为guava18,hbase依赖guava16,加入这个为了解决es和hbase依赖冲突问题-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>16.0</version>
+        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.cloud</groupId>-->
+        <!--<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.cloud</groupId>-->
+        <!--<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>-->
+        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <!--<dependency>-->
+        <!--<groupId>com.google.guava</groupId>-->
+        <!--<artifactId>guava</artifactId>-->
+        <!--<version>23.0</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
     </dependencies>
+    <!--<dependencyManagement>-->
+    <!--<dependencies>-->
+    <!--<dependency>-->
+    <!--<groupId>org.springframework.cloud</groupId>-->
+    <!--<artifactId>spring-cloud-dependencies</artifactId>-->
+    <!--<version>${spring-cloud.version}</version>-->
+    <!--<type>pom</type>-->
+    <!--<scope>import</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>org.springframework.boot</groupId>-->
+    <!--<artifactId>spring-boot-dependencies</artifactId>-->
+    <!--<version>${spring-boot.version}</version>-->
+    <!--<type>pom</type>-->
+    <!--<scope>import</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+    <!--<groupId>org.springframework.cloud</groupId>-->
+    <!--<artifactId>spring-cloud-alibaba-dependencies</artifactId>-->
+    <!--<version>${nacos.version}</version>-->
+    <!--<type>pom</type>-->
+    <!--<scope>import</scope>-->
+    <!--</dependency>-->
+    <!--</dependencies>-->
+    <!--</dependencyManagement>-->
     <build>
         <finalName>fss-rqs</finalName>
         <plugins>

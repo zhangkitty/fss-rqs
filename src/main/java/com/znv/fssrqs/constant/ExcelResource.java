@@ -43,4 +43,8 @@ public enum ExcelResource {
         }
         throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "ExcelResourceNotExist");
     }
+
+    public int getType() {
+        return type;
+    }
 }

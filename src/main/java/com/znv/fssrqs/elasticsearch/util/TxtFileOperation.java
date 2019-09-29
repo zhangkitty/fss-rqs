@@ -101,7 +101,7 @@ public class TxtFileOperation {
                 // System.out.print("文件存在");
             } else {
                 System.out.print("文件不存在");
-                if(!f.createNewFile()){
+                if (!f.createNewFile()) {
                     // 不存在则创建
                     logger.error("create file error!");
                 }

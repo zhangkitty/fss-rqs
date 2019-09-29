@@ -1,5 +1,7 @@
 package com.znv.fssrqs.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.constant.ExcelResource;
 import com.znv.fssrqs.exception.ZnvException;
@@ -7,7 +9,6 @@ import com.znv.fssrqs.util.DataConvertUtils;
 import com.znv.fssrqs.util.SpringContextUtil;
 import com.znv.fssrqs.util.file.AlarmXlsOutput;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -43,7 +44,7 @@ public class FileController {
      * 导出excel数据
      */
     @PostMapping(value = "/export/{resType}/excel")
-    public void exportExcel(ModelMap model, @RequestHeader("Host") String host, @PathVariable("resType") Integer resType, @RequestBody String body, HttpServletRequest request, HttpServletResponse response) {
+    public void exportExcel(ModelMap model, @RequestHeader(value = "Host") String host, @PathVariable("resType") Integer resType, @RequestBody String body, HttpServletRequest request, HttpServletResponse response) {
         log.info("export start time:" + new Date().toString());
         if (!ExcelResource.contains(resType)) {
             throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "ExcelResourceNotExist");
@@ -52,11 +53,8 @@ public class FileController {
         AlarmXlsOutput output = null;
         switch (resType) {
             case 1:
-                final String size = request.getParameter("Size");
-                if (StringUtils.isEmpty(size) || size.length() != 1 || (size.compareTo("0") < 0 || size.compareTo("9") > 0)) {
-                    throw ZnvException.badRequest("导出条数为非法参数");
-                }
-                final int exportSize = Integer.parseInt(size);
+                final JSONObject jsonObject = JSON.parseObject(body);
+                final int exportSize = jsonObject.getIntValue("Size");
                 HistoryAlarmController historyAlarmController = SpringContextUtil.getCtx().getBean(HistoryAlarmController.class);
                 String result = historyAlarmController.getHistoryAlarm(host, body);
                 output = new AlarmXlsOutput(response, locale, result, body, exportSize);

@@ -29,7 +29,6 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class CompareTaskLoader {
     private ExecutorService executor = Executors.newCachedThreadPool();
-
     private static class SingletonHolder {
         private static CompareTaskLoader instance = new CompareTaskLoader();
     }

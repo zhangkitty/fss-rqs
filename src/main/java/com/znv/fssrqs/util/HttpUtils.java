@@ -55,7 +55,7 @@ public class HttpUtils {
     public static String sendGet(String url) throws ParseException, IOException {
         HttpGet get = new HttpGet(url);
         get.setHeader("Content-Type", "charset=utf-8");
-        get.setHeader(HttpHeaders.CONNECTION,"close");
+        get.setHeader(HttpHeaders.CONNECTION, "close");
         get.setConfig(HttpClientPool.requestConfig());
         CloseableHttpResponse chc = null;
         try {

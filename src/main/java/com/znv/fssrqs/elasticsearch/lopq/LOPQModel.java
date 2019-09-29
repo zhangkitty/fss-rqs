@@ -21,7 +21,7 @@ public class LOPQModel {
     private static float[][][][] Subs = null;// subquantizer centroids - M of these, each size num_subquantizers x (D/2))
 
     private static int numCoarseSplits = 1;
-   // private static int numCoarseCenters = 3;
+    // private static int numCoarseCenters = 3;
     private static int numFineCenters = 3;
     private static int numFineSplits = 2; //细分类分两类
     private static int M; // number of subvectors
@@ -242,7 +242,7 @@ public class LOPQModel {
 
     public static float[] computeResidual(float[] featureSplit, float[] cx) {
 
-        if (featureSplit == null ) {
+        if (featureSplit == null) {
             logger.error("feature array is null!");
             return null;
         }
@@ -259,7 +259,7 @@ public class LOPQModel {
     }
 
     //返回距离最近的前numCoarseCenters个聚类中心
-    public static int[][] predictCoarseOrder(float[] feature,int numCoarseCenters) {
+    public static int[][] predictCoarseOrder(float[] feature, int numCoarseCenters) {
         int[][] nearCorseCode = new int[numCoarseCenters][numCoarseSplits];
         float[][] featureSplit = iterateSplit(feature);
 
@@ -545,7 +545,7 @@ public class LOPQModel {
                 int[] corseCode = predict(fc.getFloatArray(new org.apache.commons.codec.binary.Base64().decode(f)));
                 //System.out.println(corseCode[0] + "," + corseCode[1]);
                 //返回numCoarseCenters个距离最近的聚类中心
-                int[][] coarseCodeOrder = predictCoarseOrder(fc.getFloatArray(new org.apache.commons.codec.binary.Base64().decode(f)),3);
+                int[][] coarseCodeOrder = predictCoarseOrder(fc.getFloatArray(new org.apache.commons.codec.binary.Base64().decode(f)), 3);
                 System.out.println(coarseCodeOrder.length);
                 int[] fineCode = predictFine(fc.getFloatArray(new org.apache.commons.codec.binary.Base64().decode(f)), corseCode);
                 int[][] fineCodeOrder = predictFineOrder(fc.getFloatArray(new org.apache.commons.codec.binary.Base64().decode(f)), corseCode);

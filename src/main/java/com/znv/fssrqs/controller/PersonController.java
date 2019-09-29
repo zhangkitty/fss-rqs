@@ -16,6 +16,7 @@ import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.FeatureCompUtil;
 import com.znv.fssrqs.util.I18nUtils;
 import com.znv.fssrqs.util.TimingCounter;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(produces = {"application/json;charset=UTF-8"})
+@Slf4j
 public class PersonController {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     @Autowired
@@ -273,9 +275,11 @@ public class PersonController {
         if (mapParam.containsKey("GenderCode")) {
             transformedParams.put("sex", mapParam.get("GenderCode"));
         }
-        if (mapParam.containsKey("LibID")) {
+        if (mapParam.containsKey("LibID") && !((JSONArray) mapParam.get("LibID")).isEmpty()) {
             transformedParams.put("lib_id", mapParam.get("LibID"));
             transformedParams.put("is_lib", true);
+        } else {
+            transformedParams.put("is_lib", false);
         }
 
         transformedParams.put("minimum_should_match", 1);
@@ -432,6 +436,7 @@ public class PersonController {
             retObject.put("Message", "ok");
             return retObject;
         } catch (Exception e) {
+            log.error("", e);
             retObject.put("Code", 50000);
             retObject.put("Message", e.getMessage());
             return retObject;

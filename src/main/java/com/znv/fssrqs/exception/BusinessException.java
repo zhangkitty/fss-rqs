@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class BusinessException extends RuntimeException{
+//@NoArgsConstructor
+public class BusinessException extends RuntimeException {
 
     private Integer errcode;
     private String msg;
 
-    public BusinessException(ErrorCodeEnum errorCodeEnum){
+    public BusinessException(ErrorCodeEnum errorCodeEnum) {
         this.errcode = errorCodeEnum.getCode();
         this.msg = errorCodeEnum.getMessage();
     }

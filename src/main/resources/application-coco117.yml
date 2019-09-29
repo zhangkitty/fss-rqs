@@ -30,7 +30,7 @@ spring:
       initial-size: 10
     hbase:
       driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
-      jdbc-url: jdbc:phoenix:lv116.dct-znv.com:2181:/hbase
+      jdbc-url: jdbc:phoenix:${spring.kafka.bootstrap-servers}:/hbase
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
@@ -57,6 +57,28 @@ spring:
     restart:
       enabled: true
       additional-paths: src/main/java
+  kafka: #kafka配置
+    bootstrap-servers: lv116.dct-znv.com:2181
+    producer:
+      retries: 0
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        linger.ms: 1
+    consumer:
+      enable-auto-commit: false
+      auto-commit-interval: 100ms
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        session.timeout.ms: 15000
+kafka:
+  topic:
+    group-id: consumer_fss_web_n_project_V1_2_001
+    topic-name:
+    - fss-alarm-n-project-v1-2-production
 #mybatis
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
@@ -91,7 +113,7 @@ person:
   person-id-length: 16
 conf:
   ##配置defaultUserId后，所有接口不登录
-  defaultUserId: "11000000000"
+  #defaultUserId: "11000000000"
 #pagehelper.
 pagehelper:
   autoDialect: true

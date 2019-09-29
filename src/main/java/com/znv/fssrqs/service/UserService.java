@@ -25,12 +25,12 @@ public class UserService {
     @Autowired
     private HUserDao hUserDao;
 
-    public List<MUserEntity> findAll() throws Exception{
+    public List<MUserEntity> findAll() throws Exception {
         Map<String, Object> params = new HashMap<>();
         return mUserDao.getUser(params);
     }
 
-    public List<HUserEntity> find() throws Exception{
+    public List<HUserEntity> find() throws Exception {
         return hUserDao.findAll();
     }
 
@@ -47,15 +47,15 @@ public class UserService {
             throw ZnvException.badRequest("UserLoginFailed");
         }
 
-        int ret = Integer.valueOf(String.valueOf(map.get("ret")) );
+        int ret = Integer.valueOf(String.valueOf(map.get("ret")));
         log.info("user {} login ret {}.", params.get("userName"), ret);
         switch (ret) {
             case 1:
                 break;
             case -536861934: // 用户不存在
-                throw ZnvException.badRequest(20002,"UserNotExisted");
+                throw ZnvException.badRequest(20002, "UserNotExisted");
             case -536861613: // 用户被锁
-                throw ZnvException.badRequest(20001,"UserLocked");
+                throw ZnvException.badRequest(20001, "UserLocked");
             default:
                 throw ZnvException.badRequest("UserLoginFailed");
         }
@@ -66,7 +66,7 @@ public class UserService {
         logParams.put("deviceId", params.get("serverId"));
         logParams.put("accessStyle", 1);
         logParams.put("accessTime", params.get("loginTime"));
-        logParams.put("accessDescription", "Login System success username="+params.get("userName"));
+        logParams.put("accessDescription", "Login System success username=" + params.get("userName"));
         logParams.put("remoteHost", params.get("clientIp"));
         logParams.put("detailStyle", 1);
         logParams.put("loginClientType", params.get("loginClientType"));
@@ -88,7 +88,7 @@ public class UserService {
         logParams.put("deviceId", params.get("serverId"));
         logParams.put("accessStyle", 1);
         logParams.put("accessTime", params.get("logoutTime"));
-        logParams.put("accessDescription", "Logout System success username="+params.get("userName"));
+        logParams.put("accessDescription", "Logout System success username=" + params.get("userName"));
         logParams.put("remoteHost", params.get("clientIp"));
         logParams.put("detailStyle", 7);
         logParams.put("loginClientType", 1);

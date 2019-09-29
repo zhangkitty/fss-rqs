@@ -31,7 +31,7 @@ public class HKPersonListSearchDTO {
     @JSONField(name = "humanName")
     private String Name;
 
-    @JSONField(name="credentialsNum")
+    @JSONField(name = "credentialsNum")
     private String IDNumber;
 
     private String sex = "-1";

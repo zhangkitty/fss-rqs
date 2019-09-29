@@ -7,23 +7,27 @@ import java.util.Properties;
 
 /**
  * 读取properties.
- * 
+ *
  * @author xkh
  */
 @Slf4j
 public class FssPropertyUtils extends Properties {
 
-    /** The Constant serialVersionUID. */
+    /**
+     * The Constant serialVersionUID.
+     */
     private static final long serialVersionUID = 1L;
 
-    /** The instance. */
+    /**
+     * The instance.
+     */
     private static FssPropertyUtils instance = new FssPropertyUtils();
 
     private boolean isInit = false;
 
     /**
      * Gets the single instance of FssPropertyUtils.
-     * 
+     *
      * @return single instance of FssPropertyUtils
      */
     public static FssPropertyUtils getInstance() {

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by dongzelong on  2019/8/17 22:58.
@@ -35,7 +36,9 @@ public class OkHttpUtil {
         if (singleton == null) {
             synchronized (OkHttpUtil.class) {
                 if (singleton == null) {
-                    singleton = new OkHttpClient();
+                    singleton = new OkHttpClient.Builder()
+                            .writeTimeout(120, TimeUnit.SECONDS)
+                            .build();
                 }
             }
         }

@@ -1,4 +1,5 @@
 package com.znv.fssrqs.service.personnel.management;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -29,12 +30,12 @@ public class VIIDHKSDKService {
     @Autowired
     private HkPersonRelationMap hkPersonRelationMap;
 
-    public JSONObject queryHkPerson (PersonListSearchParams personListSearchParams) throws Exception{
+    public JSONObject queryHkPerson(PersonListSearchParams personListSearchParams) throws Exception {
         log.info("queryHkPerson params:{}", personListSearchParams);
-        HKPersonListSearchDTO hkPersonListSearchDTO = modelMapper.map(personListSearchParams,HKPersonListSearchDTO.class);
+        HKPersonListSearchDTO hkPersonListSearchDTO = modelMapper.map(personListSearchParams, HKPersonListSearchDTO.class);
 
         // 海康的接口的入口参数
-        JSONObject jsonObject = (JSONObject)JSONObject.parse(JSONObject.toJSONString(hkPersonListSearchDTO));
+        JSONObject jsonObject = (JSONObject) JSONObject.parse(JSONObject.toJSONString(hkPersonListSearchDTO));
         Object libId = personListSearchParams.getLibId();
         if (personListSearchParams.getLibId() == null) {
             jsonObject.put("listLibIds", -1);
@@ -92,7 +93,7 @@ public class VIIDHKSDKService {
         return jsonData;
     }
 
-    public JSONObject queryHkPerson (JSONObject params){
+    public JSONObject queryHkPerson(JSONObject params) {
         Map<String, String> path = new HashMap<>(2);
         path.put(CommonConstant.HkUri.ARTEMIS_PROTOCAL,
                 CommonConstant.HkUri.ARTEMIS_PATH + CommonConstant.HkUri.QUERY_PERSON);

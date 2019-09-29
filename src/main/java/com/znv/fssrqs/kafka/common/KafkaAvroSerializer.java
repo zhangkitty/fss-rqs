@@ -31,7 +31,7 @@ public class KafkaAvroSerializer implements Serializer<Object> {
         }
 
         if (encodingValue != null && encodingValue instanceof String) {
-            this.encoding = (String)encodingValue;
+            this.encoding = (String) encodingValue;
         }
 
     }
@@ -45,9 +45,9 @@ public class KafkaAvroSerializer implements Serializer<Object> {
                 schema = ZnvSchema.getSchema(record);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 if (record instanceof byte[]) {
-                    out.write((byte[])((byte[])record));
+                    out.write((byte[]) ((byte[]) record));
                 } else {
-                    BinaryEncoder encoder = this.encoderFactory.directBinaryEncoder(out, (BinaryEncoder)null);
+                    BinaryEncoder encoder = this.encoderFactory.directBinaryEncoder(out, (BinaryEncoder) null);
                     DatumWriter<Object> writer = null;
                     if (record instanceof SpecificRecord) {
                         writer = new SpecificDatumWriter(schema);
@@ -55,7 +55,7 @@ public class KafkaAvroSerializer implements Serializer<Object> {
                         writer = new GenericDatumWriter(schema);
                     }
 
-                    ((DatumWriter)writer).write(record, encoder);
+                    ((DatumWriter) writer).write(record, encoder);
                     encoder.flush();
                 }
 

@@ -19,13 +19,13 @@
                     tree_id=#{item.treeId}
                 </if>
             </set>
-              where node_id=#{item.nodeId}
+            where node_id=#{item.nodeId}
         </foreach>
     </update>
 
     <insert id="insertBatch" parameterType="java.util.List" >
         insert into usmsc.t_fss_customtree_node (node_id, node_name, node_kind, up_node_id, tree_id) values
-        <foreach collection="list" item="item"  separator=",">
+        <foreach collection="list" item="item" separator=",">
             (
             #{item.nodeId},
             #{item.nodeName},

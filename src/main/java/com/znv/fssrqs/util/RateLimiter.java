@@ -5,19 +5,17 @@ public class RateLimiter {
     private long period = 1; // 限流的周期，秒
 
     private volatile long nextTimeStamp = 0L; // 下个周期的时间戳
-    private volatile int  usedLimit = 0; // 一个周期已使用的流量
+    private volatile int usedLimit = 0; // 一个周期已使用的流量
     private volatile Object mutexDoNotUseDirectly;
 
     public RateLimiter(Integer limit) {
         this.limit = limit;
     }
 
-    private Object mutex()
-    {
+    private Object mutex() {
         Object mutex = this.mutexDoNotUseDirectly;
         if (mutex == null) {
-            synchronized (this)
-            {
+            synchronized (this) {
                 mutex = this.mutexDoNotUseDirectly;
                 if (mutex == null) {
                     this.mutexDoNotUseDirectly = (mutex = new Object());

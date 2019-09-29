@@ -6,18 +6,23 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.znv.fssrqs.controller.reid.params.QueryReidTaskParma;
 import com.znv.fssrqs.controller.reid.params.ReidTaskParam;
+import com.znv.fssrqs.dao.mysql.ReidAnalysisUnitDao;
 import com.znv.fssrqs.dao.mysql.ReidTaskDao;
+import com.znv.fssrqs.entity.mysql.ReidAnalysisUnitEntity;
 import com.znv.fssrqs.entity.mysql.ReidTaskEntity;
 import com.znv.fssrqs.service.reid.ReidTaskService;
+import com.znv.fssrqs.util.HttpUtils;
 import com.znv.fssrqs.vo.ResponseVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,14 +40,42 @@ public class ReidTaskController {
     @Autowired
     private ReidTaskDao reidTaskDao;
 
+    @Autowired
+    private ReidAnalysisUnitDao reidAnalysisUnitDao;
+
 
     @RequestMapping(value = "/reid-task/save",method = RequestMethod.POST)
+    @Transactional
     public ResponseVo saveTask(@RequestBody  ReidTaskParam reidTaskParam){
+
         ReidTaskEntity reidTaskEntity = new ReidTaskEntity();
         BeanUtils.copyProperties(reidTaskParam, reidTaskEntity);
         Integer result = reidTaskService.save(reidTaskEntity);
-        return ResponseVo.success(result);
-
+        try {
+            ReidTaskEntity reidTaskEntity1 = reidTaskDao.getOne(result);
+            ReidAnalysisUnitEntity reidAnalysisUnitEntity  = reidAnalysisUnitDao.findOne(reidTaskEntity1.getReidUnitId());
+            String url = "http://"+reidAnalysisUnitEntity.getServiceIp()
+                    +":"+reidAnalysisUnitEntity.getHttpPort()+"/rest/taskManage/addVideoObjextTask";
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("serialnumber",result);
+            jsonObject.put("type","objext");
+            jsonObject.put("url",reidTaskEntity1.getUrl());
+            String str = HttpUtils.postJsonString(url,jsonObject.toJSONString());
+            JSONObject jsonObject1 = JSONObject.parseObject(str);
+            if(jsonObject1.getString("ret").equals("0")){
+                return ResponseVo.success(result);
+            }else {
+                JSONObject jsonObject2 = new JSONObject();
+                jsonObject2.put("ids",Arrays.asList(result).toString());
+                delete(jsonObject2.toJSONString());
+                return ResponseVo.error(jsonObject1.getString("desc"));
+            }
+        }catch (Exception e){
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("ids",Arrays.asList(result).toString());
+            delete(jsonObject2.toJSONString());
+            return ResponseVo.error("参数不正确");
+        }
     }
 
     @RequestMapping(value = "/reid-task/getAllTask",method = RequestMethod.POST)
@@ -56,6 +89,7 @@ public class ReidTaskController {
             jsonObject.put("list",list);
             return ResponseVo.success(jsonObject);
         }catch (Exception e){
+            e.printStackTrace();
             return  ResponseVo.error("入参错误");
         }
 

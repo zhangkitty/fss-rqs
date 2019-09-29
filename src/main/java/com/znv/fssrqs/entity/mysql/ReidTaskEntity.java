@@ -25,11 +25,27 @@ public class ReidTaskEntity {
 
     private String deviceId;
 
+    private String deviceName;
+
     private String userId;
 
     private String url;
 
     private String reidParamsText;
+
+    private String simThreshold;
+
+    private String mbusServer;
+
+    private String taskType;
+
+    private String rtspServer;
+
+    private String installSite;
+
+    private String x;
+
+    private String y;
 
     private String createTime;
 

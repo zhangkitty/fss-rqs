@@ -1,7 +1,6 @@
 package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSONObject;
-import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
@@ -113,7 +112,7 @@ public class FastSearch {
     private String calculateIndex(GeneralSearchParam params,CommonSearchParams commonSearchParams){
         FeatureCompUtil fc = new FeatureCompUtil();
         String indexName="";
-        String indexNamePrepix = EsBaseConfig.getInstance().getEsIndexHistoryPrefix();
+        String indexNamePrepix = "history_fss_data_n_project_v1_2";
         int coarseCentersNum = 3;
 
 

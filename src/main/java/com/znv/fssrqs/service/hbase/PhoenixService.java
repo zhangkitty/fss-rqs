@@ -11,6 +11,7 @@ import com.znv.fssrqs.util.PhoenixConnectionPool;
 import com.znv.fssrqs.util.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -30,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 @Service
+@DependsOn("hdfsConfigManager")
 public class PhoenixService {
     @Autowired
     private PersonService personListService;
@@ -50,7 +52,7 @@ public class PhoenixService {
     /**
      * 构造方法
      */
-    public PhoenixService(@Autowired HdfsConfigManager hdfsConfigManager, @Autowired HbaseConfig hbaseConfig) throws Exception {
+    public PhoenixService(@Autowired  HdfsConfigManager hdfsConfigManager, @Autowired HbaseConfig hbaseConfig) throws Exception {
         connectionPool = new PhoenixConnectionPool(HdfsConfigManager.getString(CommonConstant.PhoenixProperties.PHOENIX_DRIVER), hbaseConfig.getJdbcUrl(), "", "");
         connectionPool.createPool();
         Properties pop = HdfsConfigManager.getProperties();

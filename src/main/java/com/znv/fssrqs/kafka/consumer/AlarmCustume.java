@@ -39,18 +39,26 @@ public final class AlarmCustume implements Runnable {
 
     private ArrayList<MSubscribersEntity> subscribers;
 
-    /** The consumer. */
+    /**
+     * The consumer.
+     */
     private KafkaConsumer<String, Map<String, Object>> consumer;
 
-    /** The topic. */
+    /**
+     * The topic.
+     */
     private ArrayList<String> topic;
 
-    /** The alarmservic. */
+    /**
+     * The alarmservic.
+     */
     private static List<AlarmService> alarmservic = new ArrayList<AlarmService>();
 
     private static AlarmPushImpl alarmPush = new AlarmPushImpl();
 
-    /** The is run. */
+    /**
+     * The is run.
+     */
     private boolean isRun = true;
 
     public static void registAlarmService(AlarmService as) {
@@ -122,7 +130,7 @@ public final class AlarmCustume implements Runnable {
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         String key = String.valueOf(entry.getKey());
                         if ("rt_feature".equals(key) || "rt_image_data".equals(key) || "rt_image_data2".equals(key)
-                            || "rt_image_data3".equals(key)) {
+                                || "rt_image_data3".equals(key)) {
                             continue;
                         }
                         json.put(parserData(entry), String.valueOf(entry.getValue()));

@@ -16,7 +16,7 @@ public enum ZnvSchema {
     Long("long"),
     Float("float"),
     Double("double"),
-    Map((String)null);
+    Map((String) null);
 
     private Schema schema;
 
@@ -41,7 +41,7 @@ public enum ZnvSchema {
             ZnvSchema[] var2 = values();
             int var3 = var2.length;
 
-            for(int var4 = 0; var4 < var3; ++var4) {
+            for (int var4 = 0; var4 < var3; ++var4) {
                 ZnvSchema schema = var2[var4];
                 if (clsName == schema.name()) {
                     return schema.schema;
@@ -53,7 +53,7 @@ public enum ZnvSchema {
             } else if (object instanceof CharSequence) {
                 return CharSequence.schema;
             } else if (object instanceof GenericContainer) {
-                return ((GenericContainer)object).getSchema();
+                return ((GenericContainer) object).getSchema();
             } else if (object instanceof JSONObject) {
                 return Map.schema;
             } else {

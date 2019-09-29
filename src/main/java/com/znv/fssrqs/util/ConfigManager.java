@@ -107,7 +107,7 @@ public class ConfigManager {
             FileSystem fs = FileSystem.get(URI.create(producerPath), conf);
             in = fs.open(new Path(producerPath));
             producerProps.load(in);
-            producerProps.setProperty("value.serializer","com.znv.fssrqs.kafka.common.KafkaAvroSerializer");
+            producerProps.setProperty("value.serializer", "com.znv.fssrqs.kafka.common.KafkaAvroSerializer");
         } catch (IOException e) {
             L.error("read producerBasic.properties config error {}", e);
         } finally {

@@ -192,7 +192,7 @@ public class ReidMultiRetrievalService {
     }
 
     private JSONObject getResult(JSONObject response) {
-        long total = response.getLongValue("total");
+        long total = response.getJSONObject("hits").getLongValue("total");
         long took = response.getLongValue("took");
         final JSONArray jsonArray = response.getJSONObject("hits").getJSONArray("hits");
         final Map<String, Map<String, Object>> allDevices = reidAnalysisTaskDao.getAllDevices();
@@ -206,6 +206,7 @@ public class ReidMultiRetrievalService {
             } else {
                 source.put("DeviceName", "");
             }
+            source.put("Similarity",jsonObject.getFloatValue("_score"));
             return source;
         }).collect(Collectors.toList());
         return FastJsonUtils.JsonBuilder.ok().list(list).property("Total", total).property("Took", took).json();

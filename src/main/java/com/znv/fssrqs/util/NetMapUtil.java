@@ -5,18 +5,19 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * 网络映射工具
- * 
+ *
  * @author 徐凯华
  */
 public class NetMapUtil {
-    private static final String[] PRIVATE_IP_1 = { FssPropertyUtils.getInstance().getProperty("private.ip1.start"), FssPropertyUtils.getInstance().getProperty("private.ip1.end") }; // 第一私网
+    private static final String[] PRIVATE_IP_1 = {FssPropertyUtils.getInstance().getProperty("private.ip1.start"), FssPropertyUtils.getInstance().getProperty("private.ip1.end")}; // 第一私网
 
-    private static final String[] PRIVATE_IP_2 = { FssPropertyUtils.getInstance().getProperty("private.ip2.start"), FssPropertyUtils.getInstance().getProperty("private.ip2.end") }; // 第二私网网段
+    private static final String[] PRIVATE_IP_2 = {FssPropertyUtils.getInstance().getProperty("private.ip2.start"), FssPropertyUtils.getInstance().getProperty("private.ip2.end")}; // 第二私网网段
 
-    private static final String[] PRIVATE_IP_3 = { FssPropertyUtils.getInstance().getProperty("private.ip3.start"), FssPropertyUtils.getInstance().getProperty("private.ip3.end") }; // 第三私网网段
+    private static final String[] PRIVATE_IP_3 = {FssPropertyUtils.getInstance().getProperty("private.ip3.start"), FssPropertyUtils.getInstance().getProperty("private.ip3.end")}; // 第三私网网段
+
     /**
      * 对私网进行判断
-     * 
+     *
      * @param tmpip
      * @param ips
      * @return

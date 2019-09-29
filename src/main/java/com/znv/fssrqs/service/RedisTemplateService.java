@@ -250,7 +250,7 @@ public class RedisTemplateService {
      * @return
      */
     public long increment(Object key) {
-        return redisTemplate.opsForValue().increment(key).longValue();
+        return redisTemplate.opsForValue().increment(key,-1).longValue();
     }
 
     public long increment(Object key, long delta) {
@@ -262,11 +262,11 @@ public class RedisTemplateService {
     }
 
     public long decrease(Object key) {
-        return redisTemplate.opsForValue().decrement(key).longValue();
+        return redisTemplate.opsForValue().increment(key,-1).longValue();
     }
 
     public long decrease(Object key, long delta) {
-        return redisTemplate.opsForValue().decrement(key, delta).longValue();
+        return redisTemplate.opsForValue().increment(key, -delta).longValue();
     }
 
     /**

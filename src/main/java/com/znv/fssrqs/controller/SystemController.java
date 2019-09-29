@@ -12,6 +12,7 @@ import com.znv.fssrqs.service.reid.ReidUnitService;
 import com.znv.fssrqs.timer.SystemDeviceLoadTask;
 import com.znv.fssrqs.util.FastJsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,9 +51,7 @@ public class SystemController {
         return FastJsonUtils.JsonBuilder.ok().object(systemInfo).json();
     }
 
-    /**
-     * 修改系统信息
-     */
+
     @PutMapping("/system/info")
     @Transactional(transactionManager = "transactionManager")
     public JSONObject modifySystemInfo(HttpServletRequest request, @RequestBody String body) throws IOException {
@@ -65,6 +64,16 @@ public class SystemController {
     public String getMbusIpps(HttpServletRequest request) {
         final List<MBusEntity> mBusOnlineList = systemDeviceLoadTask.getMBusOnlineList();
         return JSON.toJSONString(FastJsonUtils.JsonBuilder.ok().list(mBusOnlineList).json(), new PascalNameFilter());
+    }
+
+    @Value("${spring.datasource.mysql.jdbc-url}")
+    private String jdbcUrl;
+
+    @GetMapping("/icap/ipps")
+    public JSONObject getIcapIpps() {
+        String ip = jdbcUrl.split(":")[2].substring(2);
+        String port = "8000";
+        return FastJsonUtils.JsonBuilder.ok().property("Ipps", ip + ":" + port).json();
     }
 
     /**
@@ -80,7 +89,7 @@ public class SystemController {
 
     @GetMapping(value = "/Info/DeviceType")
     public JSONObject getInfoDeviceType(@RequestParam Map mapParam) {
-        if (! mapParam.containsKey("DeviceKind")) {
+        if (!mapParam.containsKey("DeviceKind")) {
             throw ZnvException.error("RequestParamNull", "DeviceKind");
         }
 
@@ -89,7 +98,7 @@ public class SystemController {
 
     @GetMapping(value = "/Info/Manufacture")
     public JSONObject getInfoManufacture(@RequestParam Map mapParam) {
-        if (! mapParam.containsKey("DeviceKind")) {
+        if (!mapParam.containsKey("DeviceKind")) {
             throw ZnvException.error("RequestParamNull", "DeviceKind");
         }
 

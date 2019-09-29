@@ -31,4 +31,16 @@ public class ReidTaskParam {
     String url;
 
     String reidParamsText;
+
+    @NotBlank(message = "simThreshold不能为空")
+    String simThreshold;
+
+    @NotBlank(message = "mbusServer不能为空")
+    String mbusServer;
+
+    @NotBlank(message = "taskType不能为空")
+    String taskType;
+
+    @NotBlank(message = "rtspServer不能为空")
+    String rtspServer;
 }

@@ -8,32 +8,28 @@ import lombok.Setter;
 public enum ErrorCodeEnum {
 
     // 1****--成功
-    SUCCESS(10000,"OK"),
-
+    SUCCESS(10000, "OK"),
 
 
     //2****自定义业务异常
-    PARAM_ILLEGAL(20000,"请求入参不合法"),
+    PARAM_ILLEGAL(20000, "请求入参不合法"),
 
-    ERROR_GENERAL(20001,"普通的失败"),
+    ERROR_GENERAL(20001, "普通的失败"),
 
     //40000
-    UNAUTHED_REPEAT_LOGIN(40000,"登录失败，用户已登录"),
+    UNAUTHED_REPEAT_LOGIN(40000, "登录失败，用户已登录"),
     //40001
-    UNAUTHED_NOT_LOGIN(40001,"未登录"),
+    UNAUTHED_NOT_LOGIN(40001, "未登录"),
     //40002
-    UNAUTHED_LOGIN_ERROR(40002,"用户名或密码错误"),
+    UNAUTHED_LOGIN_ERROR(40002, "用户名或密码错误"),
     //40003
-    UNAUTHED_LOCKED(40003,"用户被锁定"),
+    UNAUTHED_LOCKED(40003, "用户被锁定"),
     //40004
-    UNAUTHED_MAX_FAILED_TIMES(40004,"用户失败次数过多"),
-
-
-
+    UNAUTHED_MAX_FAILED_TIMES(40004, "用户失败次数过多"),
 
 
     // 50000
-    UNDIFINITION(50000,"系统内部异常");
+    UNDIFINITION(50000, "系统内部异常");
 
     private Integer code;
 
