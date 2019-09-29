@@ -6,8 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.elasticsearch.person.cluster.PersonClusterService;
 import com.znv.fssrqs.elasticsearch.person.cluster.PersonDetailService;
-import com.znv.fssrqs.util.FastJsonUtils;
-import com.znv.fssrqs.util.I18nUtils;
 import com.znv.fssrqs.util.ImageUtils;
 import com.znv.fssrqs.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
