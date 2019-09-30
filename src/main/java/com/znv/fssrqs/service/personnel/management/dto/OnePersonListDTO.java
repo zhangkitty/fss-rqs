@@ -13,132 +13,132 @@ import lombok.Data;
 @Data
 public class OnePersonListDTO {
 
-    @JSONField(name="LibID")
+    @JSONField(name = "LibID")
     private String lib_id;
 
-    @JSONField(name="PersonID")
+    @JSONField(name = "PersonID")
     private String person_id;
 
-    @JSONField(name="Name")
+    @JSONField(name = "Name")
     private String person_name;
 
-    @JSONField(name="Birth")
+    @JSONField(name = "Birth")
     private String birth;
 
-    @JSONField(name="EthicCode")
+    @JSONField(name = "EthicCode")
     private String nation;
 
-    @JSONField(name="NationalityCode")
+    @JSONField(name = "NationalityCode")
     private String country;
 
-    @JSONField(name="PositiveUrl")
+    @JSONField(name = "PositiveUrl")
     private String positive_url;
 
-    @JSONField(name="NegativeUrl")
+    @JSONField(name = "NegativeUrl")
     private String negative_url;
 
-    @JSONField(name="Addr")
+    @JSONField(name = "Addr")
     private String addr;
 
-    @JSONField(name="Tel")
+    @JSONField(name = "Tel")
     private String tel;
 
-    @JSONField(name="NatureResidence")
+    @JSONField(name = "NatureResidence")
     private String nature_residence;
 
-    @JSONField(name="RoomNumber")
+    @JSONField(name = "RoomNumber")
     private String room_number;
 
-    @JSONField(name="DoorOpen")
+    @JSONField(name = "DoorOpen")
     private Integer door_open;
 
-    @JSONField(name="GenderCode")
+    @JSONField(name = "GenderCode")
     private Integer sex;
 
-    @JSONField(name="ImageName")
+    @JSONField(name = "ImageName")
     private String image_name;
 
-    @JSONField(name="Feature")
+    @JSONField(name = "Feature")
     private String feature;
 
-    @JSONField(name="IDNumber")
+    @JSONField(name = "IDNumber")
     private String card_id;
 
-    @JSONField(name="Flag")
+    @JSONField(name = "Flag")
     private Integer flag;
 
-    @JSONField(name="Comment")
+    @JSONField(name = "Comment")
     private String comment;
 
-    @JSONField(name="ControlStartTime")
+    @JSONField(name = "ControlStartTime")
     private String control_start_time;
 
-    @JSONField(name="ControlEndTime")
+    @JSONField(name = "ControlEndTime")
     private String control_end_time;
 
-    @JSONField(name="IsDel")
+    @JSONField(name = "IsDel")
     private Integer is_del;
 
-    @JSONField(name="CreateTime")
+    @JSONField(name = "CreateTime")
     private String create_time;
 
-    @JSONField(name="ModifyTime")
+    @JSONField(name = "ModifyTime")
     private String modify_time;
 
-    @JSONField(name="CommunityId")
+    @JSONField(name = "CommunityId")
     private String community_id;
 
-    @JSONField(name="CommunityName")
+    @JSONField(name = "CommunityName")
     private String community_name;
 
-    @JSONField(name="ControlCommunityId")
+    @JSONField(name = "ControlCommunityId")
     private String control_community_id;
 
-    @JSONField(name="ControlPersonId")
+    @JSONField(name = "ControlPersonId")
     private String control_person_id;
 
-    @JSONField(name="ControlEventId")
+    @JSONField(name = "ControlEventId")
     private String control_event_id;
 
-    @JSONField(name="ImageId")
+    @JSONField(name = "ImageId")
     private String image_id;
 
-    @JSONField(name="PersonlibType")
+    @JSONField(name = "PersonlibType")
     private Integer personlib_type;
 
-    @JSONField(name="ControlPoliceCategory")
+    @JSONField(name = "ControlPoliceCategory")
     private String control_police_category;
 
-    @JSONField(name="ControlPersonTel")
+    @JSONField(name = "ControlPersonTel")
     private String control_person_tel;
 
-    @JSONField(name="ControlPersonName")
+    @JSONField(name = "ControlPersonName")
     private String control_person_name;
 
-    @JSONField(name="BelongPoliceStation")
+    @JSONField(name = "BelongPoliceStation")
     private String belong_police_station;
 
-    @JSONField(name="CardType")
+    @JSONField(name = "CardType")
     private String card_type;
 
-    @JSONField(name="Description")
+    @JSONField(name = "Description")
     private String description;
 
-    @JSONField(name="InfoKind")
+    @JSONField(name = "InfoKind")
     private String info_kind;
 
-    @JSONField(name="SourceID")
+    @JSONField(name = "SourceID")
     private String source_id;
 
-    @JSONField(name="PersonAlarmLevel")
+    @JSONField(name = "PersonAlarmLevel")
     private String alarm_level;
 
-    @JSONField(name="Score")
+    @JSONField(name = "Score")
     private String score;
 
-    @JSONField(name="Sim")
+    @JSONField(name = "Sim")
     private String sim;
 
-    @JSONField(name="ImageUrl")
+    @JSONField(name = "ImageUrl")
     private String image_url;
 }

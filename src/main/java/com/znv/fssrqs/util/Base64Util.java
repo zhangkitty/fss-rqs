@@ -7,6 +7,7 @@ package com.znv.fssrqs.util;
  * @version 1.0
  * @Description TODO
  */
+
 import org.apache.commons.codec.binary.Base64;
 
 import java.nio.charset.Charset;
@@ -31,6 +32,7 @@ public class Base64Util {
 
     /**
      * Encodes hex octects into Base64
+     *
      * @param binaryData Array containing binaryData
      * @return Encoded Base64 array
      */

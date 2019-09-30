@@ -1,13 +1,9 @@
 package com.znv.fssrqs.controller.face.compare.n.n;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.znv.fssrqs.dao.mysql.CompareTaskDao;
 import com.znv.fssrqs.dao.mysql.PersonLibMapper;
 import com.znv.fssrqs.entity.mysql.CompareTaskEntity;
-import com.znv.fssrqs.enums.ErrorCodeEnum;
-import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam;
 import com.znv.fssrqs.service.compareservice.CompareService;
 import com.znv.fssrqs.timer.CompareTaskLoader;
@@ -56,11 +52,6 @@ public class CompareController {
 
     @RequestMapping(value="/site/FSSAPP/pc/nvsm/tasksave.ds",method = RequestMethod.POST)
     public ResponseVo save(@RequestBody NToNCompareTaskParam nToNCompareTaskParam){
-        if(compareService.getPersonCount((Integer)nToNCompareTaskParam.getLib1())==0||compareService.getPersonCount((Integer)nToNCompareTaskParam.getLib2())==0){
-            return ResponseVo.error("参与比较的库中没有人");
-        }
-
-
         personLibMapper.findAll().stream().forEach(value->{
             if(nToNCompareTaskParam.getLib1()==value.getLibID()){
                 nToNCompareTaskParam.setLib1Name(value.getLibName());

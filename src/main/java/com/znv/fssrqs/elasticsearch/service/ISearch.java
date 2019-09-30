@@ -9,6 +9,7 @@ public interface ISearch {
 
     /**
      * 多条件and或者or关系，查找多个,最多查找max条
+     *
      * @param map
      * @param index
      * @param type
@@ -17,10 +18,11 @@ public interface ISearch {
      * @return
      * @throws IOException
      */
-    List<Map<String,Object>> searchList(Map<String,String> map,String index,String type,int max,Boolean and)throws IOException;
+    List<Map<String, Object>> searchList(Map<String, String> map, String index, String type, int max, Boolean and) throws IOException;
 
     /**
      * 多条件and或者or关系,分页查找
+     *
      * @param map
      * @param index
      * @param type
@@ -30,5 +32,5 @@ public interface ISearch {
      * @return
      * @throws IOException
      */
-    Map<String,Object> searchListByPage(Map<String,String> map,String index,String type,int pageSize,int pageNum,Boolean and) throws IOException;
+    Map<String, Object> searchListByPage(Map<String, String> map, String index, String type, int pageSize, int pageNum, Boolean and) throws IOException;
 }

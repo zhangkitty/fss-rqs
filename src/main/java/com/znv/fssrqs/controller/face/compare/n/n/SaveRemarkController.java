@@ -24,8 +24,8 @@ public class SaveRemarkController {
     @Autowired
     private ElasticSearchClient elasticSearchClient;
 
-    @RequestMapping(value = "/site/FSSAPP/pc/nvsm/saveremark.ds",method = RequestMethod.POST)
-    public ResponseVo saveRemark(@RequestBody SavaRemarkParams savaRemarkParams){
+    @RequestMapping(value = "/site/FSSAPP/pc/nvsm/saveremark.ds", method = RequestMethod.POST)
+    public ResponseVo saveRemark(@RequestBody SavaRemarkParams savaRemarkParams) {
         StringBuffer sb = new StringBuffer();
         sb.append("http://").append(elasticSearchClient.getHost()).append(":").append(elasticSearchClient.getPort())
                 .append("/n2m_face_result_n_project_v1.20")
@@ -35,11 +35,11 @@ public class SaveRemarkController {
                 .append("/_update");
         JSONObject jsonObject = new JSONObject();
         savaRemarkParams.setId(null);
-        jsonObject.put("doc",(JSONObject)JSON.toJSON(savaRemarkParams));
-        Result<JSONObject, String> result =   elasticSearchClient.postRequest(sb.toString(), jsonObject);
-        if(result.value().getString("result").equals("updated")){
+        jsonObject.put("doc", (JSONObject) JSON.toJSON(savaRemarkParams));
+        Result<JSONObject, String> result = elasticSearchClient.postRequest(sb.toString(), jsonObject);
+        if (result.value().getString("result").equals("updated")) {
             return ResponseVo.success(null);
-        }else {
+        } else {
             return ResponseVo.error("更新失败");
         }
 

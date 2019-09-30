@@ -23,7 +23,7 @@ public class PersonListGroupQueryParam {
 
 
     @JSONField(name = "age_group")
-    private boolean ageGroup = true ;
+    private boolean ageGroup = true;
     @JSONField(name = "sex_group")
     private boolean sexGroup = true;
     @JSONField(name = "flag_group")
@@ -34,6 +34,7 @@ public class PersonListGroupQueryParam {
     public void setPersonLibType(List<Integer> personLibType) {
         this.personLibType = personLibType;
     }
+
     public List<Integer> getPersonLibType() {
         return personLibType;
     }
@@ -41,6 +42,7 @@ public class PersonListGroupQueryParam {
     public void setLibId(List<Integer> libId) {
         this.libId = libId;
     }
+
     public List<Integer> getLibId() {
         return libId;
     }
@@ -49,6 +51,7 @@ public class PersonListGroupQueryParam {
     public void setAddr(List<String> addr) {
         this.addr = addr;
     }
+
     public List<String> getAddr() {
         return addr;
     }
@@ -56,6 +59,7 @@ public class PersonListGroupQueryParam {
     public void setIsDel(String isDel) {
         this.isDel = isDel;
     }
+
     public String getIsDel() {
         return isDel;
     }
@@ -63,6 +67,7 @@ public class PersonListGroupQueryParam {
     public void setAgeGroup(boolean ageGroup) {
         this.ageGroup = ageGroup;
     }
+
     public boolean getAgeGroup() {
         return ageGroup;
     }
@@ -70,6 +75,7 @@ public class PersonListGroupQueryParam {
     public void setSexGroup(boolean sexGroup) {
         this.sexGroup = sexGroup;
     }
+
     public boolean getSexGroup() {
         return sexGroup;
     }
@@ -77,6 +83,7 @@ public class PersonListGroupQueryParam {
     public void setFlagGroup(boolean flagGroup) {
         this.flagGroup = flagGroup;
     }
+
     public boolean getFlagGroup() {
         return flagGroup;
     }
@@ -84,6 +91,7 @@ public class PersonListGroupQueryParam {
     public void setTimeGroup(boolean timeGroup) {
         this.timeGroup = timeGroup;
     }
+
     public boolean getTimeGroup() {
         return timeGroup;
     }

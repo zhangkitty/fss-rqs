@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 
 @Slf4j
-public class  ProducerBase {
+public class ProducerBase {
     public static final String MSG_TYPE = "msg_type";
     protected KafkaProducer<String, JSONObject> producer = null;
     protected boolean isInit = false;
@@ -27,11 +27,11 @@ public class  ProducerBase {
     }
 
     public void init() throws Exception {
-        this.init((String)null, false);
+        this.init((String) null, false);
     }
 
     public void initWithConfig(Properties props) throws Exception {
-        this.init((String)null, false, props);
+        this.init((String) null, false, props);
     }
 
     public void init(String topicSub) throws Exception {
@@ -39,7 +39,7 @@ public class  ProducerBase {
     }
 
     void init(String topicSub, boolean isResend) throws Exception {
-        this.init(topicSub, isResend, (Properties)null);
+        this.init(topicSub, isResend, (Properties) null);
     }
 
     void init(String topicSub, boolean isResend, Properties props) throws Exception {
@@ -117,7 +117,7 @@ public class  ProducerBase {
     }
 
     public boolean sendData(JSONObject data) {
-        return this.sendData((String)null, (JSONObject)data);
+        return this.sendData((String) null, (JSONObject) data);
     }
 
     public boolean sendData(String key, Map<String, Object> data) {
@@ -142,7 +142,7 @@ public class  ProducerBase {
                     return this.sendData(key, data, callback);
                 } catch (Exception var5) {
                     if (this.isResend) {
-                        callback.onCompletion((RecordMetadata)null, var5);
+                        callback.onCompletion((RecordMetadata) null, var5);
                     } else {
                         log.error(var5.getMessage(), var5);
                     }
@@ -158,11 +158,11 @@ public class  ProducerBase {
     }
 
     boolean sendData(JSONObject record, Callback callback) throws Exception {
-        return this.sendData((String)null, (String)null, record, callback);
+        return this.sendData((String) null, (String) null, record, callback);
     }
 
     boolean sendData(String key, JSONObject record, Callback callback) throws Exception {
-        return this.sendData((String)null, key, record, callback);
+        return this.sendData((String) null, key, record, callback);
     }
 
     boolean sendData(String topic, String key, JSONObject record, Callback callback) throws Exception {

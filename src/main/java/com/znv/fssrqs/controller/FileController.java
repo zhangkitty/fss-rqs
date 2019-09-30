@@ -44,7 +44,7 @@ public class FileController {
      * 导出excel数据
      */
     @PostMapping(value = "/export/{resType}/excel")
-    public void exportExcel(ModelMap model, @RequestHeader("Host") String host, @PathVariable("resType") Integer resType, @RequestBody String body, HttpServletRequest request, HttpServletResponse response) {
+    public void exportExcel(ModelMap model, @RequestHeader(value = "Host") String host, @PathVariable("resType") Integer resType, @RequestBody String body, HttpServletRequest request, HttpServletResponse response) {
         log.info("export start time:" + new Date().toString());
         if (!ExcelResource.contains(resType)) {
             throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "ExcelResourceNotExist");

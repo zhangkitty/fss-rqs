@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * kafka客户端.
- * 
+ *
  * @author xkh
  */
 @Slf4j
@@ -16,7 +16,9 @@ public final class KafKaClient {
     /** The Constant KAFAK_BASIC_PROPERTIES. */
     // private static final String KAFAK_BASIC_PROPERTIES = "producerBasic.properties";
 
-    /** The pb. */
+    /**
+     * The pb.
+     */
     private ProducerBase pb = new ProducerBase();
 
     private static KafKaClient instance = new KafKaClient();
@@ -30,7 +32,7 @@ public final class KafKaClient {
 
     /**
      * Inits the.
-     * 
+     *
      * @throws Exception the exception
      */
     public void init() {
@@ -45,7 +47,7 @@ public final class KafKaClient {
 
     /**
      * Gets the pb.
-     * 
+     *
      * @return the pb
      */
     public ProducerBase getPb() {
@@ -61,7 +63,7 @@ public final class KafKaClient {
 
     /**
      * 写入fss
-     * 
+     *
      * @param messageObj
      */
     public void sendData(JSONObject messageObj) {

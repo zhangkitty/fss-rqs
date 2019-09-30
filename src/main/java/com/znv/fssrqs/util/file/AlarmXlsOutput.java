@@ -129,8 +129,9 @@ public class AlarmXlsOutput extends AbstractXlsOutput {
             final LibDao libDao = SpringContextUtil.getCtx().getBean(LibDao.class);
             Map<String, Map<String, Object>> eventMap = libDao.selectAllMap();
             int index = exportSize > size ? size : exportSize;
-            for (; index < size; index++) {
-                outputRow(sheet, startRow[0], alarmDataList.getJSONObject(index), ALARM_CELLS, features, eventMap);
+            fourthCell.setCellValue(index);
+            for (int i = 0; i < index; index++) {
+                outputRow(sheet, startRow[0], alarmDataList.getJSONObject(i), ALARM_CELLS, features, eventMap);
                 ++startRow[0];
             }
         } else {

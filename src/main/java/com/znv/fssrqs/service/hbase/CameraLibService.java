@@ -25,7 +25,7 @@ import java.util.Properties;
  */
 @Service
 @Slf4j
-@DependsOn(value ="hdfsConfigManager")
+@DependsOn(value = "hdfsConfigManager")
 public class CameraLibService extends PhoenixSqlClient {
     private String tableName = HdfsConfigManager.getTableName(CommonConstant.PhoenixProperties.CAMERA_LIB_TABLE_NAME);
     private int cameraMaxNum = HdfsConfigManager.getInt(CommonConstant.PhoenixProperties.CAMERA_MAX_NUM);

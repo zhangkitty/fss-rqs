@@ -36,10 +36,8 @@ public class TimingCounter {
                 plusDays(1L).withHour(0).withMinute(0).withSecond(0).withNano(0);
         long millSeconds = ChronoUnit.MILLIS.between(LocalDateTime.now(), midnight);
         timerDay = new Timer();
-        timerDay.schedule(new TimerTask()
-        {
-            public void run()
-            {
+        timerDay.schedule(new TimerTask() {
+            public void run() {
                 for (Map.Entry<String, Long> entry : TimingCounter.mapDayCounter.entrySet()) {
                     entry.setValue(Long.valueOf(0L));
                 }
@@ -49,6 +47,7 @@ public class TimingCounter {
 
     /**
      * 判断是否流控，判断的同时计数
+     *
      * @param key
      * @param maxMinuteValue
      * @return
@@ -56,13 +55,13 @@ public class TimingCounter {
     public int isFlowControlled(String key, Long maxMinuteValue, Long maxDayValue) {
         Long valueMinute = Long.valueOf(1L);
         if (mapMinuteCounter.containsKey(key)) {
-            valueMinute = Long.valueOf(((Long)mapMinuteCounter.get(key)).longValue() + 1L);
+            valueMinute = Long.valueOf(((Long) mapMinuteCounter.get(key)).longValue() + 1L);
         }
         mapMinuteCounter.put(key, valueMinute);
 
         Long valueDay = Long.valueOf(1L);
         if (mapDayCounter.containsKey(key)) {
-            valueDay = Long.valueOf(((Long)mapDayCounter.get(key)).longValue() + 1L);
+            valueDay = Long.valueOf(((Long) mapDayCounter.get(key)).longValue() + 1L);
         }
         mapDayCounter.put(key, valueDay);
         if (valueDay.longValue() > maxDayValue.longValue()) {

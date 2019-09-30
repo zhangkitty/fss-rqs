@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * 同步读写，对涉及到修改与读写的文件需要用到此类中的方法
- * 
+ *
  * @author 徐凯华
  */
 @Slf4j
@@ -15,7 +15,7 @@ public class SynReaderAndWriter {
 
     /**
      * 读取文件
-     * 
+     *
      * @param fileName
      * @return
      */
@@ -48,8 +48,8 @@ public class SynReaderAndWriter {
 
     /**
      * 写文件
-     * 
-     * @param bits 字节流
+     *
+     * @param bits     字节流
      * @param fileName 文件名（带路径）
      */
     public static synchronized void write(byte[] bits, String fileName) {

@@ -3,17 +3,17 @@
 
 <mapper namespace="com.znv.fssrqs.dao.mysql.MSubscribersDao">
 
-    <select id="findAll"   resultType="com.znv.fssrqs.entity.mysql.MSubscribersEntity">
+    <select id="findAll" resultType="com.znv.fssrqs.entity.mysql.MSubscribersEntity">
         SELECT subscriber_id, alarm_push_url, push_start_time, push_end_time
         FROM t_cfg_subscriber S;
     </select>
 
-    <select id="getSubscriberCamera"   resultType="com.znv.fssrqs.entity.mysql.MSubscriberCameraEntity">
+    <select id="getSubscriberCamera" resultType="com.znv.fssrqs.entity.mysql.MSubscriberCameraEntity">
         SELECT subscriber_id, camera_id
         FROM t_cfg_subscriber_camera;
     </select>
 
-    <select id="getSubscriberLib"   resultType="com.znv.fssrqs.entity.mysql.MSubscriberLibEntity">
+    <select id="getSubscriberLib" resultType="com.znv.fssrqs.entity.mysql.MSubscriberLibEntity">
         SELECT subscriber_id, lib_id
         FROM t_cfg_subscriber_lib;
     </select>

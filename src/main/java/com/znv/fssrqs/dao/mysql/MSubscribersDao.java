@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface MSubscribersDao {
     List<MSubscribersEntity> findAll();
+
     List<MSubscriberCameraEntity> getSubscriberCamera();
+
     List<MSubscriberLibEntity> getSubscriberLib();
 }

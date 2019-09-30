@@ -1,7 +1,6 @@
 package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSONObject;
-import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
@@ -55,13 +54,17 @@ public class CommonSearch {
         CommonSearchParams commonSearchParams = modelMapper.map(params,CommonSearchParams.class);
 
         commonSearchParams.setFrom((params.getCurrentPage()-1)*params.getPageSize());
-        commonSearchParams.setIsCalcSim(false);
+        commonSearchParams.setAgeLowerLimit(null);
+        commonSearchParams.setAgeUpLimit(null);
+        commonSearchParams.setGenderType(null);
+        commonSearchParams.setGlass(null);
+        commonSearchParams.setRespirator(null);
+        commonSearchParams.setMustache(null);
+        commonSearchParams.setEmotion(null);
+        commonSearchParams.setEyeOpen(null);
+        commonSearchParams.setMouthOpen(null);
+        commonSearchParams.setSkinColor(null);
 
-        if (commonSearchParams.getDeviceIDs() == null || commonSearchParams.getDeviceIDs().length <= 0) {
-            commonSearchParams.setIsCamera(false);
-        }
-
-        commonSearchParams.setFeature_name(null);
         JSONObject paramsWithTempId = new JSONObject();
         paramsWithTempId.put("id","template_fss_arbitrarysearch");
         paramsWithTempId.put("params",commonSearchParams);
@@ -69,8 +72,7 @@ public class CommonSearch {
         HttpEntity httpEntity = new NStringEntity(paramsWithTempId.toJSONString()
                 ,ContentType.APPLICATION_JSON);
 
-        String esUrl = EsBaseConfig.getInstance().getEsIndexHistoryName() + "/" + EsBaseConfig.getInstance().getEsIndexHistoryType() + "/_search/template";
-        Response response = elasticSearchClient.getInstance().getRestClient().performRequest("get", esUrl, Collections.emptyMap(),httpEntity);
+        Response response = elasticSearchClient.getInstance().getRestClient().performRequest("get","/_search/template",Collections.emptyMap(),httpEntity);
 
         JSONObject result = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
 

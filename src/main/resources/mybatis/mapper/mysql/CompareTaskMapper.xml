@@ -4,15 +4,13 @@
 <mapper namespace="com.znv.fssrqs.dao.mysql.CompareTaskDao">
 
 
-
-
     <select id="findAllCompareTask" resultType="com.znv.fssrqs.entity.mysql.CompareTaskEntity">
         select * from t_fss_nvsmtask
     </select>
 
 
     <update id="update" parameterType="com.znv.fssrqs.entity.mysql.CompareTaskEntity">
-        update  t_fss_nvsmtask
+        update t_fss_nvsmtask
         <set>
             <if test="status != null">
                 status = #{status,jdbcType=INTEGER},
@@ -25,15 +23,16 @@
     </update>
 
     <insert id="save" parameterType="com.znv.fssrqs.param.face.compare.n.n.NToNCompareTaskParam">
-      insert INTO t_fss_nvsmtask(
+        insert INTO t_fss_nvsmtask(
         task_id,task_name,lib_1,lib_2,status,create_user,update_time,remainning_time,error_message,process,sim,lib_1_name,lib_2_name
-      )values(
+        )values(
         #{TaskId},#{TaskName},#{Lib1},#{Lib2},#{Status},#{CreateUser},now(),#{RemainningTime},#{ErrorMessage},#{Process},#{Sim},#{Lib1Name},#{Lib2Name}
-      )
+        )
     </insert>
 
-    <select id="query" parameterType="com.znv.fssrqs.controller.face.compare.n.n.QueryTaskParams" resultType="com.znv.fssrqs.entity.mysql.CompareTaskEntity">
-        select *  from t_fss_nvsmtask
+    <select id="query" parameterType="com.znv.fssrqs.controller.face.compare.n.n.QueryTaskParams"
+            resultType="com.znv.fssrqs.entity.mysql.CompareTaskEntity">
+        select * from t_fss_nvsmtask
         where 1 = 1
         <if test="taskId!=null">
             and task_id=#{taskId}
@@ -47,7 +46,7 @@
     </select>
 
     <delete id="delete">
-        delete  from t_fss_nvsmtask
+        delete from t_fss_nvsmtask
         where task_id=#{taskId}
     </delete>
 </mapper>

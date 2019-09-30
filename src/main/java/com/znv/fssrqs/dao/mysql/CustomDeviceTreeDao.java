@@ -18,7 +18,7 @@ public interface CustomDeviceTreeDao {
     List<CustomDeviceEntity> getAllCustomDeviceList();
 
     @Select("SELECT tree_id,GROUP_CONCAT(node_id) as node_ids FROM t_fss_customtree_node GROUP BY tree_id")
-    List<Map<String,String >> getCustomDeviceByGroup();
+    List<Map<String, String>> getCustomDeviceByGroup();
 
     Integer updateBatch(List<CustomDeviceEntity> list);
 

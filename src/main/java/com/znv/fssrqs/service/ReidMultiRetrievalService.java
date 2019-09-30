@@ -206,6 +206,7 @@ public class ReidMultiRetrievalService {
             } else {
                 source.put("DeviceName", "");
             }
+            source.put("Similarity",jsonObject.getFloatValue("_score"));
             return source;
         }).collect(Collectors.toList());
         return FastJsonUtils.JsonBuilder.ok().list(list).property("Total", total).property("Took", took).json();

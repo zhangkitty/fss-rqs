@@ -59,14 +59,14 @@ import java.util.zip.GZIPOutputStream;
  * Note that this is just to be used with bounded (normalized) descriptors.
  *
  * @author Mathias Lux, mathias@juggle.at
- *         Created: 04.06.12, 13:42
+ * Created: 04.06.12, 13:42
  */
 public class LocalitySensitiveHashingCos {
     private static Logger logger = LogManager.getLogger(LocalitySensitiveHashingCos.class.getName());
     private static String name = "lshHashFunctionsCos_64.obj";
     private static int dimensions = 32; // max d
     private static int numFunctionBundles = 16; // k
-    private static  double binLength = 10; // w
+    private static double binLength = 10; // w
 
     private static double[][] hashA = null;      // a
     private static double[] hashB = null;        // b

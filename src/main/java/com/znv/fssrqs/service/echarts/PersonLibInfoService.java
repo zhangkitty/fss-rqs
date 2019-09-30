@@ -37,8 +37,8 @@ public class PersonLibInfoService {
         queryParams.setAddr(list);
         queryParams.setLibId(libID.getLibID());
         List<String> add = new ArrayList<>();
-        if(SpringContextUtil.getCtx().getBean(Echarts.class).getAdd().split(",").length>0){
-            for (String str:SpringContextUtil.getCtx().getBean(Echarts.class).getAdd().split(",")){
+        if (SpringContextUtil.getCtx().getBean(Echarts.class).getAdd().split(",").length > 0) {
+            for (String str : SpringContextUtil.getCtx().getBean(Echarts.class).getAdd().split(",")) {
                 add.add(str);
             }
         }
@@ -141,7 +141,7 @@ public class PersonLibInfoService {
                     params.put("old_end", FormatObject.formatAgeDate(nowDate, 65));
                     params.put("old_start", FormatObject.formatAgeDate(nowDate, 150));
                     key = "old";
-                }else {
+                } else {
                     params.put("old_end", FormatObject.formatAgeDate(nowDate, 150));
                     key = "orthers";
                 }

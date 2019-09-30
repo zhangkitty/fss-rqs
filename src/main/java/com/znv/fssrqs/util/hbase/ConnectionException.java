@@ -7,7 +7,7 @@ package com.znv.fssrqs.util.hbase;
  * @version 1.0
  * @Description TODO
  */
-public class ConnectionException extends RuntimeException{
+public class ConnectionException extends RuntimeException {
     private static final long serialVersionUID = -6503525110247209484L;
 
     public ConnectionException() {

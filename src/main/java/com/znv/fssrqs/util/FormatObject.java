@@ -14,6 +14,7 @@ import java.util.TimeZone;
  */
 public class FormatObject {
     protected static final Logger LOG = LogManager.getLogger(FormatObject.class);
+
     private static String getLevelStr(int level) {
         StringBuffer levelStr = new StringBuffer();
         for (int levelI = 0; levelI < level; levelI++) {
@@ -66,7 +67,7 @@ public class FormatObject {
             Date enterTime1 = sdf1.parse(time);
             formatTime = sdf2.format(enterTime1);
         } catch (ParseException e) {
-            LOG.error("time format error.",e);
+            LOG.error("time format error.", e);
         }
         return formatTime;
     }
@@ -82,41 +83,43 @@ public class FormatObject {
             Date enterTime1 = sdf1.parse(time);
             formatTime = sdf2.format(enterTime1);
         } catch (ParseException e) {
-            LOG.error("time format error.",e);
+            LOG.error("time format error.", e);
         }
         return formatTime;
     }
+
     //向前推n个小时
-    public static String timeOffset(String time,int n) {
+    public static String timeOffset(String time, int n) {
         String timeAfter = "";
         // 转换成东八区时区
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date time1 = sdf2.parse(time);
-            timeAfter = sdf2.format(new Date(time1.getTime()-n*60*60*1000L));
+            timeAfter = sdf2.format(new Date(time1.getTime() - n * 60 * 60 * 1000L));
         } catch (ParseException e) {
-            LOG.error("time compare error.",e);
+            LOG.error("time compare error.", e);
         }
         return timeAfter;
     }
+
     //time1向前推n个小时并与时间time2比较大小，返回大的那个
-    public static String timeCompare(String time1,String time2,int n) {
+    public static String timeCompare(String time1, String time2, int n) {
         String timeAfter = "";
         // 转换成东八区时区
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            Date  date1 = sdf2.parse(time1);
-            Date  date2 = sdf2.parse(time2);
-            long mininTime1 = date1.getTime()-n*60*60*1000L;
+            Date date1 = sdf2.parse(time1);
+            Date date2 = sdf2.parse(time2);
+            long mininTime1 = date1.getTime() - n * 60 * 60 * 1000L;
             long mininTime2 = date2.getTime();
-            if(mininTime1 > mininTime2){
+            if (mininTime1 > mininTime2) {
                 timeAfter = sdf2.format(new Date(mininTime1));
-            }else{
+            } else {
                 timeAfter = sdf2.format(new Date(mininTime2));
             }
 
         } catch (ParseException e) {
-            LOG.error("time compare error.",e);
+            LOG.error("time compare error.", e);
         }
         return timeAfter;
     }

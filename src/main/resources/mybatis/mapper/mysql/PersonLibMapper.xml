@@ -16,9 +16,9 @@
         <result column="modify_time" jdbcType="TIMESTAMP" property="ModifyTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-    lib_id, personlib_type, lib_name, plib_alarm_level, description, creator_id, fevent_id, 
-    region_id,capacity_type,create_time,modify_time
-  </sql>
+        lib_id, personlib_type, lib_name, plib_alarm_level, description, creator_id, fevent_id,
+        region_id,capacity_type,create_time,modify_time
+    </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -40,17 +40,17 @@
         order by personlib_type,lib_name asc;
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_scim_personlib
-    where lib_id = #{LibID,jdbcType=INTEGER}
-  </delete>
+        delete from t_scim_personlib
+        where lib_id = #{LibID,jdbcType=INTEGER}
+    </delete>
     <insert id="insert" parameterType="com.znv.fssrqs.entity.mysql.PersonLib">
-    insert into t_scim_personlib (lib_id, personlib_type, lib_name, 
-      plib_alarm_level, description, creator_id, 
-      fevent_id, region_id)
-    values (#{LibID,jdbcType=INTEGER}, #{PersonLibType,jdbcType=VARCHAR}, #{LibName,jdbcType=VARCHAR}, 
-      #{LibAlarmLevel,jdbcType=VARCHAR}, #{Description,jdbcType=VARCHAR}, #{CreatorID,jdbcType=VARCHAR}, 
-      #{EventID,jdbcType=VARCHAR}, #{RegionID,jdbcType=VARCHAR})
-  </insert>
+        insert into t_scim_personlib (lib_id, personlib_type, lib_name,
+        plib_alarm_level, description, creator_id,
+        fevent_id, region_id)
+        values (#{LibID,jdbcType=INTEGER}, #{PersonLibType,jdbcType=VARCHAR}, #{LibName,jdbcType=VARCHAR},
+        #{LibAlarmLevel,jdbcType=VARCHAR}, #{Description,jdbcType=VARCHAR}, #{CreatorID,jdbcType=VARCHAR},
+        #{EventID,jdbcType=VARCHAR}, #{RegionID,jdbcType=VARCHAR})
+    </insert>
     <insert id="insertSelective" parameterType="com.znv.fssrqs.entity.mysql.PersonLib">
         insert into t_scim_personlib
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -134,34 +134,34 @@
         where lib_id = #{LibID,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.znv.fssrqs.entity.mysql.PersonLib">
-    update t_scim_personlib
-    set personlib_type = #{PersonLibType,jdbcType=VARCHAR},
-      lib_name = #{LibName,jdbcType=VARCHAR},
-      plib_alarm_level = #{LibAlarmLevel,jdbcType=VARCHAR},
-      description = #{Description,jdbcType=VARCHAR},
-      creator_id = #{CreatorID,jdbcType=VARCHAR},
-      fevent_id = #{EventID,jdbcType=VARCHAR},
-      region_id = #{RegionID,jdbcType=VARCHAR}
-    where lib_id = #{LibID,jdbcType=INTEGER}
-  </update>
+        update t_scim_personlib
+        set personlib_type = #{PersonLibType,jdbcType=VARCHAR},
+        lib_name = #{LibName,jdbcType=VARCHAR},
+        plib_alarm_level = #{LibAlarmLevel,jdbcType=VARCHAR},
+        description = #{Description,jdbcType=VARCHAR},
+        creator_id = #{CreatorID,jdbcType=VARCHAR},
+        fevent_id = #{EventID,jdbcType=VARCHAR},
+        region_id = #{RegionID,jdbcType=VARCHAR}
+        where lib_id = #{LibID,jdbcType=INTEGER}
+    </update>
     <select id="deleteByLibId" parameterType="java.lang.Integer" statementType="CALLABLE"
             resultType="java.util.HashMap">
-    {
-          call up_scim_PersonLib_Del(#{libId,mode=IN,jdbcType=INTEGER})
-    }
+        {
+        call up_scim_PersonLib_Del(#{libId,mode=IN,jdbcType=INTEGER})
+        }
     </select>
     <select id="save" statementType="CALLABLE" resultType="java.util.HashMap">
-    {
-          call up_scim_PersonLib_Save(#{LibID,mode=IN,jdbcType=INTEGER},
-          #{PersonLibType,mode=IN,jdbcType=VARCHAR},
-          #{LibName,mode=IN,jdbcType=VARCHAR},
-          #{LibAlarmLevel,mode=IN,jdbcType=VARCHAR},
-          #{Description,mode=IN,jdbcType=VARCHAR},
-          #{CreatorID,mode=IN,jdbcType=VARCHAR},
-          #{EventID,mode=IN,jdbcType=VARCHAR},
-          #{RegionID,mode=IN,jdbcType=VARCHAR},
-          #{CapacityType,mode=IN,jdbcType=INTEGER})
-    }
+        {
+        call up_scim_PersonLib_Save(#{LibID,mode=IN,jdbcType=INTEGER},
+        #{PersonLibType,mode=IN,jdbcType=VARCHAR},
+        #{LibName,mode=IN,jdbcType=VARCHAR},
+        #{LibAlarmLevel,mode=IN,jdbcType=VARCHAR},
+        #{Description,mode=IN,jdbcType=VARCHAR},
+        #{CreatorID,mode=IN,jdbcType=VARCHAR},
+        #{EventID,mode=IN,jdbcType=VARCHAR},
+        #{RegionID,mode=IN,jdbcType=VARCHAR},
+        #{CapacityType,mode=IN,jdbcType=INTEGER})
+        }
     </select>
     <select id="queryLibByLibType" parameterType="com.znv.fssrqs.entity.mysql.PersonLib" resultMap="BaseResultMap">
         select
