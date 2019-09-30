@@ -108,7 +108,7 @@
             <version>5.4.0</version>
             <exclusions>
                 <exclusion>
-                    <groupId>*</groupId>
+                    <groupId>org.elasticsearch.plugin</groupId>
                     <artifactId>transport-netty4-client</artifactId>
                 </exclusion>
             </exclusions>
