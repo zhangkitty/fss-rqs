@@ -31,7 +31,7 @@ import java.util.Map;
  */
 @RestController
 @Transactional(transactionManager = "transactionManager")
-public class SystemController {
+public class SystemInfoController {
     @Autowired
     private SystemDeviceLoadTask systemDeviceLoadTask;
     @Resource

@@ -29,7 +29,7 @@ import java.util.Set;
  */
 @RestController
 @Slf4j
-public class HomeController {
+public class HomePageController {
     @Autowired
     private AlarmTopLibCountService alarmTopLibCountService;
     @Autowired
@@ -70,7 +70,7 @@ public class HomeController {
             JSONObject jsonObject = (JSONObject) iterator.next();
             Integer libId = Integer.parseInt(jsonObject.getString("key"));
             libIdSet.add(libId);
-            jsonObject.put("LibID", libId+"");
+            jsonObject.put("LibID", libId + "");
             jsonObject.remove("key");
             if (libMap.containsKey(libId)) {
                 jsonObject.put("LibName", libMap.get(libId).get("LibName"));
@@ -87,7 +87,7 @@ public class HomeController {
             Integer libId = Integer.parseInt((String) o);
             if (!libIdSet.contains(libId)) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("LibID", libId+"");
+                jsonObject.put("LibID", libId + "");
                 if (libMap.containsKey(libId)) {
                     jsonObject.put("LibName", libMap.get(libId).get("LibName"));
                 } else {
@@ -162,7 +162,7 @@ public class HomeController {
     @GetMapping("/person/lib/statistics")
     public JSONObject getPersonLibAggs(@RequestParam Map<String, Object> params) {
         if (!params.containsKey("PersonLibType")) {
-            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "参数非法");
+            throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "人员库类型不能为空");
         }
         return personLibCountService.personAggsByLibId(Integer.parseInt((String) params.get("PersonLibType")));
     }
