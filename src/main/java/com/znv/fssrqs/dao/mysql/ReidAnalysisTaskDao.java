@@ -1,9 +1,7 @@
 package com.znv.fssrqs.dao.mysql;
 
-import org.apache.ibatis.annotations.MapKey;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.StatementType;
 
 import java.util.List;
 import java.util.Map;
@@ -30,4 +28,8 @@ public interface ReidAnalysisTaskDao {
             "</script>"
     })
     List<String> getDevicesByDeviceIds(@Param("deviceIds") List<String> deviceId);
+
+    @Select({"CALL up_scim_reidtask_query();"})
+    @Options(statementType = StatementType.CALLABLE)
+    List<Map<String, Object>> selectAll();
 }
