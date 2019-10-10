@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpSession;
 @Aspect
 @Component
 @Slf4j
+@Configuration
 public class SessionAspect {
     @Value("${conf.defaultUserId:}")
     private String defaultUserId;
@@ -36,6 +38,7 @@ public class SessionAspect {
     @Pointcut("within(com.znv.fssrqs.controller..*) " +
             "&& !within(com.znv.fssrqs.controller.LoginController) " +
             "&& !within(com.znv.fssrqs.controller.SystemController)" +
+            "&& !within(com.znv.fssrqs.controller.HomePageController)" +
             "&& !within(com.znv.fssrqs.controller.reid..*)")
     public void checkSession(){}
 
