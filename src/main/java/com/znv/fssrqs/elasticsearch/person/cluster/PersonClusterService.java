@@ -96,6 +96,7 @@ public class PersonClusterService {
         }
 
         params.put("date_aggregation", true);
+        params.put("search_interval", "1h");
         templateParams.put("id", HdfsConfigManager.getString(CommonConstant.ElasticSearch.ES_SEARCH_TEMPLATE_ARCHIVE_PERSON_COUNT_ID));
         templateParams.put("params", params);
         return templateParams;
@@ -185,14 +186,14 @@ public class PersonClusterService {
     }
 
 
-    public Result<JSONObject, String>  getPersonTask (JSONObject requestParams){
-        this. paramsCheck(requestParams);
-        JSONObject params=getParams(requestParams);
+    public Result<JSONObject, String> getPersonTask(JSONObject requestParams) {
+        this.paramsCheck(requestParams);
+        JSONObject params = getParams(requestParams);
         FeatureCompUtil featureCompUtil = new FeatureCompUtil();
 
         String indexTemplateUrl = new StringBuffer().append(HdfsConfigManager.getString(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER))
                 .append("/_search/template/").toString();
-        Result<JSONObject, String> resultObject = elasticSearchClient.postRequest(indexTemplateUrl,params);
+        Result<JSONObject, String> resultObject = elasticSearchClient.postRequest(indexTemplateUrl, params);
         if (resultObject.isErr()) {
             return resultObject;
         }
@@ -267,7 +268,7 @@ public class PersonClusterService {
         JSONObject templateParams = new JSONObject();
         JSONObject params = new JSONObject();
         params.put("enter_time_start", requestParams.getString("StartTime"));
-        params.put("enter_time_end",requestParams.getString("EndTime"));
+        params.put("enter_time_end", requestParams.getString("EndTime"));
         params.put("from", 0);
         params.put("size", 100);
         params.put("is_office", false);
@@ -280,9 +281,9 @@ public class PersonClusterService {
         params.put("is_camera", false);
         params.put("camera_id", new ArrayList<>());
 
-        params.put("is_sort",true);
-        params.put("sortField","enter_time");
-        params.put("sortOrder","desc");
+        params.put("is_sort", true);
+        params.put("sortField", "enter_time");
+        params.put("sortOrder", "desc");
         templateParams.put("id", "template_archive_person_count");
         templateParams.put("params", params);
         return templateParams;
