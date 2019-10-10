@@ -43,4 +43,13 @@
          CALL up_scim_device_statis()
     }
     </select>
+
+    <select id="getDeviceBatch" parameterType="java.util.List" resultType="String">
+          select a.X from usmsc.t_cfg_device a
+          where a.device_id in
+          <foreach collection="deviceIds"  item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
+    </select>
+
 </mapper>
