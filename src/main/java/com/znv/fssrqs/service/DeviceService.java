@@ -134,11 +134,7 @@ public class DeviceService {
                         size++;
                         //拼接设备树
                         this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
-                    } else if ("1".equals(useType)) {//只要人脸设备
-                        size++;
-                        //拼接设备树
-                        this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
-                    } else {//只要人体设备
+                    } else if (String.valueOf(userGroupDevice.getUseType().intValue()).equals(useType)) {//只要人脸设备
                         size++;
                         //拼接设备树
                         this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
