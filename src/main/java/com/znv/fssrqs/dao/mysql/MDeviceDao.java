@@ -2,8 +2,10 @@ package com.znv.fssrqs.dao.mysql;
 
 import com.znv.fssrqs.entity.mysql.AnalysisUnitEntity;
 import com.znv.fssrqs.entity.mysql.MBusEntity;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import scala.Int;
 
 import java.util.List;
 import java.util.Map;
@@ -18,4 +20,6 @@ public interface MDeviceDao {
     List<AnalysisUnitEntity> getDynamicAnalysisUnit();
 
     Map getDeviceCount();
+
+    List<String> getDeviceBatch(@Param("deviceIds") List<String> deviceIds);
 }

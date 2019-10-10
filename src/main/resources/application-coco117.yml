@@ -3,7 +3,7 @@ server:
   servlet: ##servlet默认超时时间30分钟
     session:
       timeout: 30m
-    context-path: /
+    context-path: /fnms
   tomcat:
     accesslog:
       enabled: true
@@ -14,13 +14,15 @@ logging:
   level:
     root: info
     org.mybatis: error
-    java.sql: debug
+    java.sql: trace
     org.springframework.web: trace
     com.znv.fssrqs.dao.mysql: debug
 spring:
+  jackson:
+    default-property-inclusion: non_null
   datasource:
     mysql:
-      jdbc-url: jdbc:mysql://10.45.157.117:3306/usmsc?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useAffectedRows=true
+      jdbc-url: jdbc:mysql://10.45.157.117:3306/usmsc?serverTimezone=Hongkong&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useAffectedRows=true
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: zxm10
@@ -30,7 +32,7 @@ spring:
       initial-size: 10
     hbase:
       driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver
-      jdbc-url: jdbc:phoenix:${spring.kafka.bootstrap-servers}:/hbase
+      jdbc-url: jdbc:phoenix:lv230.dct-znv.com:2181:/hbase
       type: com.alibaba.druid.pool.DruidDataSource
       data-username: ""
       data-password: ""
@@ -38,7 +40,7 @@ spring:
     host: 10.45.157.117
     port: 6379
     #连接超时时间(毫秒)
-    timeout: 100ms
+    timeout: 10000ms
     #password: redis
     jedis:
       pool:
@@ -57,28 +59,6 @@ spring:
     restart:
       enabled: true
       additional-paths: src/main/java
-  kafka: #kafka配置
-    bootstrap-servers: lv116.dct-znv.com:2181
-    producer:
-      retries: 0
-      batch-size: 16384
-      buffer-memory: 33554432
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      properties:
-        linger.ms: 1
-    consumer:
-      enable-auto-commit: false
-      auto-commit-interval: 100ms
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      properties:
-        session.timeout.ms: 15000
-kafka:
-  topic:
-    group-id: consumer_fss_web_n_project_V1_2_001
-    topic-name:
-    - fss-alarm-n-project-v1-2-production
 #mybatis
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
@@ -86,9 +66,11 @@ mybatis:
 es:
   username: ""
   password: ""
-  host: lv116.dct-znv.com
+#  host: lv230.dct-znv.com
+  host: lv217.dct-znv.com
   port: 9200
-  clusterName: face.dct-znv.com-es
+#  clusterName: lv230.dct-znv.com-es
+  clusterName: lv217.dct-znv.com-es
 #海康SDK
 hksdk:
   # false不支持海康脸谱算法 true支持海康脸谱算法
@@ -100,9 +82,9 @@ chongqing:
   eds-url: http://50.1.64.130:10002/pingaoEds
   image-url: http://50.1.64.130:10002/getImage
   max-minute-flow: 10000
-  max-day-flow: 1000000
+  max-day-flow: 10000000
 bigdata:
-  hdfs-url: hdfs://lv116.dct-znv.com:8020/user/fss/V120
+  hdfs-url: hdfs://lv230.dct-znv.com:8020/user/fss/V120
 fdfs:
   trackers:
   - 10.45.157.59:22122
