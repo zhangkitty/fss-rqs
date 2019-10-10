@@ -26,8 +26,10 @@ public class One2OneFaceCompareRest {
     public ResponseVo getFaceAttr(@RequestBody String content) {
         JSONObject json = JSON.parseObject(content);
         String imageData = json.getString("ImageData");
-        if (one2OneFaceCompareService.getFaceAttr(imageData) != null)
-            return ResponseVo.success(one2OneFaceCompareService.getFaceAttr(imageData));
+        JSONObject result = one2OneFaceCompareService.getFaceAttr(imageData);
+        if (result != null) {
+            return ResponseVo.success(result);
+        }
         return ResponseVo.error("该图片不是人脸");
     }
 

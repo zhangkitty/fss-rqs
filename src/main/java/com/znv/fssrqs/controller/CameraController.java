@@ -165,14 +165,14 @@ public class CameraController {
                 devObj.put("ID", device.getApeID());
                 devObj.put("Name", device.getApeName());
                 devObj.put("Coordinates", new Double[]{device.getLongitude(), device.getLatitude()});
-                devObj.put("UseType",device.getUseType());
+                devObj.put("UseType", device.getUseType());
                 devMap.put(device.getApeID(), devObj);
             } else if (useType.equals(String.valueOf(device.getUseType()))) {
                 JSONObject devObj = new JSONObject();
                 devObj.put("Name", device.getApeName());
                 devObj.put("ID", device.getApeID());
                 devObj.put("Coordinates", new Double[]{device.getLongitude(), device.getLatitude()});
-                devObj.put("UseType",device.getUseType());
+                devObj.put("UseType", device.getUseType());
                 devMap.put(device.getApeID(), devObj);
             }
         }
@@ -186,18 +186,35 @@ public class CameraController {
             Map<String, JSONObject> devices = accessDeviceService.getAllDevice();
             //设备所在点位
             List<Map<String, Object>> deptRealtion = deviceDeptRelationDao.selectAll();
+            //设备所在点位
             Map<String, String> cameraRelation = new HashMap<>();
             for (Map<String, Object> map : deptRealtion) {
                 cameraRelation.put(map.get("DeviceID").toString(), map.get("DeptID").toString());
             }
-
+            //设置部门ID
             Map<String, JSONObject> cameras = getDevices(devices, cameraRelation);
-            final List<Map<String, Object>> maps = faceAITaskDao.selectAll();
-            //获取分析任务ID
-            for (Map<String, Object> map : maps) {
+            final List<Map<String, Object>> aiTasks = faceAITaskDao.selectAll();
+            //获取人脸分析任务ID
+            for (Map<String, Object> map : aiTasks) {
                 //获取这个设备
                 JSONObject camera = cameras.get(map.get("camera_id").toString());
                 if (camera != null) {
+                    String devId = camera.getString("DeviceId");
+                    if (cameraMap.containsKey(devId)) {
+                        JSONObject jsobj = cameraMap.getJSONObject(devId);
+                        //未出现添加
+                        if (retArray.indexOf(jsobj) < 0) {
+                            retArray.add(jsobj);
+                        }
+                    }
+                }
+            }
+
+            //查询人体分析任务
+            final List<Map<String, Object>> reidTasks = reidAnalysisTaskDao.selectAll();
+            reidTasks.stream().forEach(object -> {
+                JSONObject camera = cameras.get(object.get("device_id").toString());
+                if (Objects.nonNull(camera)) {
                     String devId = camera.getString("DeviceId");
                     if (cameraMap.containsKey(devId)) {
                         JSONObject jsobj = cameraMap.getJSONObject(devId);
@@ -206,21 +223,21 @@ public class CameraController {
                         }
                     }
                 }
-            }
+            });
         } catch (Exception e) {
             return retArray;
         }
         return retArray;
     }
 
-    private Map<String, JSONObject> getDevices(Map<String, JSONObject> devices, Map<String, String> deptrealtion) {
+    private Map<String, JSONObject> getDevices(Map<String, JSONObject> devices, Map<String, String> deptRelation) {
         Collection<JSONObject> array = devices.values();
         Map<String, JSONObject> deviceCache = new HashMap<String, JSONObject>();
         for (JSONObject device : array) {
             device.remove("DeptId");
-            String deptId = deptrealtion.get(device.getString("DeviceId"));
+            String deptId = deptRelation.get(device.getString("DeviceId"));
             if (!StringUtils.isEmpty(deptId)) {
-                device.put("DeptId", deptrealtion.get(device.getString("DeviceId")));
+                device.put("DeptId", deptRelation.get(device.getString("DeviceId")));
             }
             deviceCache.put(device.getString("DeviceId"), device);
         }

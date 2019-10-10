@@ -58,9 +58,9 @@ public class PersonDetailService {
             JSONObject jsonObject = new JSONObject();
             final String smallUuid = (String) source.remove("img_url");
             if (!("null".equals(smallUuid) || StringUtils.isEmpty(smallUuid))) {
-                source.put("SmallPictureUrl", ImageUtils.getImgUrl("", "GetSmallPic", smallUuid));
+                jsonObject.put("SmallPictureUrl", ImageUtils.getImgUrl("", "GetSmallPic", smallUuid));
             } else {
-                source.put("SmallPictureUrl", "");
+                jsonObject.put("SmallPictureUrl", "");
             }
             jsonObject.put("PersonID", source.remove("person_id"));
             jsonObject.put("LibID", source.remove("lib_id"));
