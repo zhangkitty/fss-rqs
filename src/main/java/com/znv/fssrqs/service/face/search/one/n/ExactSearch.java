@@ -2,6 +2,7 @@ package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -106,7 +107,8 @@ public class ExactSearch {
 
 
         for (int i = 0; i < coarseCodeNum; i++) {
-            StringBuilder indexNamePrepix = new StringBuilder("history_fss_data_n_project_v1_2");
+            // StringBuilder indexNamePrepix = new StringBuilder("history_fss_data_n_project_v1_2");
+            StringBuilder indexNamePrepix = new StringBuilder(EsBaseConfig.getInstance().getEsIndexHistoryPrefix());
             final String indexName = indexNamePrepix.append("-").append(i).toString();
             url = indexName+"/history_data/_search/template";
 

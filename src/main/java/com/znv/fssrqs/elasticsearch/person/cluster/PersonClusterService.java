@@ -190,9 +190,7 @@ public class PersonClusterService {
         JSONObject params=getParams(requestParams);
         FeatureCompUtil featureCompUtil = new FeatureCompUtil();
 
-        String indexTemplateUrl = new StringBuffer().append(HdfsConfigManager.getString(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_NAME))
-                .append("/")
-                .append(HdfsConfigManager.getString(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_TYPE))
+        String indexTemplateUrl = new StringBuffer().append(HdfsConfigManager.getString(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER))
                 .append("/_search/template/").toString();
         Result<JSONObject, String> resultObject = elasticSearchClient.postRequest(indexTemplateUrl,params);
         if (resultObject.isErr()) {
