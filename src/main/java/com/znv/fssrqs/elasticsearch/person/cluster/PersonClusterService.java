@@ -96,7 +96,7 @@ public class PersonClusterService {
         }
 
         params.put("date_aggregation", true);
-        templateParams.put("id", "template_person_aggregation");
+        templateParams.put("id", HdfsConfigManager.getString(CommonConstant.ElasticSearch.ES_SEARCH_TEMPLATE_ARCHIVE_PERSON_COUNT_ID));
         templateParams.put("params", params);
         return templateParams;
     }
