@@ -38,9 +38,7 @@ public class PersonClusterService {
     public JSONObject getPersonAggs(JSONObject requestParams) {
         this.checkParams(requestParams);
         JSONObject templateParams = getTemplateParams(requestParams);
-        String url = new StringBuffer().append(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_NAME)
-                .append("/")
-                .append(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_TYPE)
+        String url = new StringBuffer().append(HdfsConfigManager.getString(CommonConstant.ElasticSearch.INDEX_TYPE_PERSON_CLUSTER_HISTORY))
                 .append("/_search/template/").toString();
         final Result<JSONObject, String> result = elasticSearchClient.postRequest(url, templateParams);
         if (result.isErr()) {
@@ -192,9 +190,9 @@ public class PersonClusterService {
         JSONObject params=getParams(requestParams);
         FeatureCompUtil featureCompUtil = new FeatureCompUtil();
 
-        String indexTemplateUrl = new StringBuffer().append(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_NAME)
+        String indexTemplateUrl = new StringBuffer().append(HdfsConfigManager.getString(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_NAME))
                 .append("/")
-                .append(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_TYPE)
+                .append(HdfsConfigManager.getString(CommonConstant.ElasticSearch.INDEX_PERSON_CLUSTER_TYPE))
                 .append("/_search/template/").toString();
         Result<JSONObject, String> resultObject = elasticSearchClient.postRequest(indexTemplateUrl,params);
         if (resultObject.isErr()) {
