@@ -9,7 +9,6 @@ import com.znv.fssrqs.exception.BusinessException;
 import com.znv.fssrqs.service.UserGroupService;
 import com.znv.fssrqs.util.FastJsonUtils;
 import com.znv.fssrqs.util.LocalUserUtil;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +17,6 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by dongzelong on  2019/10/11 19:49.
