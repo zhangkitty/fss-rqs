@@ -38,7 +38,8 @@
 
     <select id="getUser" parameterType="java.util.Map" resultMap="BaseResultMap">
         select u.*,t_fss_user.fss_role_id role_id,t_fss_usergroup.user_group_name,t_fss_usergroup.user_group_id
-        from t_cfg_user u left join t_fss_user on t_fss_user.user_id=u.user_id left join t_fss_usergroup on t_fss_user.fss_usergroup_id=t_fss_usergroup.user_group_id
+        from t_cfg_user u left join t_fss_user on t_fss_user.user_id=u.user_id left join t_fss_usergroup on
+        t_fss_user.fss_usergroup_id=t_fss_usergroup.user_group_id
         where 1=1
         <if test="UserID != null and UserID!=''">
             and u.user_id = #{UserID,jdbcType=VARCHAR}
@@ -105,4 +106,21 @@
         set usmsc.t_cfg_user.user_pwd = #{password}
         where usmsc.t_cfg_user.user_id = #{userId}
     </update>
+
+    <select id="selectUsersByUserGroupIds" resultMap="BaseResultMap">
+        select
+          *
+        from t_cfg_user a
+        join t_fss_user b on a.user_id=b.user_id
+        left join t_fss_usergroup c on b.fss_usergroup_id=c.user_group_id
+        left join t_fss_role d on b.fss_role_id=d.role_id
+        where 1=1
+        <if test="userGroupIds != null">
+            and b.fss_usergroup_id in (
+            <foreach collection="userGroupIds" item="record" index="index" separator=",">
+                #{record,jdbcType=INTEGER}
+            </foreach>)
+        </if>
+        order by a.user_id
+    </select>
 </mapper>
