@@ -9,7 +9,6 @@ import com.znv.fssrqs.config.HomeConfig;
 import com.znv.fssrqs.dao.mysql.AITaskDeviceRuleDao;
 import com.znv.fssrqs.dao.mysql.MDeviceDao;
 import com.znv.fssrqs.dao.mysql.ReidAnalysisTaskDao;
-import com.znv.fssrqs.dao.mysql.ReidTaskDao;
 import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
 import com.znv.fssrqs.service.redis.AccessPrecintService;
@@ -112,15 +111,41 @@ public class DeviceService {
 
                 ObjectMapper mapper = new ObjectMapper();
                 long size = 0L;
+
                 //用户分组+摄像机
                 for (UserGroupDeviceRelation userGroupDevice : userGroupDevices) {
                     final String apeID = userGroupDevice.getApeID();
-                    if (faceDeviceIds.contains(apeID)) {
-                        userGroupDevice.setUseType(1);
-                    } else if (reidDeviceIds.contains(apeID)) {
-                        userGroupDevice.setUseType(2);
+                    if (StringUtils.isEmpty(useType)) {
+                        if (faceDeviceIds.contains(apeID) && reidDeviceIds.contains(apeID)) {
+                            userGroupDevice.setUseType(1);
+                        } else if (faceDeviceIds.contains(apeID)) {
+                            userGroupDevice.setUseType(1);
+                        } else if (reidDeviceIds.contains(apeID)) {
+                            userGroupDevice.setUseType(2);
+                        } else if (!faceDeviceIds.contains(apeID) && !reidDeviceIds.contains(apeID)) {
+                            userGroupDevice.setUseType(0);
+                        }
                     } else {
-                        userGroupDevice.setUseType(0);
+                        switch (useType) {
+                            case "2":
+                                if (!reidDeviceIds.contains(apeID)) {
+                                    continue;
+                                }
+                                userGroupDevice.setUseType(2);
+                                break;
+                            case "1":
+                                if (!faceDeviceIds.contains(apeID)) {
+                                    continue;
+                                }
+                                userGroupDevice.setUseType(1);
+                                break;
+                            case "0":
+                                if (reidDeviceIds.contains(apeID) || faceDeviceIds.contains(apeID)) {
+                                    continue;
+                                }
+                                userGroupDevice.setUseType(0);
+                                break;
+                        }
                     }
 
                     JSONObject userGroupDeviceObject = null;
@@ -134,11 +159,7 @@ public class DeviceService {
                         size++;
                         //拼接设备树
                         this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
-                    } else if ("1".equals(useType)) {//只要人脸设备
-                        size++;
-                        //拼接设备树
-                        this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);
-                    } else {//只要人体设备
+                    } else if (String.valueOf(userGroupDevice.getUseType().intValue()).equals(useType)) {//只要人脸设备
                         size++;
                         //拼接设备树
                         this.splitJointDeviceTree(userGroupDeviceObject, retCameras, showPrecinctMap, userGroupId, precintMap, globalPrecincts);

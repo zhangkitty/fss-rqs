@@ -1,6 +1,7 @@
 package com.znv.fssrqs.service.face.search.one.n;
 
 import com.alibaba.fastjson.JSONObject;
+import com.znv.fssrqs.config.EsBaseConfig;
 import com.znv.fssrqs.elasticsearch.ElasticSearchClient;
 import com.znv.fssrqs.param.face.search.one.n.GeneralSearchParam;
 import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchParams;
@@ -8,6 +9,7 @@ import com.znv.fssrqs.service.face.search.one.n.dto.CommonSearchResultDTO;
 import com.znv.fssrqs.util.FormatObject;
 import com.znv.fssrqs.util.ImageUtils;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -36,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Data
+@Slf4j
 public class CommonSearch {
 
     @Autowired
@@ -72,7 +75,9 @@ public class CommonSearch {
         HttpEntity httpEntity = new NStringEntity(paramsWithTempId.toJSONString()
                 ,ContentType.APPLICATION_JSON);
 
-        Response response = elasticSearchClient.getInstance().getRestClient().performRequest("get","/_search/template",Collections.emptyMap(),httpEntity);
+        String esUrl = EsBaseConfig.getInstance().getEsIndexHistoryPrefix();
+        esUrl = esUrl + "-*" + "/_search/template";
+        Response response = elasticSearchClient.getInstance().getRestClient().performRequest("get",esUrl,Collections.emptyMap(),httpEntity);
 
         JSONObject result = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
 
@@ -84,7 +89,9 @@ public class CommonSearch {
             CommonSearchResultDTO commonSearchResultDTO = modelMapper.map(((JSONObject)v).get("_source"),CommonSearchResultDTO.class);
 
             String op_time = (String) ((JSONObject)((JSONObject) v).get("_source")).get("op_time");
-            commonSearchResultDTO.setOp_time(FormatObject.formatTimeTrim(op_time));
+            if (StringUtils.isNotEmpty(op_time)) {
+                commonSearchResultDTO.setOp_time(FormatObject.formatTimeTrim(op_time));
+            }
 
             String smallUuid = (String) ((JSONObject)((JSONObject) v).get("_source")).get("img_url");
             String imgUrl = ImageUtils.getImgUrl(remoteIp, "GetSmallPic", smallUuid);
@@ -102,7 +109,11 @@ public class CommonSearch {
             }else {
                 commonSearchResultDTO.setBigPictureUrl(ImageUtils.getImgUrl(null, "GetBigBgPic", bigPictureUuid));
             }
-            list.add(JSONObject.parse(JSONObject.toJSONString(commonSearchResultDTO)));
+            if (StringUtils.isEmpty(commonSearchResultDTO.getOp_time())) {
+                log.error("common search error: {}, {}", paramsWithTempId.toJSONString(), ((JSONObject) v).toJSONString());
+            } else {
+                list.add(JSONObject.parse(JSONObject.toJSONString(commonSearchResultDTO)));
+            }
         });
 
         JSONObject ret = new JSONObject();
