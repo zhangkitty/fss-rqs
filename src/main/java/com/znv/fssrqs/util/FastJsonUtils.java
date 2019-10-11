@@ -309,7 +309,7 @@ public class FastJsonUtils {
         }
 
         public static JsonBuilder error(int code) {
-            Assert.isTrue(code >= 50000 || code < 0, "expression is not true:code>=50000");
+            Assert.isTrue(code >= 40000 || code < 0, "expression is not true:code>=40000");
             return new JsonBuilder(code);
         }
 
