@@ -33,4 +33,10 @@ public class MDeviceDaoTest {
 
         System.out.println("mdzz");
     }
+
+    @Test
+    public void getCount(){
+        Integer result = mDeviceDao.getCameralCount();
+        System.out.println(result);
+    }
 }
