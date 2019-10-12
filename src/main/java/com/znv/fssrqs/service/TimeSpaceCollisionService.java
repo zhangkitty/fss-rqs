@@ -93,8 +93,8 @@ public class TimeSpaceCollisionService {
         String imgUrl = ImageUtils.getImgUrl(SystemDeviceLoadTask.getMBus().getIP(), "GetSmallPic", smallUuid);
         source.put("SmallPictureUrl", imgUrl);
         source.put("LeaveTime", source.remove("leave_time"));
-        source.put("ImgWidth", source.remove("img_width",0));
-        source.put("ImgHeight", source.remove("img_height",0));
+        source.put("ImgWidth", source.remove("img_width", 0));
+        source.put("ImgHeight", source.remove("img_height", 0));
         source.put("CameraID", source.remove("camera_id"));
         source.put("CameraType", source.remove("camera_type"));
         source.put("EnterTime", source.remove("enter_time"));
@@ -104,7 +104,7 @@ public class TimeSpaceCollisionService {
         source.put("OfficeID", source.remove("office_id"));
         source.put("OfficeName", source.remove("office_name"));
         source.put("UUID", source.remove("uuid"));
-        source.put("LeftPos", source.remove("left_pos",0));
+        source.put("LeftPos", source.remove("left_pos", 0));
         String bigPictureUuid = (String) source.remove("big_picture_uuid");
         if (!("null".equals(bigPictureUuid) || org.springframework.util.StringUtils.isEmpty(bigPictureUuid))) {
             source.put("BigPictureUrl", ImageUtils.getImgUrl(SystemDeviceLoadTask.getMBus().getIP(), "GetBigBgPic", bigPictureUuid));
@@ -199,7 +199,7 @@ public class TimeSpaceCollisionService {
                         final JSONObject object = resultObject.getJSONObject("camera_person_hits").getJSONObject("hits").getJSONArray("hits").getJSONObject(0);
                         processHit(object);
                         resultObject.remove("camera_person_hits");
-                        resultObject.put("Hit",object.getJSONObject("_source"));
+                        resultObject.put("Hit", object.getJSONObject("_source"));
                         buckets.add(resultObject);
                     } else {
                         final JSONObject resultObject = list.get(0);
@@ -208,11 +208,22 @@ public class TimeSpaceCollisionService {
                         final JSONObject object = resultObject.getJSONObject("camera_person_hits").getJSONObject("hits").getJSONArray("hits").getJSONObject(0);
                         processHit(object);
                         resultObject.remove("camera_person_hits");
-                        resultObject.put("Hit",object.getJSONObject("_source"));
+                        resultObject.put("Hit", object.getJSONObject("_source"));
                         buckets.add(resultObject);
                     }
                 }
             });
+
+            if (buckets.size() > 2) {
+                buckets.sort((JSONObject o1, JSONObject o2) -> {
+                    final Integer doc_count1 = o1.getInteger("DocCount");
+                    final Integer doc_count2 = o2.getInteger("DocCount");
+                    if (doc_count1 == doc_count2) {
+                        return 0;
+                    }
+                    return doc_count1 > doc_count2 ? -1 : 1;
+                });
+            }
             return FastJsonUtils.JsonBuilder.ok().list(buckets).property("Took", tooks).json();
         }
 
