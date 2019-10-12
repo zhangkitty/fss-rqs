@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.google.common.collect.Lists;
+import com.znv.fssrqs.constant.CommonConstant;
 import com.znv.fssrqs.dao.mysql.AITaskDeviceRuleDao;
 import com.znv.fssrqs.dao.mysql.DeviceDeptRelationDao;
 import com.znv.fssrqs.dao.mysql.FaceAITaskDao;
@@ -14,6 +15,7 @@ import com.znv.fssrqs.entity.mysql.UserGroup;
 import com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation;
 import com.znv.fssrqs.enums.ErrorCodeEnum;
 import com.znv.fssrqs.exception.BusinessException;
+import com.znv.fssrqs.exception.ZnvException;
 import com.znv.fssrqs.service.UserGroupDeviceService;
 import com.znv.fssrqs.service.UserGroupService;
 import com.znv.fssrqs.service.redis.AccessDeviceService;
@@ -225,7 +227,8 @@ public class CameraController {
                 }
             });
         } catch (Exception e) {
-            return retArray;
+            log.error("filter device tree occur exception:", e);
+            throw ZnvException.error(CommonConstant.StatusCode.INTERNAL_ERROR, "FilterDeviceTreeException");
         }
         return retArray;
     }
