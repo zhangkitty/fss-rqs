@@ -79,9 +79,9 @@
     </select>
     <select id="queryAdminUserDevice" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation"
             resultMap="BaseResultMap">
-        SELECT * FROM ((SELECT
-        DISTINCT(d.device_id),
-        d.precinct_id,
+        SELECT DISTINCT device_id,precinct_id,device_name,device_kind
+         FROM ((SELECT
+        DISTINCT(d.device_id),d.precinct_id,
         d.device_name,
         d.device_kind,
         f.create_time
@@ -93,10 +93,9 @@
         d.device_kind = 4 or d.device_kind = 10
         ORDER BY
         f.create_time ASC)
-        union
+        UNION ALL
          (SELECT
-        DISTINCT(d.device_id),
-        d.precinct_id,
+        DISTINCT(d.device_id),d.precinct_id,
         d.device_name,
         d.device_kind,
         f.create_time
@@ -107,7 +106,7 @@
         WHERE
         d.device_kind = 4 or d.device_kind = 10
         ORDER BY
-        f.create_time ASC)) AS device ORDER BY create_time;
+        f.create_time ASC)) AS device ORDER BY create_time DESC;
     </select>
     <select id="queryAdminMapDevice" resultType="com.znv.fssrqs.entity.mysql.MapDeviceLocation">
         select
