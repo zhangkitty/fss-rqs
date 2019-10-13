@@ -141,8 +141,10 @@ public class PersonDetailService {
         String imgUrl = ImageUtils.getImgUrl(SystemDeviceLoadTask.getMBus().getIP(), "GetSmallPic", smallUuid);
         source.put("SmallPictureUrl", imgUrl);
         source.put("LeaveTime", source.remove("leave_time"));
-        source.put("ImgWidth", source.remove("img_width", 0));
-        source.put("ImgHeight", source.remove("img_height", 0));
+        source.put("ImgWidth", source.getIntValue("img_width"));
+        source.remove("img_width");
+        source.put("ImgHeight", source.getIntValue("img_height"));
+        source.remove("img_height");
         source.put("CameraID", source.remove("camera_id"));
         source.put("CameraType", source.remove("camera_type"));
         source.put("EnterTime", source.remove("enter_time"));
@@ -152,7 +154,8 @@ public class PersonDetailService {
         source.put("OfficeID", source.remove("office_id"));
         source.put("OfficeName", source.remove("office_name"));
         source.put("UUID", source.remove("uuid"));
-        source.put("LeftPos", source.remove("left_pos", 0));
+        source.put("LeftPos", source.getIntValue("left_pos"));
+        source.remove("left_pos");
         String bigPictureUuid = (String) source.remove("big_picture_uuid");
         if (!("null".equals(bigPictureUuid) || org.springframework.util.StringUtils.isEmpty(bigPictureUuid))) {
             source.put("BigPictureUrl", ImageUtils.getImgUrl(SystemDeviceLoadTask.getMBus().getIP(), "GetBigBgPic", bigPictureUuid));
