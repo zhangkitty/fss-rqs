@@ -73,7 +73,7 @@ public class PersonLibCountService {
                 jsonObject.put("DocCount", jsonObject.remove("doc_count"));
                 final Object key = jsonObject.remove("key");
                 jsonObject.put("Key", key);
-                Map<String, Object> map = libMap.getOrDefault(String.valueOf(key), null);
+                Map<String, Object> map = libMap.getOrDefault(key, null);
                 if (Objects.nonNull(map)) {
                     jsonObject.put("Name", map.get("LibName"));
                 } else {

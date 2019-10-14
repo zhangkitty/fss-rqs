@@ -41,17 +41,17 @@ public class PersonClusterController {
     }
 
     @PostMapping("/ReID/cluster/track/search")
-    public JSONObject  getPersonFusedDetail(@RequestHeader("Host") String host, @RequestBody String body, HttpServletRequest request) {
+    public JSONObject getPersonFusedDetail(@RequestHeader("Host") String host, @RequestBody String body, HttpServletRequest request) {
         JSONObject requestParams = JSON.parseObject(body);
-        Result<JSONObject, String> esResult =  personClusterService.getPersonTask(requestParams);
+        Result<JSONObject, String> esResult = personClusterService.getPersonTask(requestParams);
         String remoteIp = host.split(":")[0];
         if (esResult.isErr()) {
-            return FastJsonUtils.JsonBuilder.error(CommonConstant.StatusCode.INTERNAL_ERROR).message(I18nUtils.i18n(request.getLocale(),esResult.error())).json();
+            return FastJsonUtils.JsonBuilder.error(CommonConstant.StatusCode.INTERNAL_ERROR).message(I18nUtils.i18n(request.getLocale(), esResult.error())).json();
         }
 
         JSONObject esObject = esResult.value();
         JSONArray hitsJsonArray = esObject.getJSONArray("Hits");
-        hitsJsonArray.parallelStream().forEach(object->{
+        hitsJsonArray.parallelStream().forEach(object -> {
             JSONObject jsonObject = (JSONObject) object;
             String pictureUuid = jsonObject.getString("SmallPictureUrl");
             if ("null".equals(pictureUuid) || StringUtils.isEmpty(pictureUuid)) {
@@ -70,8 +70,14 @@ public class PersonClusterController {
     }
 
     @GetMapping("/ReID/cluster/fused/{fusedId}/detail")
-    public JSONObject getReidFusedDetail(@PathVariable(value = "fusedId",required = true) String fusedId, @RequestParam Map<String, Object> params) {
+    public JSONObject getReidFusedDetail(@PathVariable(value = "fusedId") String fusedId, @RequestParam Map<String, Object> params) {
         params.put("FusedID", fusedId);
         return personDetailService.getPersonDetail(params);
+    }
+
+    @PostMapping("/ReID/cluster/fused/details")
+    public JSONObject getReidFusedDetails(@RequestBody String body, HttpServletRequest request) {
+        JSONObject requestParams = JSON.parseObject(body);
+        return personDetailService.getPersonDetails(requestParams);
     }
 }

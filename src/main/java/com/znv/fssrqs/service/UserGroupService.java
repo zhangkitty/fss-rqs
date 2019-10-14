@@ -31,4 +31,12 @@ public class UserGroupService {
         record.setUpUserGroupID(upUserGroupId);
         return userGroupMapper.queryUserGroupByUpGroupId(record);
     }
+
+    public List<UserGroup> selectGroupByUserId(String userId) {
+        return userGroupMapper.selectGroupByUserId(userId);
+    }
+
+    public UserGroup selectByPrimaryKey(Integer userGroupId) {
+        return userGroupMapper.selectByPrimaryKey(userGroupId);
+    }
 }

@@ -79,12 +79,12 @@
     </select>
     <select id="queryAdminUserDevice" parameterType="com.znv.fssrqs.entity.mysql.UserGroupDeviceRelation"
             resultMap="BaseResultMap">
-        SELECT
-        DISTINCT(d.device_id),
-        d.precinct_id,
-        d.device_id,
+        SELECT DISTINCT device_id,precinct_id,device_name,device_kind
+         FROM ((SELECT
+        DISTINCT(d.device_id),d.precinct_id,
         d.device_name,
-        d.device_kind
+        d.device_kind,
+        f.create_time
         FROM
         t_scim_facetask f
         JOIN t_cfg_device d ON f.camera_id = d.device_id or d.device_kind = 10
@@ -92,7 +92,21 @@
         WHERE
         d.device_kind = 4 or d.device_kind = 10
         ORDER BY
-        f.create_time ASC;
+        f.create_time ASC)
+        UNION ALL
+         (SELECT
+        DISTINCT(d.device_id),d.precinct_id,
+        d.device_name,
+        d.device_kind,
+        f.create_time
+        FROM
+        t_reid_task f
+        JOIN t_cfg_device d ON f.device_id = d.device_id or d.device_kind = 10
+        JOIN t_cfg_precinct p ON d.precinct_id = p.precinct_id
+        WHERE
+        d.device_kind = 4 or d.device_kind = 10
+        ORDER BY
+        f.create_time ASC)) AS device ORDER BY create_time DESC;
     </select>
     <select id="queryAdminMapDevice" resultType="com.znv.fssrqs.entity.mysql.MapDeviceLocation">
         select

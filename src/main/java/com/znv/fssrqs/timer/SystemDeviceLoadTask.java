@@ -59,7 +59,7 @@ public class SystemDeviceLoadTask {
         }
 
         // 定期重新加载
-        if (count++ % 100 == 0) {
+        if (count++ % 5 == 0) {
             loadAndCheckMBus();
             loadAndCheckStaticAIUnit();
             loadAndCheckReidUnit();

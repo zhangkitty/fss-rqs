@@ -22,4 +22,6 @@ public interface MUserDao {
     MUserEntity selectById(@Param("userId") String userId);
 
     Integer updateUserInfo(@Param("userId") String userId,@Param("password") String password);
+
+    List<MUserEntity> selectUsersByUserGroupIds(@Param("userGroupIds") List<Integer> userGroupIds);
 }

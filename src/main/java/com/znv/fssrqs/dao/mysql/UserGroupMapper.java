@@ -1,6 +1,7 @@
 package com.znv.fssrqs.dao.mysql;
 
 import com.znv.fssrqs.entity.mysql.UserGroup;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface UserGroupMapper {
     UserGroup queryUserGroupByUserId(UserGroup record);
 
     List<UserGroup> queryUserGroupByUpGroupId(UserGroup record);
+
+    List<UserGroup> selectGroupByUserId(@Param("userId") String userId);
 }
