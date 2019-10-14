@@ -28,4 +28,11 @@ public class DocOverViewController {
         JSONObject jsonObject = docService.getDocOverView();
         return ResponseVo.success(jsonObject);
     }
+
+    @RequestMapping(value = "/doc-curve",method = RequestMethod.GET)
+    public ResponseVo docCurve(){
+
+        JSONObject jsonObject = docService.getDocCurve();
+        return ResponseVo.success(jsonObject);
+    }
 }

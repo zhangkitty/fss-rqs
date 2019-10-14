@@ -54,4 +54,33 @@ public class DocService {
 
         return resultJSON;
     }
+
+    public JSONObject getDocCurve(){
+        String json = "{\n" +
+                "  \"aggs\": {\n" +
+                "    \"month\": {\n" +
+                "      \"date_histogram\": {\n" +
+                "        \"field\": \"fused_time\",\n" +
+                "        \"interval\": \"month\",\n" +
+                "        \"format\": \"yyyy-MM-dd\"\n" +
+                "      }\n" +
+                "    },\n" +
+                "    \"day\": {\n" +
+                "      \"date_histogram\": {\n" +
+                "        \"field\": \"fused_time\",\n" +
+                "        \"interval\": \"day\",\n" +
+                "        \"format\": \"yyyy-MM-dd\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+        String reslut = "";
+        try {
+            reslut = HttpUtils.sendPostData(json,"http://lv217.dct-znv.com:9200/fused_data_realtime/fused/_search");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return JSONObject.parseObject(reslut).getJSONObject("aggregations");
+    }
 }
