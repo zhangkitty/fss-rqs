@@ -7,11 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by dongzelong on  2019/10/9 11:35.
@@ -27,8 +23,8 @@ public class TimeSpaceCollisionController {
     private TimeSpaceCollisionService timeSpaceCollisionService;
 
     @PostMapping("/time/space/collision/search")
-    public JSONObject getTimeSpaceCollision(@RequestBody String body, @RequestParam Map<String,Object> params) {
-        final List<JSONObject> list = JSON.parseArray(body, JSONObject.class);
-        return timeSpaceCollisionService.getTimeSpaceCollision(list,params);
+    public JSONObject getTimeSpaceCollision(@RequestBody String body) {
+        final JSONObject params = JSON.parseObject(body, JSONObject.class);
+        return timeSpaceCollisionService.getTimeSpaceCollision(params.getJSONArray("condition"),params);
     }
 }

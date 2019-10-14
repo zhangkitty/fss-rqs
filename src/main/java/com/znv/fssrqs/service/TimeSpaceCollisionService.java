@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -32,29 +33,29 @@ import java.util.stream.Collectors;
 public class TimeSpaceCollisionService {
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
-    private void checkParams(List<JSONObject> requestParams) {
+    private void checkParams(JSONArray requestParams) {
         requestParams.parallelStream().forEach(jsonObject -> {
-            if (StringUtils.isEmpty(jsonObject.getString("StartTime")) || StringUtils.isEmpty(jsonObject.getString("EndTime"))) {
+            if (StringUtils.isEmpty(((JSONObject) jsonObject).getString("StartTime")) || StringUtils.isEmpty(((JSONObject) jsonObject).getString("EndTime"))) {
                 throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "StartTimeOrEndTimeNotEmpty");
             }
 
-            if (!jsonObject.containsKey("CameraIDs") || !(jsonObject.getJSONArray("CameraIDs") instanceof JSONArray)) {
+            if (!((JSONObject) jsonObject).containsKey("CameraIDs") || !(((JSONObject) jsonObject).getJSONArray("CameraIDs") instanceof JSONArray)) {
                 throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "CameraIDsTypeError");
             }
 
-            if (jsonObject.getString("StartTime").compareTo(jsonObject.getString("EndTime")) > 0) {
+            if (((JSONObject) jsonObject).getString("StartTime").compareTo(((JSONObject) jsonObject).getString("EndTime")) > 0) {
                 throw ZnvException.badRequest(CommonConstant.StatusCode.BAD_REQUEST, "StartTimeGtEndTime");
             }
         });
     }
 
-    private static JSONObject getTemplateParams(JSONObject requestParams, int offset, Map<String, Object> map) {
+    private static JSONObject getTemplateParams(JSONObject requestParams) {
         JSONObject templateParams = new JSONObject();
         JSONObject params = new JSONObject();
         params.put("enter_time_start", requestParams.getString("StartTime"));
         params.put("enter_time_end", requestParams.getString("EndTime"));
-        params.put("from", offset);
-        params.put("size", Integer.parseInt((String) map.getOrDefault("PageSize", 0)));
+        params.put("from", 0);
+        params.put("size", 0);
         final JSONArray cameraIDs = requestParams.getJSONArray("CameraIDs");
         if (cameraIDs.size() > 0) {
             params.put("DeviceID", true);
@@ -69,7 +70,7 @@ public class TimeSpaceCollisionService {
         return templateParams;
     }
 
-    public JSONObject getTimeSpaceCollision(List<JSONObject> list, Map<String, Object> params) {
+    public JSONObject getTimeSpaceCollision(JSONArray list, JSONObject params) {
         this.checkParams(list);
         String url = new StringBuffer().append(HdfsConfigManager.getString(CommonConstant.ElasticSearch.INDEX_TYPE_PERSON_CLUSTER_HISTORY)).append("/_search/template").toString();
         HttpRequestCountDownLatch httpRequestCountDownLatch = new HttpRequestCountDownLatch(list.size(), list, executorService);
@@ -120,17 +121,17 @@ public class TimeSpaceCollisionService {
         private final int DEFAULT_BEGIN_COUNT = 1;
         private int RUNNER_COUNT;
 
-        private List<JSONObject> list;
+        private JSONArray list;
         private ExecutorService executor;
 
-        public HttpRequestCountDownLatch(int RUNNER_COUNT, List<JSONObject> list, ExecutorService executor) {
+        public HttpRequestCountDownLatch(int RUNNER_COUNT, JSONArray list, ExecutorService executor) {
             this.RUNNER_COUNT = RUNNER_COUNT;
             this.list = list;
             this.executor = executor;
         }
 
-        public JSONObject getData(String url, Map<String, Object> params) {
-            int offset = ParamUtils.getPageOffset(Integer.parseInt((String) params.getOrDefault("CurrentPage", 0)), Integer.parseInt((String) params.getOrDefault("PageSize", 0))).intValue();
+        public JSONObject getData(String url, JSONObject params) {
+            //int offset = ParamUtils.getPageOffset(((Integer) params.getOrDefault("CurrentPage", 0)), (Integer) params.getOrDefault("PageSize", 0)).intValue();
             final CountDownLatch begin = new CountDownLatch(DEFAULT_BEGIN_COUNT);
             final CountDownLatch end = new CountDownLatch(RUNNER_COUNT);
             CopyOnWriteArrayList<JSONObject> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
@@ -139,8 +140,8 @@ public class TimeSpaceCollisionService {
             list.parallelStream().forEach(jsonObject -> {
                 executor.submit(() -> {
                     try {
-                        JSONObject templateParams = getTemplateParams(jsonObject, offset, params);
-                        Result<JSONObject, String> result = null;
+                        JSONObject templateParams = getTemplateParams((JSONObject) jsonObject);
+                        Result<JSONObject, String> result;
                         try {
                             result = SpringContextUtil.getCtx().getBean(ElasticSearchClient.class).postRequest(url, templateParams);
                             if (result.isErr()) {
@@ -224,7 +225,20 @@ public class TimeSpaceCollisionService {
                     return doc_count1 > doc_count2 ? -1 : 1;
                 });
             }
-            return FastJsonUtils.JsonBuilder.ok().list(buckets).property("Took", tooks).json();
+
+            //进行分页
+            Paging paging = Paging.pagination(buckets.size(), ((Integer) params.getOrDefault("PageSize", 0)), (Integer) params.getOrDefault("CurrentPage", 0));
+            int fromIndex = paging.getQueryIndex();
+            int toIndex = 0;
+            if (fromIndex + paging.getPageSize() >= buckets.size()) {
+                toIndex = buckets.size();
+            } else {
+                toIndex = fromIndex + paging.getPageSize();
+            }
+            if (fromIndex > toIndex) {
+                return FastJsonUtils.JsonBuilder.ok().list(Collections.EMPTY_LIST).property("Took", tooks).property("Total", buckets.size()).json();
+            }
+            return FastJsonUtils.JsonBuilder.ok().property("Took", tooks).property("Total",buckets.size()).list(buckets.subList(fromIndex, toIndex)).json();
         }
 
         private void increment(AtomicInteger count) {
